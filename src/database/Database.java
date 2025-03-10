@@ -13,7 +13,7 @@ import java.sql.SQLException;
  * @author MyBook Hype AMD
  */
 public class Database {
-    String host = "jdbc:mysql://127.0.0.1:3306/";
+    String host = "jdbc:mysql://127.0.0.1:3306/";   
     String database = "indira_s_motor";
     String username = "root";
     String password = "";
