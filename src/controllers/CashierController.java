@@ -31,17 +31,28 @@ public class CashierController extends AbstractController {
             stringColumns += (column + ",");
         }
         stringColumns = stringColumns.substring(0, stringColumns.length() - 1);
-
+        
+        //edge case where the frontend puts in *
+        stringColumns = stringColumns.equals("*") ? "id, username" : stringColumns;
+        columns.clear();
+        columns.add("id");
+        columns.add("username");
+         
         try {
             Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
             rs = stmt.executeQuery("SELECT " + stringColumns + " FROM " + this.table_name);
             
+            if(!rs.isBeforeFirst()) {
+                db.close();
+                return null;
+            }
+            
             rs.first();
             do {
                 HashMap<String, String> row = new HashMap<>();
-                row.put("id", rs.getString("id"));
-                row.put("username", rs.getString("username"));
-                row.put("password", rs.getString("password"));
+                for (String column: columns) {
+                    row.put(column, rs.getString(column));
+                }
                 cashiers.add(row);
             }while(rs.next());
             
@@ -58,13 +69,7 @@ public class CashierController extends AbstractController {
     public void create(HashMap<String, String> values) {
         values.put("password", Integer.toString(values.get("password").hashCode()));
 
-        String stringValues = "";
-        for (String column: values.keySet()) {
-            stringValues += ("\"" + values.get(column) + "\",");
-        }
-        stringValues = stringValues.substring(0, stringValues.length() - 1);
-
-        String insertStatement = "INSERT INTO " + this.table_name + " (username, password) VALUES (" + stringValues + ")";
+        String insertStatement = "INSERT INTO " + this.table_name + " (username, password) VALUES (" + "\"" + values.get("username") + "\"" + ", " + "\"" + values.get("password") + "\"" + ")";
         try {
             Database db = new Database();
             Statement stmt = db.connect().createStatement();
