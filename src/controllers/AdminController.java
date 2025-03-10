@@ -31,16 +31,28 @@ public class AdminController extends AbstractController {
             stringColumns += (column + ",");
         }
         stringColumns = stringColumns.substring(0, stringColumns.length() - 1);
+        
+        //edge case where the frontend puts in *
+        stringColumns = stringColumns.equals("*") ? "id, username" : stringColumns;
+        columns.clear();
+        columns.add("id");
+        columns.add("username");
 
         try {
             Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
             rs = stmt.executeQuery("SELECT " + stringColumns + " FROM " + this.table_name);
 
+            if(!rs.isBeforeFirst()) {
+                db.close();
+                return null;
+            }
+            
             rs.first();
             do {
                 HashMap<String, String> row = new HashMap<>();
-                row.put("id", rs.getString("id"));
-                row.put("username", rs.getString("username"));
+                for (String column: columns) {
+                    row.put(column, rs.getString(column));
+                }
                 admins.add(row);
             } while (rs.next());
 
@@ -55,56 +67,17 @@ public class AdminController extends AbstractController {
 
     @Override
     public void create(HashMap<String, String> values) {
-        values.put("password", Integer.toString(values.get("password").hashCode()));
-
-        String stringValues = "";
-        for (String column : values.keySet()) {
-            stringValues += ("\"" + values.get(column) + "\",");
-        }
-        stringValues = stringValues.substring(0, stringValues.length() - 1);
-
-        String insertStatement = "INSERT INTO " + this.table_name + " (username, password) VALUES (" + stringValues + ")";
-        try {
-            Database db = new Database();
-            Statement stmt = db.connect().createStatement();
-            stmt.execute(insertStatement);
-
-            db.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        //admin cannot be created
     }
 
     @Override
     public void update(int id, HashMap<String, String> values) {
-        values.put("password", Integer.toString(values.get("password").hashCode()));
-
-        String updateStatement = "UPDATE " + this.table_name + " SET username = \"" + values.get("username") + "\", password = " + values.get("password") + " WHERE id = " + id;
-        try {
-            Database db = new Database();
-            Statement stmt = db.connect().createStatement();
-            stmt.execute(updateStatement);
-
-            db.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        //admin cannot be edited
     }
 
     @Override
     public void delete(int id) {
-        String deleteStatement = "DELETE FROM " + this.table_name + " WHERE id = " + id;
-
-        try {
-            Database db = new Database();
-            Statement stmt = db.connect().createStatement();
-            stmt.execute(deleteStatement);
-
-            db.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        //admin cannot be deleted
     }
 
     @Override

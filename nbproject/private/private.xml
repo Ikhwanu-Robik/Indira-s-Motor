@@ -3,11 +3,18 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/home/rasyid/Documents/Project/Indira-s-Motor/src/controllers/AbstractController.java</file>
             <file>file:/home/rasyid/Documents/Project/Indira-s-Motor/src/pages/Main.java</file>
             <file>file:/home/rasyid/Documents/Project/Indira-s-Motor/src/controllers/LoginController.java</file>
             <file>file:/home/rasyid/Documents/Project/Indira-s-Motor/src/indira_s_motor_ant/Indira_s_motor_ant.java</file>
             <file>file:/home/rasyid/Documents/Project/Indira-s-Motor/src/components/Navbar_Admin.java</file>
+=======
+            <file>file:/C:/Users/MyBook%20Hype%20AMD/Documents/NetBeansProjects/Indira_s_motor_github/Indira-s-Motor/src/indira_s_motor_ant/Indira_s_motor_ant.java</file>
+            <file>file:/C:/Users/MyBook%20Hype%20AMD/Documents/NetBeansProjects/Indira_s_motor_github/Indira-s-Motor/src/controllers/CashierController.java</file>
+            <file>file:/C:/Users/MyBook%20Hype%20AMD/Documents/NetBeansProjects/Indira_s_motor_github/Indira-s-Motor/src/controllers/LoginController.java</file>
+            <file>file:/C:/Users/MyBook%20Hype%20AMD/Documents/NetBeansProjects/Indira_s_motor_github/Indira-s-Motor/src/controllers/AdminController.java</file>
+>>>>>>> 798ef150d34c98d92ba8164aefeacc662b6a0f78
         </group>
     </open-files>
 </project-private>

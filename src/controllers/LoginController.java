@@ -23,46 +23,43 @@ public class LoginController {
         return admin != null || cashier != null;
     }
 
-    public Boolean authenticate(HashMap<String, String> form_data) {
+    public HashMap<String, String> authenticate(HashMap<String, String> form_data) {
         Boolean isAdmin = false;
         if (validate(form_data)) {
-            System.out.println("Your input is valid");
             isAdmin = null != new AdminController().findWhere("username", form_data.get("username"));
-        }
-        else {
-            System.out.println("Your input is invalid");
-            return false;
+        } else {
+            return FormatResponse.success("error", "Invalid input. That username does not exist");
         }
 
         if (!isAdmin) {
-            System.out.println("Your account is a CASHIER");
             HashMap<String, String> cashier = new CashierController().findWhere("username", form_data.get("username")).get(0);
 
             Boolean isLoggedIn = new CashierController()._attempt(Integer.parseInt(cashier.get("id")), form_data.get("password"));
             if (!isLoggedIn) {
-                return false;
+                return FormatResponse.error("error", "Your password is wrong");
             } else {
                 this.username = cashier.get("username");
                 this.authenticated_user_id = Integer.parseInt(cashier.get("id"));
                 this.role = "cashier";
-                return true;
+
+                return FormatResponse.success("success", "Log in successful");
             }
         } else if (isAdmin) {
-            System.out.println("Your account is an ADMIN");
             HashMap<String, String> admin = new AdminController().findWhere("username", form_data.get("username")).get(0);
 
             Boolean isLoggedIn = new AdminController()._attempt(Integer.parseInt(admin.get("id")), form_data.get("password"));
             if (!isLoggedIn) {
-                return false;
+                return FormatResponse.error("error", "Your password is wrong");
             } else {
                 this.username = admin.get("username");
                 this.authenticated_user_id = Integer.parseInt(admin.get("id"));
                 this.role = "admin";
-                return true;
+
+                return FormatResponse.success("success", "Log in successful");
             }
         }
 
-        return false;
+        return FormatResponse.error("error", "Something unexpected happen");
     }
 
     public HashMap<String, String> authUser() {
