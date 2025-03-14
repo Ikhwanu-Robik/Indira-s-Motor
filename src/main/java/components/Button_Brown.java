@@ -6,6 +6,7 @@ import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import java.awt.Cursor;
 
 public class Button_Brown extends JButton {
 
@@ -17,6 +18,8 @@ public class Button_Brown extends JButton {
         this.setHorizontalAlignment(SwingConstants.CENTER);
         this.setAlignmentX(JTextField.CENTER_ALIGNMENT);
         this.setText(btn);
+
+        this.setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 
 }

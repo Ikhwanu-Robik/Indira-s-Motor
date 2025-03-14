@@ -8,27 +8,33 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class Cashier_Card extends JPanel {
-    private JLabel cashier_name;
+    // Constants
+    private static final Color BACKGROUND_COLOR = new Color(0xD9D9D9);
+    private static final Font NAME_FONT = new Font("Arial", Font.BOLD, 24);
+    private static final Dimension CARD_SIZE = new Dimension(900, 60);
     
-    // Constructor dengan parameter untuk nama kasir
+    private final JLabel cashierNameLabel;
+    
     public Cashier_Card(String name) {
-        // Setup panel
-        this.setPreferredSize(new Dimension(900, 60));
-        this.setBackground(new Color(0xD9D9D9));
-        this.setLayout(new FlowLayout(FlowLayout.LEFT));
-        
-        // Buat komponen label nama kasir
-        cashier_name = new JLabel(name);
-        cashier_name.setForeground(Color.BLACK);
-        cashier_name.setFont(new Font("Arial", Font.BOLD, 24));
-        
-        // Tambahkan ke panel
-        // this.add(Box.createHorizontalStrut(50));
-        this.add(cashier_name);
+        initializePanel();
+        cashierNameLabel = createNameLabel(name);
+        add(cashierNameLabel);
     }
     
-    // Method untuk mendapatkan nama kasir
+    private void initializePanel() {
+        setPreferredSize(CARD_SIZE);
+        setBackground(BACKGROUND_COLOR);
+        setLayout(new FlowLayout(FlowLayout.LEFT));
+    }
+    
+    private JLabel createNameLabel(String name) {
+        JLabel label = new JLabel(name);
+        label.setForeground(Color.BLACK);
+        label.setFont(NAME_FONT);
+        return label;
+    }
+    
     public String getCashierName() {
-        return this.cashier_name.getText();
+        return cashierNameLabel.getText();
     }
 }
