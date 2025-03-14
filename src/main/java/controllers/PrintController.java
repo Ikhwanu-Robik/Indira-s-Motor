@@ -40,6 +40,7 @@ public class PrintController {
             //create HTML
             File htmlDir = new File(".", "html_templates");
             File html = new File(htmlDir, "receipt.html");
+            html.delete();
             html.createNewFile();
 
             //erasing leftover data from HTML, idk I cannot recreate the problem
@@ -131,6 +132,7 @@ public class PrintController {
             File htmlDir = new File(".", "html_templates");
             
             File html = new File(htmlDir, "report.html");
+            html.delete();
             html.createNewFile();
 
             //erasing leftover data from HTML, idk I cannot recreate the problem
