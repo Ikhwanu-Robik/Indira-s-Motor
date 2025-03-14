@@ -159,7 +159,7 @@ public class Indira_s_motor {
                 File currentDir = new File(".").getCanonicalFile();
 
                 // Create a File object for the "images" directory within the current directory
-                File imagesDir = new File(currentDir, "src//main//java//assets");
+                File imagesDir = new File(currentDir, "src//main//resources//assets");
                 System.out.println(imagesDir.getCanonicalPath());
 
                 // Define the target file within the images directory
