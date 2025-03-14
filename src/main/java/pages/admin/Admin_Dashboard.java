@@ -2,51 +2,38 @@ package pages.admin;
 
 import components.Content_Panel;
 import components.Nav_Panel;
+import components.ui.LogoutButton;
+import components.ui.MainFrame;
+import components.ui.NavLabel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 public class Admin_Dashboard {
 
     // Constants
+    private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 40);
     private static final Color BROWN_COLOR = new Color(0xA0522D);
-    private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 56);
-    private static final Font NAV_FONT = new Font("Arial", Font.PLAIN, 24);
-    private static final Font BUTTON_FONT = new Font("Arial", Font.BOLD, 20);
-    private static final Dimension LOGOUT_BUTTON_SIZE = new Dimension(180, 50);
 
     public static void main(String[] args) {
-        JFrame frame = createMainFrame();
+        MainFrame frame = new MainFrame("Admin Dashboard");
 
         Nav_Panel navPanel = createNavPanel();
         Content_Panel contentPanel = createContentPanel();
 
         frame.add(navPanel, BorderLayout.WEST);
-        frame.add(contentPanel, BorderLayout.EAST);
+        frame.add(contentPanel, BorderLayout.CENTER);
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-    }
-
-    private static JFrame createMainFrame() {
-        JFrame frame = new JFrame("Admin Dashboard");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1440, 1024);
-        frame.setLayout(new BorderLayout());
-        return frame;
     }
 
     private static Nav_Panel createNavPanel() {
@@ -60,12 +47,16 @@ public class Admin_Dashboard {
         logo.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 
         // Nav items
-        JLabel navEmployee = createNavLabel("Pegawai");
-        JLabel navProduct = createNavLabel("Produk");
-        JLabel navReport = createNavLabel("Laporan");
+        // Nav links
+        NavLabel navEmployee = new NavLabel("Pegawai", true);
+        NavLabel navProduct = new NavLabel("Produk", false);
+        NavLabel navReport = new NavLabel("Laporan", false);
         navEmployee.setCursor(new Cursor(Cursor.HAND_CURSOR));
         navProduct.setCursor(new Cursor(Cursor.HAND_CURSOR));
         navReport.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        // Logout button
+        LogoutButton logoutBtn = new LogoutButton("Keluar");
 
         Admin_Cashier adminCashier = new Admin_Cashier();
 
@@ -75,8 +66,6 @@ public class Admin_Dashboard {
             }
         });
 
-        // Logout button
-        JButton logoutBtn = createLogoutButton();
 
         // Add components to nav panel
         navPanel.add(Box.createVerticalStrut(100));
@@ -91,29 +80,6 @@ public class Admin_Dashboard {
         navPanel.add(logoutBtn);
 
         return navPanel;
-    }
-
-    private static JLabel createNavLabel(String text) {
-        JLabel label = new JLabel(text);
-        label.setForeground(Color.WHITE);
-        label.setFont(NAV_FONT);
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-        label.setAlignmentX(JTextField.CENTER_ALIGNMENT);
-        return label;
-    }
-
-    private static JButton createLogoutButton() {
-        JButton logoutBtn = new JButton("Keluar");
-        logoutBtn.setForeground(BROWN_COLOR);
-        logoutBtn.setBackground(Color.WHITE);
-        logoutBtn.setMaximumSize(LOGOUT_BUTTON_SIZE);
-        logoutBtn.setPreferredSize(LOGOUT_BUTTON_SIZE);
-        logoutBtn.setFont(BUTTON_FONT);
-        logoutBtn.setFocusPainted(false);
-        logoutBtn.setBorder(BorderFactory.createEmptyBorder(10, 25, 10, 25));
-        logoutBtn.setAlignmentX(JButton.CENTER_ALIGNMENT);
-        logoutBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        return logoutBtn;
     }
 
     private static Content_Panel createContentPanel() {
