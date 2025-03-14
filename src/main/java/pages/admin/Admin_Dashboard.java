@@ -41,7 +41,7 @@ public class Admin_Dashboard {
         navPanel.setLayout(new BoxLayout(navPanel, BoxLayout.Y_AXIS));
 
         // Logo
-        ImageIcon icon = new ImageIcon(new Admin_Dashboard().getClass().getResource("/assets/icons-removebg.png"));
+        ImageIcon icon = new ImageIcon(Admin_Dashboard.class.getClassLoader().getResource("assets/icons-removebg.png"));
         JLabel logo = new JLabel();
         logo.setIcon(icon);
         logo.setAlignmentX(JLabel.CENTER_ALIGNMENT);
