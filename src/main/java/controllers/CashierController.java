@@ -27,35 +27,37 @@ public class CashierController extends AbstractController {
         ResultSet rs;
         String stringColumns = "";
         ArrayList<HashMap<String, String>> cashiers = new ArrayList<>();
-        for (String column: columns) {
+        for (String column : columns) {
             stringColumns += (column + ",");
         }
         stringColumns = stringColumns.substring(0, stringColumns.length() - 1);
-        
+
         //edge case where the frontend puts in *
-        stringColumns = stringColumns.equals("*") ? "id, username" : stringColumns;
-        columns.clear();
-        columns.add("id");
-        columns.add("username");
-         
+        if (stringColumns.equals("*")) {
+            stringColumns = "id, username";
+            columns.clear();
+            columns.add("id");
+            columns.add("username");
+        }
+
         try {
             Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
             rs = stmt.executeQuery("SELECT " + stringColumns + " FROM " + this.table_name);
-            
-            if(!rs.isBeforeFirst()) {
+
+            if (!rs.isBeforeFirst()) {
                 db.close();
                 return null;
             }
-            
+
             rs.first();
             do {
                 HashMap<String, String> row = new HashMap<>();
-                for (String column: columns) {
+                for (String column : columns) {
                     row.put(column, rs.getString(column));
                 }
                 cashiers.add(row);
-            }while(rs.next());
-            
+            } while (rs.next());
+
             db.close();
 
             return cashiers;
@@ -122,8 +124,8 @@ public class CashierController extends AbstractController {
             ArrayList<HashMap<String, String>> cashiers = new ArrayList<>();
             Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             rs = stmt.executeQuery(whereStatement);
-            
-            if(!rs.isBeforeFirst()) {
+
+            if (!rs.isBeforeFirst()) {
                 db.close();
                 return null;
             }
@@ -135,7 +137,7 @@ public class CashierController extends AbstractController {
                 row.put("username", rs.getString("username"));
                 row.put("password", rs.getString("password"));
                 cashiers.add(row);
-            } while(rs.next());
+            } while (rs.next());
 
             db.close();
 
@@ -146,7 +148,7 @@ public class CashierController extends AbstractController {
 
         return null;
     }
-    
+
     public Boolean _attempt(int id, String password) {
         Database db = new Database();
         ResultSet rs;

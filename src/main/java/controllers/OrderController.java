@@ -18,6 +18,7 @@ import java.util.logging.Logger;
  * @author MyBook Hype AMD
  */
 public class OrderController extends AbstractController {
+
     public String table_name = "orders";
 
     @Override
@@ -26,38 +27,40 @@ public class OrderController extends AbstractController {
         ResultSet rs;
         String stringColumns = "";
         ArrayList<HashMap<String, String>> categories = new ArrayList<>();
-        for (String column: columns) {
+        for (String column : columns) {
             stringColumns += (column + ",");
         }
         stringColumns = stringColumns.substring(0, stringColumns.length() - 1);
-        
+
         //edge case where the frontend puts in *
-        stringColumns = stringColumns.equals("*") ? "id, cart_id, fee, total, date" : stringColumns;
-        columns.clear();
-        columns.add("id");
-        columns.add("cart_id");
-        columns.add("fee");
-        columns.add("total");
-        columns.add("date");
-         
+        if (stringColumns.equals("*")) {
+            stringColumns = "id, cart_id, fee, total, date";
+            columns.clear();
+            columns.add("id");
+            columns.add("cart_id");
+            columns.add("fee");
+            columns.add("total");
+            columns.add("date");
+        }
+
         try {
             Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
             rs = stmt.executeQuery("SELECT " + stringColumns + " FROM " + this.table_name);
-            
-            if(!rs.isBeforeFirst()) {
+
+            if (!rs.isBeforeFirst()) {
                 db.close();
                 return null;
             }
-            
+
             rs.first();
             do {
                 HashMap<String, String> row = new HashMap<>();
-                for (String column: columns) {
+                for (String column : columns) {
                     row.put(column, rs.getString(column));
                 }
                 categories.add(row);
-            }while(rs.next());
-            
+            } while (rs.next());
+
             db.close();
 
             return categories;
@@ -75,7 +78,7 @@ public class OrderController extends AbstractController {
         insertStatement += "\"" + values.get("total") + "\"" + ", ";
         insertStatement += "\"" + values.get("date") + "\"";
         insertStatement += ")";
-        
+
         try {
             Database db = new Database();
             Statement stmt = db.connect().createStatement();
@@ -95,7 +98,7 @@ public class OrderController extends AbstractController {
         updateStatement += "SET total = " + "\"" + values.get("total") + "\"" + ", ";
         updateStatement += "SET date = " + "\"" + values.get("date") + "\"";
         updateStatement += " WHERE id = " + id;
-        
+
         try {
             Database db = new Database();
             Statement stmt = db.connect().createStatement();
@@ -132,8 +135,8 @@ public class OrderController extends AbstractController {
             ArrayList<HashMap<String, String>> categories = new ArrayList<>();
             Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             rs = stmt.executeQuery(whereStatement);
-            
-            if(!rs.isBeforeFirst()) {
+
+            if (!rs.isBeforeFirst()) {
                 db.close();
                 return null;
             }
@@ -144,7 +147,7 @@ public class OrderController extends AbstractController {
                 row.put("id", rs.getString("id"));
                 row.put("name", rs.getString("name"));
                 categories.add(row);
-            } while(rs.next());
+            } while (rs.next());
 
             db.close();
 

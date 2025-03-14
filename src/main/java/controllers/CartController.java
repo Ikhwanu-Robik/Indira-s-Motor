@@ -33,11 +33,13 @@ public class CartController extends AbstractController {
         stringColumns = stringColumns.substring(0, stringColumns.length() - 1);
 
         //edge case where the frontend puts in *
-        stringColumns = stringColumns.equals("*") ? "id, cashier_id, has_order" : stringColumns;
-        columns.clear();
-        columns.add("id");
-        columns.add("cashier_id");
-        columns.add("has_order");
+        if (stringColumns.equals("*")) {
+            stringColumns = "id, cashier_id, has_order";
+            columns.clear();
+            columns.add("id");
+            columns.add("cashier_id");
+            columns.add("has_order");
+        }
 
         try {
             Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);

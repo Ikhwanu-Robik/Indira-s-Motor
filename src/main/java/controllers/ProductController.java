@@ -13,12 +13,12 @@ import java.util.logging.Logger;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-
 /**
  *
  * @author MyBook Hype AMD
  */
 public class ProductController extends AbstractController {
+
     public String table_name = "products";
 
     @Override
@@ -27,39 +27,40 @@ public class ProductController extends AbstractController {
         ResultSet rs;
         String stringColumns = "";
         ArrayList<HashMap<String, String>> products = new ArrayList<>();
-        for (String column: columns) {
+        for (String column : columns) {
             stringColumns += (column + ",");
         }
         stringColumns = stringColumns.substring(0, stringColumns.length() - 1);
-        
+
         //edge case where the frontend puts in *
-        stringColumns = stringColumns.equals("*") ? "id, name, image_url, price, stock, brand_id" : stringColumns;
-        columns.clear();
-        columns.add("id");
-        columns.add("name");
-        columns.add("image_url");
-        columns.add("price");
-        columns.add("stock");
-        columns.add("brand_id");
-         
+        if (stringColumns.equals("*")) {
+            stringColumns = "id, name, image_url, price, stock, brand_id";
+            columns.add("id");
+            columns.add("name");
+            columns.add("image_url");
+            columns.add("price");
+            columns.add("stock");
+            columns.add("brand_id");
+        }
+
         try {
             Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
             rs = stmt.executeQuery("SELECT " + stringColumns + " FROM " + this.table_name);
-            
-            if(!rs.isBeforeFirst()) {
+
+            if (!rs.isBeforeFirst()) {
                 db.close();
                 return null;
             }
-            
+
             rs.first();
             do {
                 HashMap<String, String> row = new HashMap<>();
-                for (String column: columns) {
+                for (String column : columns) {
                     row.put(column, rs.getString(column));
                 }
                 products.add(row);
-            }while(rs.next());
-            
+            } while (rs.next());
+
             db.close();
 
             return products;
@@ -79,7 +80,7 @@ public class ProductController extends AbstractController {
         insertStatement += "\"" + values.get("stock") + "\"" + ", ";
         insertStatement += "\"" + values.get("brand_id") + "\"";
         insertStatement += ")";
-        
+
         try {
             Database db = new Database();
             Statement stmt = db.connect().createStatement();
@@ -136,8 +137,8 @@ public class ProductController extends AbstractController {
             ArrayList<HashMap<String, String>> products = new ArrayList<>();
             Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             rs = stmt.executeQuery(whereStatement);
-            
-            if(!rs.isBeforeFirst()) {
+
+            if (!rs.isBeforeFirst()) {
                 db.close();
                 return null;
             }
@@ -152,7 +153,7 @@ public class ProductController extends AbstractController {
                 row.put("stock", rs.getString("stock"));
                 row.put("brand_id", rs.getString("brand_id"));
                 products.add(row);
-            } while(rs.next());
+            } while (rs.next());
 
             db.close();
 
@@ -163,7 +164,7 @@ public class ProductController extends AbstractController {
 
         return null;
     }
-    
+
     public ArrayList<HashMap<String, String>> getBrand(int product_id) {
         String id = this.findWhere("id", Integer.toString(product_id)).getFirst().get("brand_id");
         return new BrandController().findWhere("id", id);

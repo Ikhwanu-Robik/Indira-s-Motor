@@ -33,10 +33,12 @@ public class AdminController extends AbstractController {
         stringColumns = stringColumns.substring(0, stringColumns.length() - 1);
         
         //edge case where the frontend puts in *
-        stringColumns = stringColumns.equals("*") ? "id, username" : stringColumns;
-        columns.clear();
-        columns.add("id");
-        columns.add("username");
+        if (stringColumns.equals("*")) {
+            stringColumns = "id, username";
+            columns.clear();
+            columns.add("id");
+            columns.add("username");
+        }
 
         try {
             Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
