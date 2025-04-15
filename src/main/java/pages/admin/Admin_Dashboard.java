@@ -22,6 +22,7 @@ public class Admin_Dashboard {
     // Constants
     private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 40);
     private static final Color BROWN_COLOR = new Color(0xA0522D);
+    private static MainFrame dashboardFrame = null;
 
     public static void main(String[] args) {
         MainFrame frame = new MainFrame("Admin Dashboard");
@@ -34,6 +35,8 @@ public class Admin_Dashboard {
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        
+        dashboardFrame = frame;
     }
 
     private static Nav_Panel createNavPanel() {
@@ -62,6 +65,7 @@ public class Admin_Dashboard {
 
         navEmployee.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
+                dashboardFrame.dispose();
                 adminCashier.main(new String[0]);
             }
         });

@@ -35,6 +35,7 @@ public class Admin_Add_Cashier {
     private static final Font LABEL_FONT = new Font("Arial", Font.BOLD, 24);
     private static JTextField usernameInput = null;
     private static JPasswordField passwordInput = null;
+    private static MainFrame addCashierFrame = null;
 
     public static void main(String[] args) {
         MainFrame frame = new MainFrame("Add Cashier");
@@ -47,6 +48,8 @@ public class Admin_Add_Cashier {
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        
+        addCashierFrame = frame;
     }
 
     private static Nav_Panel createNavPanel() {
@@ -199,12 +202,16 @@ public class Admin_Add_Cashier {
                 cashier_data.put("password", password);
                 
                 new CashierController().create(cashier_data);
+                
+                addCashierFrame.dispose();
+                adminCashier.main(new String[0]);
             }
         });
         cancelButton.addMouseListener(new java.awt.event.MouseAdapter() {
             @SuppressWarnings("static-access")
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
+                addCashierFrame.dispose();
                 adminCashier.main(new String[0]);
             }
         });

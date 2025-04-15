@@ -30,6 +30,8 @@ public class Admin_Cashier {
     // Constants
     private static final Color BACKGROUND_COLOR = new Color(0xE4E4E4);
 
+    private static MainFrame adminCashierFrame = null;
+    
     private static ArrayList<String> cashierNames = new ArrayList<>();
 
     public static void getCashiers() {
@@ -61,6 +63,8 @@ public class Admin_Cashier {
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        
+        adminCashierFrame = frame;
     }
 
     private static Nav_Panel createNavPanel() {
@@ -126,6 +130,7 @@ public class Admin_Cashier {
         addButton.addMouseListener(new java.awt.event.MouseAdapter() {
             @SuppressWarnings("static-access")
             public void mouseClicked(java.awt.event.MouseEvent evt) {
+                adminCashierFrame.dispose();
                 adminAddCashier.main(new String[0]);
             }
         });

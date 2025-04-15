@@ -116,10 +116,12 @@ public class Login {
                     String[] args = {"good luck"};
                     if (loginSession.role.equals("cashier")) {
                         //display cashier dashboard
+                        frame.dispose();
                         pages.cashier.Cashier_Dashboard.main(args);
                     }
                     else if (loginSession.role.equals("admin")) {
                         //display admin dashboard
+                        frame.dispose();
                         pages.admin.Admin_Dashboard.main(args);
                     }
                 }
