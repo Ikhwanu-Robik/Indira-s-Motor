@@ -16,7 +16,6 @@ import components.ui.LogoutButton;
 import components.ui.MainFrame;
 import components.ui.NavLabel;
 import java.awt.Font;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -25,6 +24,7 @@ import javax.swing.table.DefaultTableModel;
 public class Admin_Report {
 
     // Constants
+    private static MainFrame adminReportFrame = null;
 //    private static final Color BACKGROUND_COLOR = new Color(0xE4E4E4);
     public void main(String[] args) {
         MainFrame frame = new MainFrame("Admin Products");
@@ -37,6 +37,8 @@ public class Admin_Report {
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        
+        adminReportFrame = frame;
     }
 
     private static Nav_Panel createNavPanel() {
@@ -64,6 +66,7 @@ public class Admin_Report {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 adminCashier.main(new String[0]);
+                adminReportFrame.dispose();
             }
         });
 
@@ -71,6 +74,7 @@ public class Admin_Report {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 adminProducts.main(new String[0]);
+                adminReportFrame.dispose();
             }
         });
 
@@ -78,15 +82,15 @@ public class Admin_Report {
         LogoutButton logoutBtn = new LogoutButton("Keluar");
 
         // Add components to nav panel
-        navPanel.add(Box.createVerticalStrut(100));
+        navPanel.add(Box.createVerticalStrut(70));
         navPanel.add(logo);
-        navPanel.add(Box.createVerticalStrut(100));
+        navPanel.add(Box.createVerticalStrut(80));
         navPanel.add(navEmployee);
-        navPanel.add(Box.createVerticalStrut(60));
+        navPanel.add(Box.createVerticalStrut(40));
         navPanel.add(navProduct);
-        navPanel.add(Box.createVerticalStrut(60));
+        navPanel.add(Box.createVerticalStrut(40));
         navPanel.add(navReport);
-        navPanel.add(Box.createVerticalStrut(250));
+        navPanel.add(Box.createVerticalStrut(150));
         navPanel.add(logoutBtn);
 
         return navPanel;

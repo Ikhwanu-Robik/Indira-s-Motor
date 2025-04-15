@@ -77,6 +77,7 @@ public class Admin_Dashboard {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 adminProducts.main(new String[0]);
+                dashboardFrame.dispose();
             }
         });
 
@@ -84,19 +85,20 @@ public class Admin_Dashboard {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 adminReport.main(new String[0]);
+                dashboardFrame.dispose();
             }
         });
 
         // Add components to nav panel
-        navPanel.add(Box.createVerticalStrut(100));
+        navPanel.add(Box.createVerticalStrut(70));
         navPanel.add(logo);
-        navPanel.add(Box.createVerticalStrut(100));
+        navPanel.add(Box.createVerticalStrut(80));
         navPanel.add(navEmployee);
-        navPanel.add(Box.createVerticalStrut(60));
+        navPanel.add(Box.createVerticalStrut(40));
         navPanel.add(navProduct);
-        navPanel.add(Box.createVerticalStrut(60));
+        navPanel.add(Box.createVerticalStrut(40));
         navPanel.add(navReport);
-        navPanel.add(Box.createVerticalStrut(250));
+        navPanel.add(Box.createVerticalStrut(150));
         navPanel.add(logoutBtn);
 
         return navPanel;

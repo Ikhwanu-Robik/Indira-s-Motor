@@ -74,15 +74,15 @@ public class Admin_Add_Cashier {
         LogoutButton logoutBtn = new LogoutButton("Keluar");
 
         // Add the components to the nav panel
-        navPanel.add(Box.createVerticalStrut(100));
+        navPanel.add(Box.createVerticalStrut(70));
         navPanel.add(logo);
-        navPanel.add(Box.createVerticalStrut(100));
+        navPanel.add(Box.createVerticalStrut(80));
         navPanel.add(navEmployee);
-        navPanel.add(Box.createVerticalStrut(60));
+        navPanel.add(Box.createVerticalStrut(40));
         navPanel.add(navProduct);
-        navPanel.add(Box.createVerticalStrut(60));
+        navPanel.add(Box.createVerticalStrut(40));
         navPanel.add(navReport);
-        navPanel.add(Box.createVerticalStrut(250));
+        navPanel.add(Box.createVerticalStrut(150));
         navPanel.add(logoutBtn);
 
         return navPanel;
