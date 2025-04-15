@@ -21,17 +21,31 @@ import components.Nav_Panel;
 import components.ui.LogoutButton;
 import components.ui.MainFrame;
 import components.ui.NavLabel;
+import controllers.CashierController;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Admin_Cashier {
 
     // Constants
     private static final Color BACKGROUND_COLOR = new Color(0xE4E4E4);
 
-    // Data Dummy
-    private static final String[] CASHIER_NAMES = {
-            "Ikhwanu", "Rasyid", "Dio", "Bagus", "Belva",
-            "Suyadi", "Geno", "Supri", "Slamet", "Sugeng"
-    };
+    private static ArrayList<String> cashierNames = new ArrayList<>();
+
+    public static void getCashiers() {
+        ArrayList<String> columns = new ArrayList<>();
+        columns.add("*");
+
+        ArrayList<HashMap<String, String>> cashiers = new CashierController().read(columns);
+
+        if (cashiers != null) {
+            for (HashMap<String, String> cashier : cashiers) {
+                cashierNames.add(cashier.get("username"));
+            }
+        } else {
+            cashierNames.add("no cashier found");
+        }
+    }
 
     public void main(String[] args) {
         MainFrame frame = new MainFrame("Admin Cashier");
@@ -136,8 +150,10 @@ public class Admin_Cashier {
         gbc.insets = new Insets(15, 5, 15, 5);
         gbc.weightx = 1.0;
 
+        // Calling the API
+        getCashiers();
         // Add cashier cards to the panel
-        for (String name : CASHIER_NAMES) {
+        for (String name : cashierNames) {
             Cashier_Card cashierCard = new Cashier_Card(name);
             cashierListPanel.add(cashierCard, gbc);
         }
