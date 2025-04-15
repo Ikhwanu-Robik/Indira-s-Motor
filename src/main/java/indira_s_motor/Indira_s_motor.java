@@ -30,6 +30,11 @@ public class Indira_s_motor {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+// *
+// *      
+// *      
+// *      
+// *
 //logging in
 /*
         HashMap<String, String> form_data = new HashMap<>();
@@ -43,85 +48,46 @@ public class Indira_s_motor {
         } else {
             System.out.println(authResponse.get("message"));
         }
-*/
+        */
 
 // *
 // *
 // *
 // *
-//print a data of order
+//getting data from regular controller
 /*
-        ArrayList<HashMap<String, String>> data = new ArrayList<>();
-        HashMap<String, String> type = new HashMap<>();
-        type.put("type", "receipt");
-        data.add(type);
-        //get data / latest order
-        ArrayList<String> columns = new ArrayList<>();
-        columns.add("*");
-        HashMap<String, String> order = new OrderController().read(columns).getLast();
-        data.add(order);
-        
-        try {
-            new PrintController().print(data);
-        } catch (IOException er) {
-            Logger.getLogger(Indira_s_motor.class.getName()).log(Level.SEVERE, null, er);
-        }
+          ArrayList<String> columns = new ArrayList<>();
+          columns.add("*");
+          ArrayList<HashMap<String, String>> categories = new CategoryController().read(columns);
+          
+          if(categories != null) {
+              System.out.println("LIST OF CATEGORIES");
+              for (HashMap<String, String> cashier: categories) {
+                  System.out.println("ID : " + cashier.get("id") + " | " + "NAME : " + cashier.get("name"));
+              }
+          }
+          else {
+              System.out.println("No category found");
+          }
          */
+
 // *
 // *
 // *
 // *
-//print a data of report
-/*
-        ArrayList<HashMap<String, String>> data = new ArrayList<>();
-        HashMap<String, String> type = new HashMap<>();
-        type.put("type", "report");
-        data.add(type);
-        
-        //get data / latest order
-        ArrayList<HashMap<String, String>> report = new ReportController().getReports();
-        for (HashMap<String, String> report_row: report) {
-            data.add(report_row);
-        }
-        
-        try {
-            new PrintController().print(data);
-        } catch (IOException er) {
-            Logger.getLogger(Indira_s_motor.class.getName()).log(Level.SEVERE, null, er);
-        }
+//updating the data
+/*      
+          ArrayList<String> columns = new ArrayList<>();
+          columns.add("*");
+          ArrayList<HashMap<String, String>> categories = new CategoryController().read(columns);
+
+          int id = 1;
+          HashMap<String, String> newData = new HashMap<>();
+          //change the name to oli
+          newData.put("name", "oli");
+          new CategoryController().update(id, newData);
          */
-// *
-// *
-// *
-// *
-//getting reports
-/*        ArrayList<HashMap<String, String>> reports = new ReportController().getReports();
 
-        System.out.println("Order Records");
-        for (HashMap<String, String> report : reports) {
-            int cart_id = 0;
-
-            for (String key : report.keySet()) {
-                System.out.print(key + " : " + report.get(key) + " | ");
-
-                if (key.equals("cart_id")) {
-                    cart_id = Integer.parseInt(report.get(key));
-                }
-            }
-            System.out.println("\n");
-
-            System.out.println("Details");
-            ArrayList<HashMap<String, String>> cart_products = new CartController().getCartProducts(cart_id);
-            for (HashMap<String, String> product : cart_products) {
-                for (String prod_key : product.keySet()) {
-                    System.out.print(prod_key + " : " + product.get(prod_key) + " | ");
-                }
-                System.out.println("");
-            }
-            System.out.println("\n");
-        }
-         */
-//        listProducts();
 // *
 // *
 // *
@@ -187,11 +153,28 @@ public class Indira_s_motor {
         System.out.println("\n\n");
         listProducts();
          */
+
 // *
 // *
 // *
 // *
-//Example of making transaction
+//get products with filter
+/*
+        TransactionController transactionSession = new TransactionController(loginSession.authenticated_user_id);
+
+        ArrayList<HashMap<String, String>> products = transactionSession.getProducts(1, 1);
+
+        System.out.println("LIST OF *OIL*id1* PRODUCTS BY *AHM*id1*");
+        for (HashMap<String, String> product : products) {
+            System.out.println(product.get("id") + " " + product.get("name") + " " + product.get("price") + " " + product.get("stock"));
+        }
+         */
+
+// *
+// *
+// *
+// *
+//making transaction
 /*
         listProducts();
         
@@ -221,53 +204,81 @@ public class Indira_s_motor {
 // *
 // *
 // *
-//get products with filter
+//print a data of order
 /*
-        TransactionController transactionSession = new TransactionController(loginSession.authenticated_user_id);
-
-        ArrayList<HashMap<String, String>> products = transactionSession.getProducts(1, 1);
-
-        System.out.println("LIST OF *OIL*id1* PRODUCTS BY *AHM*id1*");
-        for (HashMap<String, String> product : products) {
-            System.out.println(product.get("id") + " " + product.get("name") + " " + product.get("price") + " " + product.get("stock"));
+        ArrayList<HashMap<String, String>> data = new ArrayList<>();
+        HashMap<String, String> type = new HashMap<>();
+        type.put("type", "receipt");
+        data.add(type);
+        //get data / latest order
+        ArrayList<String> columns = new ArrayList<>();
+        columns.add("*");
+        HashMap<String, String> order = new OrderController().read(columns).getLast();
+        data.add(order);
+        
+        try {
+            new PrintController().print(data);
+        } catch (IOException er) {
+            Logger.getLogger(Indira_s_motor.class.getName()).log(Level.SEVERE, null, er);
         }
          */
-// *
-// *
-// *
-// *
-//getting data from regular controller
-/*
-          ArrayList<String> columns = new ArrayList<>();
-          columns.add("*");
-          ArrayList<HashMap<String, String>> categories = new CategoryController().read(columns);
-          
-          if(categories != null) {
-              System.out.println("LIST OF CATEGORIES");
-              for (HashMap<String, String> cashier: categories) {
-                  System.out.println("ID : " + cashier.get("id") + " | " + "NAME : " + cashier.get("name"));
-              }
-          }
-          else {
-              System.out.println("No category found");
-          }
-         */
-// *
-// *
-// *
-// *
-//updating the data
-/*      
-          ArrayList<String> columns = new ArrayList<>();
-          columns.add("*");
-          ArrayList<HashMap<String, String>> categories = new CategoryController().read(columns);
 
-          int id = 1;
-          HashMap<String, String> newData = new HashMap<>();
-          //change the name to oli
-          newData.put("name", "oli");
-          new CategoryController().update(id, newData);
+// *
+// *
+// *
+// *
+//getting reports
+/*        ArrayList<HashMap<String, String>> reports = new ReportController().getReports();
+
+        System.out.println("Order Records");
+        for (HashMap<String, String> report : reports) {
+            int cart_id = 0;
+
+            for (String key : report.keySet()) {
+                System.out.print(key + " : " + report.get(key) + " | ");
+
+                if (key.equals("cart_id")) {
+                    cart_id = Integer.parseInt(report.get(key));
+                }
+            }
+            System.out.println("\n");
+
+            System.out.println("Details");
+            ArrayList<HashMap<String, String>> cart_products = new CartController().getCartProducts(cart_id);
+            for (HashMap<String, String> product : cart_products) {
+                for (String prod_key : product.keySet()) {
+                    System.out.print(prod_key + " : " + product.get(prod_key) + " | ");
+                }
+                System.out.println("");
+            }
+            System.out.println("\n");
+        }
          */
+
+// *
+// *
+// *
+// *
+//print a data of report
+/*
+        ArrayList<HashMap<String, String>> data = new ArrayList<>();
+        HashMap<String, String> type = new HashMap<>();
+        type.put("type", "report");
+        data.add(type);
+        
+        //get data / latest order
+        ArrayList<HashMap<String, String>> report = new ReportController().getReports();
+        for (HashMap<String, String> report_row: report) {
+            data.add(report_row);
+        }
+        
+        try {
+            new PrintController().print(data);
+        } catch (IOException er) {
+            Logger.getLogger(Indira_s_motor.class.getName()).log(Level.SEVERE, null, er);
+        }
+         */
+
 // *
 // *
 // *
@@ -277,6 +288,7 @@ public class Indira_s_motor {
           ArrayList<HashMap<String, String>> cashier = new CategoryController().findWhere("name", "oli");
           System.out.println("ID : " + cashier.get(0).get("id") + " | " + "NAME : " + cashier.get(0).get("name"));
          */
+
 // *
 // *
 // *
@@ -285,7 +297,8 @@ public class Indira_s_motor {
 /*
           int id = 1;
           new CategoryController().delete(id);
-//*/
+          */
+
 // *
 // *
 // *
@@ -318,6 +331,7 @@ public class Indira_s_motor {
         }
          */
 //        listProducts();
+
 // *
 // *
 // *
@@ -382,6 +396,7 @@ public class Indira_s_motor {
         System.out.println("\n\n");
         listProducts();
          */
+
 // *
 // *
 // *
@@ -409,6 +424,7 @@ public class Indira_s_motor {
 
           transactionSession.makeOrder(transactionSession.cart_id, 5000);
          */
+
 // *
 // *
 // *
@@ -424,6 +440,7 @@ public class Indira_s_motor {
             System.out.println(product.get("id") + " " + product.get("name") + " " + product.get("price") + " " + product.get("stock"));
         }
          */
+
 // *
 // *
 // *
@@ -444,6 +461,7 @@ public class Indira_s_motor {
               System.out.println("No category found");
           }
          */
+
 // *
 // *
 // *
@@ -459,24 +477,6 @@ public class Indira_s_motor {
           //change the name to oli
           newData.put("name", "oli");
           new CategoryController().update(id, newData);
-         */
-// *
-// *
-// *
-// *
-//find a specific data
-/*
-          ArrayList<HashMap<String, String>> cashier = new CategoryController().findWhere("name", "oli");
-          System.out.println("ID : " + cashier.get(0).get("id") + " | " + "NAME : " + cashier.get(0).get("name"));
-         */
-// *
-// *
-// *
-// *
-//delete a data
-/*
-          int id = 1;
-          new CategoryController().delete(id);
          */
     }
 }
