@@ -50,7 +50,7 @@ public class Admin_Add_Cashier {
         navPanel.setLayout(new BoxLayout(navPanel, BoxLayout.Y_AXIS));
 
         // Logo
-        ImageIcon icon = new ImageIcon(new Admin_Add_Cashier().getClass().getResource("/assets/icons-removebg.png"));
+        ImageIcon icon = new ImageIcon(new Admin_Add_Cashier().getClass().getResource("/assets/indira_logo.png"));
         JLabel logo = new JLabel();
         logo.setIcon(icon);
         logo.setAlignmentX(JLabel.CENTER_ALIGNMENT);

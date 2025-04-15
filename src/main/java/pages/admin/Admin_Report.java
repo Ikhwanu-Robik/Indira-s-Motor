@@ -1,30 +1,33 @@
 package pages.admin;
 
-import components.Content_Panel;
-import components.Nav_Panel;
-import components.ui.LogoutButton;
-import components.ui.MainFrame;
-import components.ui.NavLabel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.SwingConstants;
 
-public class Admin_Dashboard {
+import components.Content_Panel;
+import components.Nav_Panel;
+import components.ui.LogoutButton;
+import components.ui.MainFrame;
+import components.ui.NavLabel;
+import java.awt.Font;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
+
+public class Admin_Report {
 
     // Constants
-    private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 40);
-    private static final Color BROWN_COLOR = new Color(0xA0522D);
-
-    public static void main(String[] args) {
-        MainFrame frame = new MainFrame("Admin Dashboard");
+//    private static final Color BACKGROUND_COLOR = new Color(0xE4E4E4);
+    public void main(String[] args) {
+        MainFrame frame = new MainFrame("Admin Products");
 
         Nav_Panel navPanel = createNavPanel();
         Content_Panel contentPanel = createContentPanel();
@@ -41,26 +44,21 @@ public class Admin_Dashboard {
         navPanel.setLayout(new BoxLayout(navPanel, BoxLayout.Y_AXIS));
 
         // Logo
-        ImageIcon icon = new ImageIcon(Admin_Dashboard.class.getClassLoader().getResource("assets/indira_logo.png"));
+        ImageIcon icon = new ImageIcon(new Admin_Cashier().getClass().getResource("/assets/indira_logo.png"));
         JLabel logo = new JLabel();
         logo.setIcon(icon);
         logo.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 
-        // Nav items
         // Nav links
         NavLabel navEmployee = new NavLabel("Pegawai", false);
         NavLabel navProduct = new NavLabel("Produk", false);
-        NavLabel navReport = new NavLabel("Laporan", false);
+        NavLabel navReport = new NavLabel("Laporan", true);
         navEmployee.setCursor(new Cursor(Cursor.HAND_CURSOR));
         navProduct.setCursor(new Cursor(Cursor.HAND_CURSOR));
         navReport.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Logout button
-        LogoutButton logoutBtn = new LogoutButton("Keluar");
-
         Admin_Cashier adminCashier = new Admin_Cashier();
         Admin_Products adminProducts = new Admin_Products();
-        Admin_Report adminReport = new Admin_Report();
 
         navEmployee.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -76,12 +74,8 @@ public class Admin_Dashboard {
             }
         });
 
-        navReport.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                adminReport.main(new String[0]);
-            }
-        });
+        // Logout button
+        LogoutButton logoutBtn = new LogoutButton("Keluar");
 
         // Add components to nav panel
         navPanel.add(Box.createVerticalStrut(100));
@@ -102,18 +96,16 @@ public class Admin_Dashboard {
         Content_Panel contentPanel = new Content_Panel();
         contentPanel.setLayout(new GridBagLayout());
 
-        // Welcome label
-        JLabel titleLabel = createTitleLabel("Selamat Datang", BROWN_COLOR);
-        JLabel usernameLabel = createTitleLabel("Admin", Color.WHITE);
+        JLabel titleLabel = createTitleLabel("Laporan Penjualan", new Color(0x00000));
+        JScrollPane reportTable = createTableReport();
 
-        // Add label to content panel
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.CENTER;
 
         contentPanel.add(titleLabel, gbc);
-        contentPanel.add(usernameLabel, gbc);
+        contentPanel.add(reportTable, gbc);
 
         return contentPanel;
     }
@@ -121,8 +113,33 @@ public class Admin_Dashboard {
     private static JLabel createTitleLabel(String text, Color color) {
         JLabel label = new JLabel(text);
         label.setForeground(color);
-        label.setFont(TITLE_FONT);
+        label.setFont(new Font("Arial", Font.BOLD, 30));
         label.setHorizontalAlignment(SwingConstants.CENTER);
         return label;
     }
+
+    private static JScrollPane createTableReport() {
+        String[] columnNames = {"nama_kasir", "jumlah_produk", "total", "jasa", "detail"};
+
+        Object[][] data = {
+            {"Ikhwan", 3, 20000, 5000, true},
+            {"Belva", 3, 25000, 10000, true},
+            {"Bagus", 3, 22000, 13000, true}
+        };
+
+        DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
+        JTable table = new JTable(tableModel);
+
+        table.getColumnModel().getColumn(0).setPreferredWidth(150); // nama_kasir
+        table.getColumnModel().getColumn(1).setPreferredWidth(100); // jumlah_produk
+        table.getColumnModel().getColumn(2).setPreferredWidth(100); // total
+        table.getColumnModel().getColumn(3).setPreferredWidth(100); // jasa
+        table.getColumnModel().getColumn(4).setPreferredWidth(70);  // detail (boolean)
+
+        JScrollPane scrollPane = new JScrollPane(table);
+
+        return scrollPane;
+
+    }
+
 }

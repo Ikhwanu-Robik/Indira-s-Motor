@@ -51,7 +51,7 @@ public class Admin_Cashier {
         navPanel.setLayout(new BoxLayout(navPanel, BoxLayout.Y_AXIS));
 
         // Logo
-        ImageIcon icon = new ImageIcon(new Admin_Cashier().getClass().getResource("/assets/icons-removebg.png"));
+        ImageIcon icon = new ImageIcon(new Admin_Cashier().getClass().getResource("/assets/indira_logo.png"));
         JLabel logo = new JLabel();
         logo.setIcon(icon);
         logo.setAlignmentX(JLabel.CENTER_ALIGNMENT);
@@ -66,6 +66,23 @@ public class Admin_Cashier {
 
         // Logout button
         LogoutButton logoutBtn = new LogoutButton("Keluar");
+        
+        Admin_Products adminProducts = new Admin_Products();
+        Admin_Report adminReport = new Admin_Report();
+
+        navProduct.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                adminProducts.main(new String[0]);
+            }
+        });
+        
+        navReport.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                adminReport.main(new String[0]);
+            }
+        });
 
         // Add components to nav panel
         navPanel.add(Box.createVerticalStrut(100));
