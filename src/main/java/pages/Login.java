@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.HashMap;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -76,6 +77,56 @@ public class Login {
         login_btn.setFocusPainted(false);
         login_btn.setBorder(BorderFactory.createEmptyBorder(10, 25, 10, 25));
         login_btn.setAlignmentX(JButton.CENTER_ALIGNMENT);
+        login_btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            @SuppressWarnings("static-access")
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                String usernameValue = username.getText();
+                char[] passwordChar = password.getPassword();
+                //getPassword returns char[]                
+                //so I moved it to a String, but that defeats the purpose of using char[] which is to secure it
+                //calling to database require the use of String, unfortunately.
+                //I can check the letter one by one
+                //But as the original password is already hashed- with String.hashCode() -I HAVE to use String.
+                String passwordValue = "";
+                for (char letter: passwordChar) {
+                    passwordValue += letter;
+                }
+                
+                HashMap<String, String> form_data = new HashMap<>();
+                form_data.put("username", usernameValue);
+                form_data.put("password", passwordValue);
+                
+                controllers.LoginController loginSession = new controllers.LoginController();
+                HashMap<String, String> response = loginSession.authenticate(form_data);
+                
+                if (response.get("status").equals("error")) {
+                    //displays an error pop up
+                    JFrame errorFrame = new JFrame();
+                    errorFrame.setSize(480, 360);
+ 
+                    JLabel message = new JLabel();
+                    message.setText(response.get("message"));
+                    errorFrame.add(message);
+                    
+                    errorFrame.setVisible(true);
+                }
+                else if (response.get("status").equals("success")) {
+                    //redirect to dashboard
+                    String[] args = {"good luck"};
+                    if (loginSession.role.equals("cashier")) {
+                        //display cashier dashboard
+                        frame.dispose();
+                        pages.cashier.Cashier_Dashboard.main(args);
+                    }
+                    else if (loginSession.role.equals("admin")) {
+                        //display admin dashboard
+                        frame.dispose();
+                        pages.admin.Admin_Dashboard.main(args);
+                    }
+                }
+            }
+        });
 
         // Add components to login panel with proper spacing for larger screen
         login_pane.add(Box.createVerticalStrut(200)); // Space at top

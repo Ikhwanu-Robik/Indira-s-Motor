@@ -24,6 +24,8 @@ import components.Nav_Panel;
 import components.ui.LogoutButton;
 import components.ui.MainFrame;
 import components.ui.NavLabel;
+import controllers.CashierController;
+import java.util.HashMap;
 
 public class Admin_Add_Cashier {
 
@@ -31,6 +33,9 @@ public class Admin_Add_Cashier {
     private static final Color INPUT_COLOR = new Color(0xD9D9D9);
     private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 40);
     private static final Font LABEL_FONT = new Font("Arial", Font.BOLD, 24);
+    private static JTextField usernameInput = null;
+    private static JPasswordField passwordInput = null;
+    private static MainFrame addCashierFrame = null;
 
     public static void main(String[] args) {
         MainFrame frame = new MainFrame("Add Cashier");
@@ -43,6 +48,8 @@ public class Admin_Add_Cashier {
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        
+        addCashierFrame = frame;
     }
 
     private static Nav_Panel createNavPanel() {
@@ -138,6 +145,7 @@ public class Admin_Add_Cashier {
         JTextField inputField = new JTextField();
         inputField.setPreferredSize(new Dimension(600, 50));
         inputField.setBackground(INPUT_COLOR);
+        usernameInput = inputField;
 
         JPanel panel = new JPanel();
         panel.add(textLabel, gbc);
@@ -156,6 +164,7 @@ public class Admin_Add_Cashier {
         JPasswordField passwordField = new JPasswordField();
         passwordField.setPreferredSize(new Dimension(600, 50));
         passwordField.setBackground(INPUT_COLOR);
+        passwordInput = passwordField;
 
         JPanel panel = new JPanel();
         panel.add(textLabel, gbc);
@@ -178,9 +187,31 @@ public class Admin_Add_Cashier {
         Button_Brown addButton = new Button_Brown("Tambahkan +");
         Button_White cancelButton = new Button_White("Batal");
 
+        addButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            @SuppressWarnings("static-access")
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                HashMap<String, String> cashier_data = new HashMap<>();
+
+                String password = "";
+                for (char letter: passwordInput.getPassword()) {
+                    password += letter;
+                }
+                
+                cashier_data.put("username", usernameInput.getText());
+                cashier_data.put("password", password);
+                
+                new CashierController().create(cashier_data);
+                
+                addCashierFrame.dispose();
+                adminCashier.main(new String[0]);
+            }
+        });
         cancelButton.addMouseListener(new java.awt.event.MouseAdapter() {
             @SuppressWarnings("static-access")
+            @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
+                addCashierFrame.dispose();
                 adminCashier.main(new String[0]);
             }
         });
