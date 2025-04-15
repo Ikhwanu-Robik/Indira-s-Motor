@@ -33,6 +33,9 @@ public class Admin_Cashier {
     private static ArrayList<String> cashierNames = new ArrayList<>();
 
     public static void getCashiers() {
+//        Clear the cashiers array
+        cashierNames = new ArrayList<>();
+        
         ArrayList<String> columns = new ArrayList<>();
         columns.add("*");
 
