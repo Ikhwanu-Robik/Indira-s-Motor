@@ -15,8 +15,11 @@ import components.Nav_Panel;
 import components.ui.LogoutButton;
 import components.ui.MainFrame;
 import components.ui.NavLabel;
+import controllers.CartController;
+import controllers.ReportController;
 import java.awt.Font;
-import javax.swing.JScrollBar;
+import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -120,12 +123,16 @@ public class Admin_Report {
 
     private static JScrollPane createTableReport() {
         String[] columnNames = {"nama_kasir", "jumlah_produk", "total", "jasa", "detail"};
-
-        Object[][] data = {
-            {"Ikhwan", 3, 20000, 5000, true},
-            {"Belva", 3, 25000, 10000, true},
-            {"Bagus", 3, 22000, 13000, true}
-        };
+        
+        ArrayList<HashMap<String, String>> reports = new ReportController().getReports();
+        
+        Object[][] data = new Object[reports.size()][columnNames.length];
+        
+        int i = 0;
+        for (HashMap<String, String> report : reports) {
+            data[i] = new Object[] {report.get("username"), report.get("product_types"), report.get("total"), report.get("fee"), "Detail:btn"};
+            i++;
+        }
 
         DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
         JTable table = new JTable(tableModel);
