@@ -33,10 +33,10 @@ public class BrandController extends AbstractController {
         
         //edge case where the frontend puts in *
         if (stringColumns.equals("*")) {
-            stringColumns = "id, username, category_id";
+            stringColumns = "id, name, category_id";
             columns.clear();
             columns.add("id");
-            columns.add("username");
+            columns.add("name");
             columns.add("category_id");
         }
          
