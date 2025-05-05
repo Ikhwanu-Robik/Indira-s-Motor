@@ -24,6 +24,7 @@ import components.ui.NavLabel;
 import controllers.CashierController;
 import java.util.ArrayList;
 import java.util.HashMap;
+import javax.swing.JFrame;
 
 public class Admin_Cashier {
 
@@ -61,6 +62,7 @@ public class Admin_Cashier {
         frame.add(navPanel, BorderLayout.WEST);
         frame.add(contentPanel, BorderLayout.CENTER);
 
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         
@@ -128,6 +130,7 @@ public class Admin_Cashier {
 
         JPanel buttonPanel = createButtonPanel();
         JScrollPane scrollPane = createCashierListScrollPane();
+        scrollPane.getVerticalScrollBar().setUnitIncrement(20);
 
         contentPanel.add(buttonPanel, BorderLayout.NORTH);
         contentPanel.add(scrollPane, BorderLayout.CENTER);

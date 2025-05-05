@@ -14,6 +14,7 @@ import java.awt.GridBagLayout;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
@@ -33,6 +34,7 @@ public class Admin_Dashboard {
         frame.add(navPanel, BorderLayout.WEST);
         frame.add(contentPanel, BorderLayout.CENTER);
 
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         

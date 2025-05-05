@@ -26,6 +26,7 @@ import components.ui.MainFrame;
 import components.ui.NavLabel;
 import controllers.CashierController;
 import java.util.HashMap;
+import javax.swing.JFrame;
 
 public class Admin_Add_Cashier {
 
@@ -46,6 +47,7 @@ public class Admin_Add_Cashier {
         frame.add(navPanel, BorderLayout.WEST);
         frame.add(contentPanel, BorderLayout.CENTER);
 
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         

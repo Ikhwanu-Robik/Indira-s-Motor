@@ -18,11 +18,9 @@ import components.ui.NavLabel;
 import controllers.CartController;
 import controllers.ReportController;
 import java.awt.Font;
-<<<<<<< HEAD
-=======
 import java.util.ArrayList;
 import java.util.HashMap;
->>>>>>> ec6a6e13211c2d148312b76906c75abdacd2d5ca
+import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -42,6 +40,7 @@ public class Admin_Report {
         frame.add(navPanel, BorderLayout.WEST);
         frame.add(contentPanel, BorderLayout.CENTER);
 
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         
