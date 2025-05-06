@@ -113,7 +113,7 @@ public class Login {
                 }
                 else if (response.get("status").equals("success")) {
                     //redirect to dashboard
-                    String[] args = {"good luck"};
+                    String[] args = {loginSession.username};
                     if (loginSession.role.equals("cashier")) {
                         //display cashier dashboard
                         frame.dispose();

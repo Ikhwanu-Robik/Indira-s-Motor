@@ -24,8 +24,12 @@ public class Cashier_Dashboard {
     private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 40);
     private static final Color BROWN_COLOR = new Color(0xA0522D);
     private static MainFrame dashboardFrame = null;
+    private static String loggedInUsername = "Cashier";
 
     public static void main(String[] args) {
+        if (args.length != 0) {
+            loggedInUsername = args[0];
+        }
         MainFrame frame = new MainFrame("Cashier Dashboard");
 
         Nav_Panel navPanel = createNavPanel();
@@ -56,7 +60,7 @@ public class Cashier_Dashboard {
         NavLabel navProduct = new NavLabel("Produk", false);
         NavLabel navBrand = new NavLabel("Merk", false);
         NavLabel navCategory = new NavLabel("Kategori", false);
-        NavLabel navReport = new NavLabel("Laporan", false);
+        NavLabel navReport = new NavLabel("Transaksi", false);
         navProduct.setCursor(new Cursor(Cursor.HAND_CURSOR));
         navBrand.setCursor(new Cursor(Cursor.HAND_CURSOR));
         navCategory.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -111,7 +115,7 @@ public class Cashier_Dashboard {
 
         // Welcome label
         JLabel titleLabel = createTitleLabel("Selamat Datang", BROWN_COLOR);
-        JLabel usernameLabel = createTitleLabel("User", Color.WHITE);
+        JLabel usernameLabel = createTitleLabel(loggedInUsername, Color.WHITE);
 
         // Add label to content panel
         GridBagConstraints gbc = new GridBagConstraints();
