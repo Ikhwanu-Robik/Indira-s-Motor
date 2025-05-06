@@ -18,11 +18,8 @@ import components.ui.NavLabel;
 import controllers.CartController;
 import controllers.ReportController;
 import java.awt.Font;
-<<<<<<< HEAD
-=======
 import java.util.ArrayList;
 import java.util.HashMap;
->>>>>>> ec6a6e13211c2d148312b76906c75abdacd2d5ca
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -130,7 +127,7 @@ public class Admin_Report {
     }
 
     private static JScrollPane createTableReport() {
-        String[] columnNames = {"nama_kasir", "jumlah_produk", "total", "jasa", "detail"};
+        String[] columnNames = {"tanggal", "nama_kasir", "jumlah_produk", "total", "jasa", "detail"};
         
         ArrayList<HashMap<String, String>> reports = new ReportController().getReports();
         
@@ -145,11 +142,12 @@ public class Admin_Report {
         DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
         JTable table = new JTable(tableModel);
 
-        table.getColumnModel().getColumn(0).setPreferredWidth(150); // nama_kasir
-        table.getColumnModel().getColumn(1).setPreferredWidth(100); // jumlah_produk
-        table.getColumnModel().getColumn(2).setPreferredWidth(100); // total
-        table.getColumnModel().getColumn(3).setPreferredWidth(100); // jasa
-        table.getColumnModel().getColumn(4).setPreferredWidth(70);  // detail (boolean)
+        table.getColumnModel().getColumn(0).setPreferredWidth(120); // tangal
+        table.getColumnModel().getColumn(1).setPreferredWidth(150); // nama_kasir
+        table.getColumnModel().getColumn(2).setPreferredWidth(100); // jumlah_produk
+        table.getColumnModel().getColumn(3).setPreferredWidth(100); // total
+        table.getColumnModel().getColumn(4).setPreferredWidth(100); // jasa
+        table.getColumnModel().getColumn(5).setPreferredWidth(70);  // detail (boolean)
 
         JScrollPane scrollPane = new JScrollPane(table);
 
