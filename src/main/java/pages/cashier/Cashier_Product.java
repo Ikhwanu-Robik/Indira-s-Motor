@@ -201,6 +201,8 @@ public class Cashier_Product {
         for (HashMap<String, String> product : products) {
             cardPanel.add(new Product_Card(product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url")));
         }
+        
+        cardPanel.updateUI();
     }
 
     private static void displayProducts(String id) {
@@ -247,6 +249,8 @@ public class Cashier_Product {
                 cardPanel.add(new Product_Card(product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url")));
             }
         }
+        
+        cardPanel.updateUI();
     }
 
     private static JPanel createCardPanel() {
