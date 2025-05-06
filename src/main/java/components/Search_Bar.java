@@ -1,6 +1,10 @@
 package components;
 
+import controllers.BrandController;
+import controllers.CategoryController;
 import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
@@ -43,14 +47,32 @@ public class Search_Bar extends JPanel {
     }
 
     private JComboBox<String> createCategoryCombo() {
-        String[] categories = {"Ban", "Oli", "Spion", "Baut"};
+        ArrayList<String> columns = new ArrayList<>();
+        columns.add("name");
+        ArrayList<HashMap<String, String>> categoriesDB = new CategoryController().read(columns);
+        
+        String[] categories = new String[categoriesDB.size()];
+        
+        int i = 0;
+        for (HashMap<String, String> category : categoriesDB) {
+            categories[i++] = category.get("name");
+        }
         JComboBox<String> combo = new JComboBox<>(categories);
         combo.setMaximumSize(new Dimension(WIDTH, 25));
         return combo;
     }
 
     private JComboBox<String> createBrandCombo() {
-        String[] brands = {"Yamaha", "Honda", "Kawasaki"};
+        ArrayList<String> columns = new ArrayList<>();
+        columns.add("name");
+        ArrayList<HashMap<String, String>> categoriesDB = new BrandController().read(columns);
+        
+        String[] brands = new String[categoriesDB.size()];
+        
+        int i = 0;
+        for (HashMap<String, String> category : categoriesDB) {
+            brands[i++] = category.get("name");
+        }
         JComboBox<String> combo = new JComboBox<>(brands);
         combo.setMaximumSize(new Dimension(WIDTH, 25));
         return combo;

@@ -20,6 +20,10 @@ import controllers.ReportController;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.HashMap;
+<<<<<<< HEAD
+=======
+import javax.swing.JFrame;
+>>>>>>> e129cb331ae94e9e3add1a79c9ba841e4fc5dd40
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -39,6 +43,7 @@ public class Admin_Report {
         frame.add(navPanel, BorderLayout.WEST);
         frame.add(contentPanel, BorderLayout.CENTER);
 
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         

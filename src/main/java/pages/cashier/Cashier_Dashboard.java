@@ -106,6 +106,7 @@ public class Cashier_Dashboard {
         frame.add(nav_pane, BorderLayout.WEST);
         frame.add(content_pane, BorderLayout.EAST);
 
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }

@@ -15,8 +15,16 @@ import components.Search_Bar;
 import components.ui.LogoutButton;
 import components.ui.MainFrame;
 import components.ui.NavLabel;
+import controllers.BrandController;
+import controllers.CategoryController;
+import controllers.ProductController;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -24,9 +32,29 @@ public class Admin_Products {
 
     // Constants
     private static MainFrame adminProductFrame = null;
+    private static Search_Bar searchBar = null;
 //    private static final Color BACKGROUND_COLOR = new Color(0xE4E4E4);
+    private static JPanel cardPanel = null;
+    private static ArrayList<HashMap<String, String>> categories = null;
+    private static ArrayList<HashMap<String, String>> brands = null;
+    private static ArrayList<HashMap<String, String>> products = null;
 
     public void main(String[] args) {
+        ArrayList<String> columns = new ArrayList<>();
+        columns.add("id");
+        columns.add("name");
+        columns.add("price");
+        columns.add("brand_id");
+        columns.add("image_url");
+        Admin_Products.products = new ProductController().read(columns);
+        ArrayList<String> all_col = new ArrayList<>();
+        all_col.add("*");
+        Admin_Products.brands = new BrandController().read(all_col);
+        // TODO : upon usage, the value of all_col is changed with brand's columns. FIND OUT WHY
+        all_col.clear();
+        all_col.add("*");
+        Admin_Products.categories = new CategoryController().read(all_col);
+
         MainFrame frame = new MainFrame("Admin Products");
 
         Nav_Panel navPanel = createNavPanel();
@@ -35,6 +63,7 @@ public class Admin_Products {
         frame.add(navPanel, BorderLayout.WEST);
         frame.add(contentPanel, BorderLayout.CENTER);
 
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
@@ -114,26 +143,99 @@ public class Admin_Products {
         JPanel filterPanel = new JPanel();
         filterPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
 
-        Search_Bar searchBar = new Search_Bar();
+        searchBar = new Search_Bar();
         filterPanel.add(searchBar);
 
+        JButton searchBtn = new JButton();
+        JLabel searchBtnLabel = new JLabel("Search");
+        searchBtn.add(searchBtnLabel);
+        filterPanel.add(searchBtn);
+        searchBtn.addActionListener((ActionEvent e) -> {
+            String id = searchBar.getSearchText();
+
+            displayProducts(id);
+        });
+
+        JButton filterBtn = new JButton();
+        JLabel filterBtnLabel = new JLabel("Apply Filter");
+        filterBtn.add(filterBtnLabel);
+        filterPanel.add(filterBtn);
+        filterBtn.addActionListener((ActionEvent e) -> {
+            String brandName = searchBar.getSelectedBrand();
+            String categoryName = searchBar.getSelectedCategory();
+
+            displayProducts(categoryName, brandName);
+        });
+
         return filterPanel;
+    }
+
+    private static void displayProducts() {
+        cardPanel.removeAll();
+
+        for (HashMap<String, String> product : products) {
+            cardPanel.add(new Product_Card(product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url")));
+        }
+    }
+
+    private static void displayProducts(String id) {
+        cardPanel.removeAll();
+
+        HashMap<String, String> product = null;
+        for (HashMap<String, String> productObj : products) {
+            if (productObj.get("id").equals(id)) {
+                product = productObj;
+                break;
+            }
+        }
+
+        if (product != null) {
+            cardPanel.add(new Product_Card(product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url")));
+        } else {
+            cardPanel.add(new JLabel("Produk tidak ditemukan"));
+        }
+
+        cardPanel.updateUI();
+    }
+
+    private static void displayProducts(String categoryName, String brandName) {
+        cardPanel.removeAll();
+
+        for (HashMap<String, String> product : products) {
+            HashMap<String, String> productBrand = null;
+            for (HashMap<String, String> brand : brands) {
+                if (product.get("brand_id").equals(brand.get("id"))) {
+                    productBrand = brand;
+                    break;
+                }
+            }
+            
+            String productCategory = null;
+            for (HashMap<String, String> category : categories) {
+                if (productBrand.get("category_id").equals(category.get("id"))) {
+                    productCategory = category.get("name");
+                    break;
+                }
+            }
+            
+            if (categoryName.equals(productCategory) && brandName.equals(productBrand.get("name"))) {
+                cardPanel.add(new Product_Card(product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url")));
+            }
+        }
+
+        cardPanel.updateUI();
     }
 
     private static JPanel createCardPanel() {
         JPanel cardPanel = new JPanel();
         cardPanel.setLayout(new GridLayout(0, 3, 10, 10)); // Grid layout untuk kartu
 
-        cardPanel.add(new Product_Card("Busi", 15000));
-        cardPanel.add(new Product_Card("Oli", 45000));
-        cardPanel.add(new Product_Card("Ban", 250000));
-        cardPanel.add(new Product_Card("Spion", 60000));
-        cardPanel.add(new Product_Card("Baut", 5000));
-        cardPanel.add(new Product_Card("Box", 30000));
-        cardPanel.add(new Product_Card("Knalpot", 120000));
-        cardPanel.add(new Product_Card("Mur", 3000));
-        cardPanel.add(new Product_Card("Pintu", 2000000));
-        cardPanel.add(new Product_Card("Kaca", 500000));
+        if (products != null) {
+            Admin_Products.cardPanel = cardPanel;
+            displayProducts();
+        } else {
+            System.out.println("No category found");
+        }
 
         return cardPanel;
     }
