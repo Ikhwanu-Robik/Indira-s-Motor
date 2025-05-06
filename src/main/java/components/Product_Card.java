@@ -8,6 +8,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.net.URL;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -46,12 +47,17 @@ public class Product_Card extends JPanel {
         label.setFont(new Font("Arial", Font.BOLD, 24));
         return label;
     }
-    
+     
     private JLabel createImage(String image_url) {
-//        Image not displaying
-        ImageIcon icon = new ImageIcon(getClass().getResource("/assets/" + image_url));
+        URL full_url = getClass().getResource("/assets/" + image_url);
         JLabel logo = new JLabel();
-        logo.setIcon(icon);
+        if (full_url != null) {
+            ImageIcon icon = new ImageIcon(full_url);
+            logo.setIcon(icon);
+        }
+        else {
+            logo.setText("A reload is needed to display the image");
+        }
         logo.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         
         return logo;
