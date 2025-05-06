@@ -158,14 +158,15 @@ public class CartController extends AbstractController {
     public ArrayList<HashMap<String, String>> getCartProducts(int cart_id) {
         Database db = new Database();
         ResultSet rs;
-        String query = "SELECT * FROM cart_product WHERE cart_id = " + cart_id;
+        String query = "SELECT cart_product.id, cart_product.cart_id, cart_product.qty, products.name, products.image_url, products.price, products.stock FROM cart_product JOIN products ON cart_product.product_id = products.id WHERE cart_product.cart_id = " + cart_id;
         ArrayList<HashMap<String, String>> cart_products = new ArrayList<>();
         ArrayList<String> columns = new ArrayList<>();
         columns.clear();
         columns.add("id");
         columns.add("cart_id");
-        columns.add("product_id");
+        columns.add("name");
         columns.add("qty");
+        columns.add("price");
         
         try {
             Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
