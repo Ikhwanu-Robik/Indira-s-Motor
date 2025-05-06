@@ -20,20 +20,19 @@ import controllers.ReportController;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.HashMap;
-<<<<<<< HEAD
-=======
 import javax.swing.JFrame;
->>>>>>> e129cb331ae94e9e3add1a79c9ba841e4fc5dd40
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 public class Admin_Report {
 
     // Constants
     private static MainFrame adminReportFrame = null;
 //    private static final Color BACKGROUND_COLOR = new Color(0xE4E4E4);
+
     public void main(String[] args) {
         MainFrame frame = new MainFrame("Admin Products");
 
@@ -46,7 +45,7 @@ public class Admin_Report {
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-        
+
         adminReportFrame = frame;
     }
 
@@ -133,31 +132,58 @@ public class Admin_Report {
 
     private static JScrollPane createTableReport() {
         String[] columnNames = {"tanggal", "nama_kasir", "jumlah_produk", "total", "jasa", "detail"};
-        
+
         ArrayList<HashMap<String, String>> reports = new ReportController().getReports();
-        
+
         Object[][] data = new Object[reports.size()][columnNames.length];
-        
+
         int i = 0;
         for (HashMap<String, String> report : reports) {
-            data[i] = new Object[] {report.get("username"), report.get("product_types"), report.get("total"), report.get("fee"), "Detail:btn"};
+            data[i] = new Object[]{
+                report.get("tanggal"), // perbaiki urutan kolom sesuai header
+                report.get("username"),
+                report.get("product_types"),
+                report.get("total"),
+                report.get("fee"),
+                "Detail:btn"
+            };
             i++;
         }
 
         DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
-        JTable table = new JTable(tableModel);
+        JTable table = new JTable(tableModel) {
+            // Men-disable editing langsung pada cell
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
 
-        table.getColumnModel().getColumn(0).setPreferredWidth(120); // tangal
-        table.getColumnModel().getColumn(1).setPreferredWidth(150); // nama_kasir
-        table.getColumnModel().getColumn(2).setPreferredWidth(100); // jumlah_produk
-        table.getColumnModel().getColumn(3).setPreferredWidth(100); // total
-        table.getColumnModel().getColumn(4).setPreferredWidth(100); // jasa
-        table.getColumnModel().getColumn(5).setPreferredWidth(70);  // detail (boolean)
+        // Styling tabel
+        table.setBackground(new Color(45, 45, 45)); // background gelap
+        table.setForeground(Color.WHITE);           // teks putih
+        table.setFont(new Font("SansSerif", Font.PLAIN, 14)); // font lebih besar
+        table.setRowHeight(28);                     // tinggi baris
+        table.setGridColor(Color.DARK_GRAY);        // warna garis pemisah
+
+        // Styling header tabel
+        JTableHeader header = table.getTableHeader();
+        header.setBackground(new Color(30, 30, 30));
+        header.setForeground(Color.WHITE);
+        header.setFont(new Font("SansSerif", Font.BOLD, 15));
+        header.setReorderingAllowed(false); // mencegah drag kolom
+
+        // Set preferred width kolom
+        table.getColumnModel().getColumn(0).setPreferredWidth(120);
+        table.getColumnModel().getColumn(1).setPreferredWidth(150);
+        table.getColumnModel().getColumn(2).setPreferredWidth(100);
+        table.getColumnModel().getColumn(3).setPreferredWidth(100);
+        table.getColumnModel().getColumn(4).setPreferredWidth(100);
+        table.getColumnModel().getColumn(5).setPreferredWidth(70);
 
         JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.getViewport().setBackground(new Color(45, 45, 45)); // latar belakang scrollpane sama
 
         return scrollPane;
-
     }
 
 }

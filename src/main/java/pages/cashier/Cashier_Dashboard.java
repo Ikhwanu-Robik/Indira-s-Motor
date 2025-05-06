@@ -2,112 +2,134 @@ package pages.cashier;
 
 import components.Content_Panel;
 import components.Nav_Panel;
-
+import components.ui.LogoutButton;
+import components.ui.MainFrame;
+import components.ui.NavLabel;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 public class Cashier_Dashboard {
 
+    // Constants
+    private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 40);
+    private static final Color BROWN_COLOR = new Color(0xA0522D);
+    private static MainFrame dashboardFrame = null;
+
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Cashier Dashboard");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1440, 1024);
-        frame.setLayout(new BorderLayout());
+        MainFrame frame = new MainFrame("Cashier Dashboard");
 
-        Nav_Panel nav_pane = new Nav_Panel();
-        Content_Panel content_pane = new Content_Panel();
+        Nav_Panel navPanel = createNavPanel();
+        Content_Panel contentPanel = createContentPanel();
 
-        nav_pane.setLayout(new BoxLayout(nav_pane, BoxLayout.Y_AXIS));
-        content_pane.setLayout(new GridBagLayout());
+        frame.add(navPanel, BorderLayout.WEST);
+        frame.add(contentPanel, BorderLayout.CENTER);
 
-        JLabel title = new JLabel("Selamat Datang");
-        title.setForeground(new Color(0xA0522D));
-        title.setFont(new Font("Arial", Font.BOLD, 56));
-        title.setHorizontalAlignment(SwingConstants.CENTER);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
 
-        JLabel title_username = new JLabel("Cashier");
-        title_username.setForeground(Color.WHITE);
-        title_username.setFont(new Font("Arial", Font.BOLD, 56));
-        title_username.setHorizontalAlignment(SwingConstants.CENTER);
+        dashboardFrame = frame;
+    }
 
-        JLabel nav_1 = new JLabel("Produk");
-        nav_1.setForeground(Color.WHITE);
-        nav_1.setFont(new Font("Arial", Font.PLAIN, 24));
-        nav_1.setHorizontalAlignment(SwingConstants.CENTER);
-        nav_1.setAlignmentX(JTextField.CENTER_ALIGNMENT);
+    private static Nav_Panel createNavPanel() {
+        Nav_Panel navPanel = new Nav_Panel();
+        navPanel.setLayout(new BoxLayout(navPanel, BoxLayout.Y_AXIS));
 
-        JLabel nav_2 = new JLabel("Kategori");
-        nav_2.setForeground(Color.WHITE);
-        nav_2.setFont(new Font("Arial", Font.PLAIN, 24));
-        nav_2.setHorizontalAlignment(SwingConstants.CENTER);
-        nav_2.setAlignmentX(JTextField.CENTER_ALIGNMENT);
-
-        JLabel nav_3 = new JLabel("Merk");
-        nav_3.setForeground(Color.WHITE);
-        nav_3.setFont(new Font("Arial", Font.PLAIN, 24));
-        nav_3.setHorizontalAlignment(SwingConstants.CENTER);
-        nav_3.setAlignmentX(JTextField.CENTER_ALIGNMENT);
-
-        JLabel nav_4 = new JLabel("Transaksi");
-        nav_4.setForeground(Color.WHITE);
-        nav_4.setFont(new Font("Arial", Font.PLAIN, 24));
-        nav_4.setHorizontalAlignment(SwingConstants.CENTER);
-        nav_4.setAlignmentX(JTextField.CENTER_ALIGNMENT);
-        
-        JButton logout_btn = new JButton("Keluar");
-        logout_btn.setForeground(new Color(0xA0522D));
-        logout_btn.setBackground(Color.white);
-        logout_btn.setMaximumSize(new Dimension(180, 50));
-        logout_btn.setPreferredSize(new Dimension(180, 50));
-        logout_btn.setFont(new Font("Arial", Font.BOLD, 20));
-        logout_btn.setFocusPainted(false);
-        logout_btn.setBorder(BorderFactory.createEmptyBorder(10, 25, 10, 25));
-        logout_btn.setAlignmentX(JButton.CENTER_ALIGNMENT);
-
-        ImageIcon icon = new ImageIcon(new Cashier_Dashboard().getClass().getResource("/assets/icons-removebg.png"));
+        // Logo
+        ImageIcon icon = new ImageIcon(Cashier_Dashboard.class.getClassLoader().getResource("assets/indira_logo.png"));
         JLabel logo = new JLabel();
         logo.setIcon(icon);
         logo.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 
+        // Nav items
+        // Nav links
+        NavLabel navProduct = new NavLabel("Produk", false);
+        NavLabel navBrand = new NavLabel("Merk", false);
+        NavLabel navCategory = new NavLabel("Kategori", false);
+        NavLabel navReport = new NavLabel("Laporan", false);
+        navProduct.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        navBrand.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        navCategory.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        navReport.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        // Logout button
+        LogoutButton logoutBtn = new LogoutButton("Keluar");
+
+        Cashier_Product cashierProduct = new Cashier_Product();
+
+        navProduct.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                dashboardFrame.dispose();
+                cashierProduct.main(new String[0]);
+            }
+        });
+        // nav.addMouseListener(new java.awt.event.MouseAdapter() {
+        //     @Override
+        //     public void mouseClicked(java.awt.event.MouseEvent evt) {
+        //         adminProducts.main(new String[0]);
+        //         dashboardFrame.dispose();
+        //     }
+        // });
+        // nav.addMouseListener(new java.awt.event.MouseAdapter() {
+        //     @Override
+        //     public void mouseClicked(java.awt.event.MouseEvent evt) {
+        //         adminReport.main(new String[0]);
+        //         dashboardFrame.dispose();
+        //     }
+        // });
+        // Add components to nav panel
+        navPanel.add(Box.createVerticalStrut(70));
+        navPanel.add(logo);
+        navPanel.add(Box.createVerticalStrut(80));
+        navPanel.add(navProduct);
+        navPanel.add(Box.createVerticalStrut(40));
+        navPanel.add(navBrand);
+        navPanel.add(Box.createVerticalStrut(40));
+        navPanel.add(navCategory);
+        navPanel.add(Box.createVerticalStrut(40));
+        navPanel.add(navReport);
+        navPanel.add(Box.createVerticalStrut(100));
+        navPanel.add(logoutBtn);
+
+        return navPanel;
+    }
+
+    private static Content_Panel createContentPanel() {
+        Content_Panel contentPanel = new Content_Panel();
+        contentPanel.setLayout(new GridBagLayout());
+
+        // Welcome label
+        JLabel titleLabel = createTitleLabel("Selamat Datang", BROWN_COLOR);
+        JLabel usernameLabel = createTitleLabel("User", Color.WHITE);
+
+        // Add label to content panel
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.CENTER;
 
-        nav_pane.add(Box.createVerticalStrut(100));
-        nav_pane.add(logo);
-        nav_pane.add(Box.createVerticalStrut(100));
-        nav_pane.add(nav_1);
-        nav_pane.add(Box.createVerticalStrut(60));
-        nav_pane.add(nav_2);
-        nav_pane.add(Box.createVerticalStrut(60));
-        nav_pane.add(nav_3);
-        nav_pane.add(Box.createVerticalStrut(60));
-        nav_pane.add(nav_4);
-        nav_pane.add(Box.createVerticalStrut(160));
-        nav_pane.add(logout_btn);
+        contentPanel.add(titleLabel, gbc);
+        contentPanel.add(usernameLabel, gbc);
 
-        content_pane.add(title, gbc);
-        content_pane.add(title_username, gbc);
+        return contentPanel;
+    }
 
-        frame.add(nav_pane, BorderLayout.WEST);
-        frame.add(content_pane, BorderLayout.EAST);
-
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+    private static JLabel createTitleLabel(String text, Color color) {
+        JLabel label = new JLabel(text);
+        label.setForeground(color);
+        label.setFont(TITLE_FONT);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        return label;
     }
 }
