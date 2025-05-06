@@ -16,38 +16,32 @@ import components.ui.LogoutButton;
 import components.ui.MainFrame;
 import components.ui.NavLabel;
 import controllers.CartController;
-//import controllers.CartController;
 import controllers.ReportController;
 import java.awt.Component;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.HashMap;
-<<<<<<< HEAD
 import javax.swing.JFrame;
-=======
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
->>>>>>> 70c73859fb3d8fceb1c509f1be6df2b82b1e5a7c
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
-<<<<<<< HEAD
 import javax.swing.table.JTableHeader;
-=======
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
->>>>>>> 70c73859fb3d8fceb1c509f1be6df2b82b1e5a7c
 
 public class Admin_Report {
 
     // Constants
     private static MainFrame adminReportFrame = null;
-//    private static final Color BACKGROUND_COLOR = new Color(0xE4E4E4);
+    // private static final Color BACKGROUND_COLOR = new Color(0xE4E4E4);
+    private static ArrayList<HashMap<String, String>> reports = null;
 
     public void main(String[] args) {
         MainFrame frame = new MainFrame("Admin Products");
@@ -147,44 +141,41 @@ public class Admin_Report {
     }
 
     private static JScrollPane createTableReport() {
-<<<<<<< HEAD
-        String[] columnNames = {"tanggal", "nama_kasir", "jumlah_produk", "total", "jasa", "detail"};
-=======
-        String[] columnNames = {"tanggal", "nama_kasir", "jumlah_produk", "total", "jasa", "detail", "cart_id"};
->>>>>>> 70c73859fb3d8fceb1c509f1be6df2b82b1e5a7c
+        String[] columnNames = { "tanggal", "nama_kasir", "jumlah_produk", "total", "jasa", "detail", "cart_id" };
 
-        ArrayList<HashMap<String, String>> reports = new ReportController().getReports();
+        reports = new ReportController().getReports();
 
         Object[][] data = new Object[reports.size()][columnNames.length];
 
         int i = 0;
         for (HashMap<String, String> report : reports) {
-<<<<<<< HEAD
-            data[i] = new Object[]{
-                report.get("tanggal"), // perbaiki urutan kolom sesuai header
-                report.get("username"),
-                report.get("product_types"),
-                report.get("total"),
-                report.get("fee"),
-                "Detail:btn"
+            data[i] = new Object[] {
+                    report.get("date"), // perbaiki urutan kolom sesuai header
+                    report.get("username"),
+                    report.get("product_types"),
+                    report.get("total"),
+                    report.get("fee"),
+                    "Detail",
+                    report.get("cart_id")
             };
             i++;
         }
 
-        DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
-        JTable table = new JTable(tableModel) {
-            // Men-disable editing langsung pada cell
+        DefaultTableModel tableModel = new DefaultTableModel(data, columnNames) {
+            @Override
             public boolean isCellEditable(int row, int column) {
-                return false;
+                return column == 5;
             }
         };
 
+        JTable table = new JTable(tableModel);
+
         // Styling tabel
         table.setBackground(new Color(45, 45, 45)); // background gelap
-        table.setForeground(Color.WHITE);           // teks putih
+        table.setForeground(Color.WHITE); // teks putih
         table.setFont(new Font("SansSerif", Font.PLAIN, 14)); // font lebih besar
-        table.setRowHeight(28);                     // tinggi baris
-        table.setGridColor(Color.DARK_GRAY);        // warna garis pemisah
+        table.setRowHeight(28); // tinggi baris
+        table.setGridColor(Color.DARK_GRAY); // warna garis pemisah
 
         // Styling header tabel
         JTableHeader header = table.getTableHeader();
@@ -200,18 +191,6 @@ public class Admin_Report {
         table.getColumnModel().getColumn(3).setPreferredWidth(100);
         table.getColumnModel().getColumn(4).setPreferredWidth(100);
         table.getColumnModel().getColumn(5).setPreferredWidth(70);
-=======
-            data[i] = new Object[]{report.get("date"), report.get("username"), report.get("product_types"), report.get("total"), report.get("fee"), "Detail", report.get("cart_id")};
-            i++;
-        }
-
-        DefaultTableModel tableModel = new DefaultTableModel(data, columnNames) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return column == 5;
-            }
-        };
-        JTable table = new JTable(tableModel);
 
         class ButtonRenderer extends JButton implements TableCellRenderer {
 
@@ -220,13 +199,15 @@ public class Admin_Report {
             }
 
             @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                    boolean hasFocus, int row, int column) {
                 setText((value == null) ? "Detail" : value.toString());
                 return this;
             }
         }
 
         class ButtonEditor extends DefaultCellEditor {
+
             protected JButton button;
             private String label;
             private boolean clicked;
@@ -256,15 +237,16 @@ public class Admin_Report {
                     int row = table.getSelectedRow();
                     String cartId = table.getValueAt(row, 6).toString();
                     String details = null;
-                    
-                    ArrayList<HashMap<String, String>> cartProducts = new CartController().getCartProducts(Integer.parseInt(cartId));
+
+                    ArrayList<HashMap<String, String>> cartProducts = new CartController()
+                            .getCartProducts(Integer.parseInt(cartId));
                     for (HashMap<String, String> product : cartProducts) {
                         for (String key : product.keySet()) {
                             details += key + " => " + product.get(key);
                         }
                         details += "\n";
                     }
-                    
+
                     JOptionPane.showMessageDialog(button, details);
                 }
                 clicked = false;
@@ -285,18 +267,13 @@ public class Admin_Report {
 
         table.getColumn("detail").setCellRenderer(new ButtonRenderer());
         table.getColumn("detail").setCellEditor(new ButtonEditor(new JCheckBox(), table));
-        
-//        TableColumnModel columnModel = table.getColumnModel();
-//        TableColumn hiddenColumn = columnModel.getColumn(6);
-//        columnModel.removeColumn(hiddenColumn);
 
         table.getColumnModel().getColumn(0).setPreferredWidth(120); // tangal
         table.getColumnModel().getColumn(1).setPreferredWidth(150); // nama_kasir
         table.getColumnModel().getColumn(2).setPreferredWidth(100); // jumlah_produk
         table.getColumnModel().getColumn(3).setPreferredWidth(100); // total
         table.getColumnModel().getColumn(4).setPreferredWidth(100); // jasa
-        table.getColumnModel().getColumn(5).setPreferredWidth(150);  // detail (boolean)
->>>>>>> 70c73859fb3d8fceb1c509f1be6df2b82b1e5a7c
+        table.getColumnModel().getColumn(5).setPreferredWidth(150); // detail (boolean)
 
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.getViewport().setBackground(new Color(45, 45, 45)); // latar belakang scrollpane sama
