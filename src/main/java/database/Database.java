@@ -6,9 +6,9 @@ import java.sql.SQLException;
 
 public class Database {
     String host = "jdbc:mysql://127.0.0.1:3306/";   
-    String database = "indira_s_motor";
-    String username = "root";
-    String password = "arthurmysql";
+    String database = Config.db_name;
+    String username = Config.db_username;
+    String password = Config.db_password;
     Connection conn = null;
     
     public Connection connect() {
