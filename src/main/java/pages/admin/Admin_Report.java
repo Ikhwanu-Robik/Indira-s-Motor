@@ -236,18 +236,11 @@ public class Admin_Report {
                 if (clicked) {
                     int row = table.getSelectedRow();
                     String cartId = table.getValueAt(row, 6).toString();
-                    String details = null;
 
                     ArrayList<HashMap<String, String>> cartProducts = new CartController()
                             .getCartProducts(Integer.parseInt(cartId));
-                    for (HashMap<String, String> product : cartProducts) {
-                        for (String key : product.keySet()) {
-                            details += key + " => " + product.get(key);
-                        }
-                        details += "\n";
-                    }
-
-                    JOptionPane.showMessageDialog(button, details);
+                    
+                    Admin_Report_Detail.main(cartProducts);
                 }
                 clicked = false;
                 return label;

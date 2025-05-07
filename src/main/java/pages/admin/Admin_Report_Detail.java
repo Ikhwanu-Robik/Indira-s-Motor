@@ -26,8 +26,12 @@ public class Admin_Report_Detail {
 
     // Constants
     private static MainFrame adminReportFrame = null;
+    private static ArrayList<HashMap<String, String>> products = null;
+
 //    private static final Color BACKGROUND_COLOR = new Color(0xE4E4E4);
-    public void main(String[] args) {
+    public static void main(ArrayList<HashMap<String, String>> products) {
+        Admin_Report_Detail.products = products;
+
         MainFrame frame = new MainFrame("Admin Products");
 
         Nav_Panel navPanel = createNavPanel();
@@ -38,7 +42,7 @@ public class Admin_Report_Detail {
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-        
+
         adminReportFrame = frame;
     }
 
@@ -121,7 +125,5 @@ public class Admin_Report_Detail {
         label.setHorizontalAlignment(SwingConstants.CENTER);
         return label;
     }
-
-
 
 }
