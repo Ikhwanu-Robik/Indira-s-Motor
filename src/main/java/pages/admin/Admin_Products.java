@@ -174,7 +174,7 @@ public class Admin_Products {
         cardPanel.removeAll();
 
         for (HashMap<String, String> product : products) {
-            cardPanel.add(new Product_Card(product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url")));
+            cardPanel.add(new Product_Card(product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url")));
         }
     }
 
@@ -190,7 +190,7 @@ public class Admin_Products {
         }
 
         if (product != null) {
-            cardPanel.add(new Product_Card(product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url")));
+            cardPanel.add(new Product_Card(product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url")));
         } else {
             cardPanel.add(new JLabel("Produk tidak ditemukan"));
         }
@@ -219,7 +219,7 @@ public class Admin_Products {
             }
             
             if (categoryName.equals(productCategory) && brandName.equals(productBrand.get("name"))) {
-                cardPanel.add(new Product_Card(product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url")));
+                cardPanel.add(new Product_Card(product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url")));
             }
         }
 

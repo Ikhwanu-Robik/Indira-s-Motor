@@ -21,11 +21,11 @@ public class Product_Card extends JPanel {
     private final JLabel productNameLabel;
     private final JLabel productPriceLabel;
 
-    public Product_Card(String name, int price, String image_url) {
+    public Product_Card(String id, String name, int price, String image_url) {
         setLayout(new BorderLayout()); 
         initialCard();
 
-        productNameLabel = createCardName(name);
+        productNameLabel = createCardName(id, name);
         productPriceLabel = createCardPrice(price);
         JLabel productImage = createImage(image_url);
 
@@ -41,8 +41,8 @@ public class Product_Card extends JPanel {
         setToolTipText("Product Information Card");
     }
 
-    private JLabel createCardName(String name) {
-        JLabel label = new JLabel(name, SwingConstants.CENTER);
+    private JLabel createCardName(String id, String name) {
+        JLabel label = new JLabel(id + " " + name, SwingConstants.CENTER);
         label.setForeground(Color.BLACK);
         label.setFont(new Font("Arial", Font.BOLD, 24));
         return label;
