@@ -141,7 +141,7 @@ public class Admin_Report {
     }
 
     private static JScrollPane createTableReport() {
-        String[] columnNames = { "tanggal", "nama_kasir", "jumlah_produk", "total", "jasa", "detail", "cart_id" };
+        String[] columnNames = {"tanggal", "nama_kasir", "jumlah_produk", "total", "jasa", "detail", "cart_id"};
 
         reports = new ReportController().getReports();
 
@@ -149,14 +149,14 @@ public class Admin_Report {
 
         int i = 0;
         for (HashMap<String, String> report : reports) {
-            data[i] = new Object[] {
-                    report.get("date"), // perbaiki urutan kolom sesuai header
-                    report.get("username"),
-                    report.get("product_types"),
-                    report.get("total"),
-                    report.get("fee"),
-                    "Detail",
-                    report.get("cart_id")
+            data[i] = new Object[]{
+                report.get("date"), // perbaiki urutan kolom sesuai header
+                report.get("username"),
+                report.get("product_types"),
+                report.get("total"),
+                report.get("fee"),
+                "Detail",
+                report.get("cart_id")
             };
             i++;
         }
@@ -169,6 +169,10 @@ public class Admin_Report {
         };
 
         JTable table = new JTable(tableModel);
+
+        TableColumnModel columnModel = table.getColumnModel();
+        TableColumn hiddenColumn = columnModel.getColumn(6);
+        columnModel.removeColumn(hiddenColumn);
 
         // Styling tabel
         table.setBackground(new Color(45, 45, 45)); // background gelap
@@ -235,11 +239,11 @@ public class Admin_Report {
             public Object getCellEditorValue() {
                 if (clicked) {
                     int row = table.getSelectedRow();
-                    String cartId = table.getValueAt(row, 6).toString();
+                    String cartId = tableModel.getValueAt(row, 6).toString();
 
                     ArrayList<HashMap<String, String>> cartProducts = new CartController()
                             .getCartProducts(Integer.parseInt(cartId));
-                    
+
                     Admin_Report_Detail.main(cartProducts);
                 }
                 clicked = false;
