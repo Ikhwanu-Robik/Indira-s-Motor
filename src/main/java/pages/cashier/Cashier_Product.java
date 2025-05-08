@@ -150,20 +150,20 @@ public class Cashier_Product {
 
     private static JPanel createFilterPanel() {
         JPanel filterPanel = new JPanel(new BorderLayout());
-    
+
         // Panel kiri untuk search dan filter
         JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
-    
+
         searchBar = new Search_Bar();
         leftPanel.add(searchBar);
-    
+
         JButton searchBtn = new JButton("Search");
         searchBtn.addActionListener((ActionEvent e) -> {
             String id = searchBar.getSearchText();
             displayProducts(id);
         });
         leftPanel.add(searchBtn);
-    
+
         JButton filterBtn = new JButton("Apply Filter");
         filterBtn.addActionListener((ActionEvent e) -> {
             String brandName = searchBar.getSelectedBrand();
@@ -171,15 +171,15 @@ public class Cashier_Product {
             displayProducts(categoryName, brandName);
         });
         leftPanel.add(filterBtn);
-    
+
         filterPanel.add(leftPanel, BorderLayout.WEST);
-    
+
         // Tombol "Tambah Produk" di kanan
         JButton addButton = new AddButton("Tambah Produk");
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
-        
+
         Cashier_Product_Add addProduct = new Cashier_Product_Add();
-        
+
         addButton.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -188,12 +188,11 @@ public class Cashier_Product {
             }
         });
         rightPanel.add(addButton);
-    
+
         filterPanel.add(rightPanel, BorderLayout.EAST);
-    
+
         return filterPanel;
     }
-    
 
     private static void displayProducts() {
         cardPanel.removeAll();
@@ -201,7 +200,7 @@ public class Cashier_Product {
         for (HashMap<String, String> product : products) {
             cardPanel.add(new Product_Card(product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url")));
         }
-        
+
         cardPanel.updateUI();
     }
 
@@ -249,7 +248,7 @@ public class Cashier_Product {
                 cardPanel.add(new Product_Card(product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url")));
             }
         }
-        
+
         cardPanel.updateUI();
     }
 

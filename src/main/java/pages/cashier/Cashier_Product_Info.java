@@ -6,14 +6,27 @@ import components.ui.LogoutButton;
 import components.ui.MainFrame;
 import components.ui.NavLabel;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 public class Cashier_Product_Info {
 
@@ -21,7 +34,7 @@ public class Cashier_Product_Info {
     private static MainFrame productInfoFrame = null;
 
     public static void main(String[] args) {
-        MainFrame frame = new MainFrame("Cashier Dashboard");
+        MainFrame frame = new MainFrame("Cashier Product Info");
 
         Nav_Panel navPanel = createNavPanel();
         Content_Panel contentPanel = createContentPanel();
@@ -46,7 +59,6 @@ public class Cashier_Product_Info {
         logo.setIcon(icon);
         logo.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 
-        // Nav items
         // Nav links
         NavLabel navProduct = new NavLabel("Produk", false);
         NavLabel navBrand = new NavLabel("Merk", false);
@@ -91,17 +103,115 @@ public class Cashier_Product_Info {
         Content_Panel contentPanel = new Content_Panel();
         contentPanel.setLayout(new GridBagLayout());
 
+        JPanel image = createImagePanel("C:\\Users\\Arthur\\Downloads\\10854966.jpg");
+
         // Add label to content panel
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.CENTER;
 
-//        contentPanel.add(, gbc);
-//        contentPanel.add(, gbc);
-
+        contentPanel.add(image, gbc);
         return contentPanel;
     }
 
-    
+    private static JPanel createImagePanel(String imagePath) {
+        JPanel imagePanel = new JPanel();
+        imagePanel.setLayout(new BoxLayout(imagePanel, BoxLayout.Y_AXIS));
+        imagePanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+        imagePanel.setBackground(Color.WHITE);
+        imagePanel.setPreferredSize(new Dimension(850, 700));
+
+        try {
+            BufferedImage originalImage = ImageIO.read(new File(imagePath));
+            Image scaledImage = originalImage.getScaledInstance(800, 500, Image.SCALE_SMOOTH);
+            JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
+            imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            imagePanel.add(imageLabel);
+        } catch (IOException e) {
+            JLabel placeholder = new JLabel("No Image Available");
+            placeholder.setAlignmentX(Component.CENTER_ALIGNMENT);
+            imagePanel.add(placeholder);
+        }
+
+        JPanel productDescription = createDescriptionPanel("Oli Amahay", 20000, "Oli");
+        imagePanel.add(productDescription);
+
+        imagePanel.add(Box.createVerticalStrut(20));
+
+        JPanel buttonContainer = new JPanel();
+        buttonContainer.setLayout(new BorderLayout());
+        buttonContainer.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+
+        JPanel buttonPanel = createButtonPanel();
+        buttonContainer.add(buttonPanel, BorderLayout.CENTER);
+
+        imagePanel.add(buttonContainer);
+
+        return imagePanel;
+    }
+
+    private static JPanel createDescriptionPanel(String name, double price, String category) {
+        JPanel descriptionPanel = new JPanel();
+        descriptionPanel.setLayout(new GridBagLayout());
+
+        // Add label to content panel
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.CENTER;
+
+        JLabel productName = new JLabel(name);
+        productName.setFont(new Font("Arial", Font.BOLD, 20));
+
+        JLabel productPrice = new JLabel("Rp " + price);
+        productPrice.setFont(new Font("Arial", Font.ITALIC, 18));
+
+        JLabel productCategory = new JLabel(category);
+        productCategory.setFont(new Font("Arial", Font.PLAIN, 16));
+
+        descriptionPanel.add(productName, gbc);
+        descriptionPanel.add(productPrice, gbc);
+        descriptionPanel.add(productCategory, gbc);
+
+        return descriptionPanel;
+    }
+
+    private static JPanel createButtonPanel() {
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BorderLayout());
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        buttonPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+
+        Cashier_Product cashierProduct = new Cashier_Product();
+
+        JButton cancelBtn = new JButton("Batal");
+        cancelBtn.setFont(new Font("Arial", Font.PLAIN, 16));
+        cancelBtn.setForeground(Color.BLACK);
+        cancelBtn.setBackground(new Color(0xE0E0E0));
+        cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                productInfoFrame.dispose();
+                cashierProduct.main(new String[0]);
+            }
+        });
+
+        JButton addBtn = new JButton("Edit");
+        addBtn.setFont(new Font("Arial", Font.PLAIN, 16));
+        addBtn.setForeground(Color.WHITE);
+        addBtn.setBackground(new Color(0xA0522D));
+
+        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        leftPanel.add(cancelBtn);
+
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        rightPanel.add(addBtn);
+
+        buttonPanel.add(leftPanel, BorderLayout.WEST);
+        buttonPanel.add(rightPanel, BorderLayout.EAST);
+
+        return buttonPanel;
+    }
+
 }
