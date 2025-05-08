@@ -18,6 +18,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -32,8 +33,17 @@ public class Cashier_Product_Info {
 
     // Constants
     private static MainFrame productInfoFrame = null;
+    private static String productName;
+    private static String productPrice;
+    private static String imageUrl;
+    private static String categoryName;
 
     public static void main(String[] args) {
+        Cashier_Product_Info.productName = args[0];
+        Cashier_Product_Info.productPrice = args[1];
+        Cashier_Product_Info.imageUrl = args[2];
+        Cashier_Product_Info.categoryName = args[3];
+        
         MainFrame frame = new MainFrame("Cashier Product Info");
 
         Nav_Panel navPanel = createNavPanel();
@@ -123,7 +133,9 @@ public class Cashier_Product_Info {
         imagePanel.setPreferredSize(new Dimension(850, 700));
 
         try {
-            BufferedImage originalImage = ImageIO.read(new File(imagePath));
+            InputStream input = Cashier_Product_Info.class.getResourceAsStream("/assets/" + Cashier_Product_Info.imageUrl);
+            
+            BufferedImage originalImage = ImageIO.read(input);
             Image scaledImage = originalImage.getScaledInstance(800, 500, Image.SCALE_SMOOTH);
             JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
             imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -161,13 +173,13 @@ public class Cashier_Product_Info {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.CENTER;
 
-        JLabel productName = new JLabel(name);
+        JLabel productName = new JLabel(Cashier_Product_Info.productName);
         productName.setFont(new Font("Arial", Font.BOLD, 20));
 
-        JLabel productPrice = new JLabel("Rp " + price);
+        JLabel productPrice = new JLabel("Rp " + Cashier_Product_Info.productPrice);
         productPrice.setFont(new Font("Arial", Font.ITALIC, 18));
 
-        JLabel productCategory = new JLabel(category);
+        JLabel productCategory = new JLabel(Cashier_Product_Info.categoryName);
         productCategory.setFont(new Font("Arial", Font.PLAIN, 16));
 
         descriptionPanel.add(productName, gbc);
