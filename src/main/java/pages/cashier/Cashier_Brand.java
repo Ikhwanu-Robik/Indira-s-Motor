@@ -5,6 +5,8 @@ import components.Nav_Panel;
 import components.ui.LogoutButton;
 import components.ui.MainFrame;
 import components.ui.NavLabel;
+import controllers.CartController;
+import controllers.ReportController;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -14,36 +16,36 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import javax.imageio.ImageIO;
+import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
-public class Cashier_Product_Info {
+public class Cashier_Brand {
 
     // Constants
-    private static MainFrame productInfoFrame = null;
-    private static String productName;
-    private static String productPrice;
-    private static String imageUrl;
-    private static String categoryName;
+    private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 30);
+    private static final Color BROWN_COLOR = new Color(0xA0522D);
+    private static MainFrame brandFrame = null;
 
     public static void main(String[] args) {
-        Cashier_Product_Info.productName = args[0];
-        Cashier_Product_Info.productPrice = args[1];
-        Cashier_Product_Info.imageUrl = args[2];
-        Cashier_Product_Info.categoryName = args[3];
-        
-        MainFrame frame = new MainFrame("Cashier Product Info");
+        MainFrame frame = new MainFrame("Cashier Dashboard");
 
         Nav_Panel navPanel = createNavPanel();
         Content_Panel contentPanel = createContentPanel();
@@ -55,7 +57,7 @@ public class Cashier_Product_Info {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        productInfoFrame = frame;
+        brandFrame = frame;
     }
 
     private static Nav_Panel createNavPanel() {
@@ -68,11 +70,12 @@ public class Cashier_Product_Info {
         logo.setIcon(icon);
         logo.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 
+        // Nav items
         // Nav links
         NavLabel navProduct = new NavLabel("Produk", false);
         NavLabel navBrand = new NavLabel("Merk", false);
         NavLabel navCategory = new NavLabel("Kategori", false);
-        NavLabel navReport = new NavLabel("Laporan", false);
+        NavLabel navReport = new NavLabel("Transaksi", false);
         navProduct.setCursor(new Cursor(Cursor.HAND_CURSOR));
         navBrand.setCursor(new Cursor(Cursor.HAND_CURSOR));
         navCategory.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -82,15 +85,29 @@ public class Cashier_Product_Info {
         LogoutButton logoutBtn = new LogoutButton("Keluar");
 
         Cashier_Product cashierProduct = new Cashier_Product();
+        Cashier_Brand cashierBrand = new Cashier_Brand();
 
         navProduct.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                productInfoFrame.dispose();
+                brandFrame.dispose();
                 cashierProduct.main(new String[0]);
             }
         });
-
+        navBrand.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cashierBrand.main(new String[0]);
+                brandFrame.dispose();
+            }
+        });
+        // nav.addMouseListener(new java.awt.event.MouseAdapter() {
+        //     @Override
+        //     public void mouseClicked(java.awt.event.MouseEvent evt) {
+        //         adminReport.main(new String[0]);
+        //         dashboardFrame.dispose();
+        //     }
+        // });
         // Add components to nav panel
         navPanel.add(Box.createVerticalStrut(70));
         navPanel.add(logo);
@@ -112,7 +129,10 @@ public class Cashier_Product_Info {
         Content_Panel contentPanel = new Content_Panel();
         contentPanel.setLayout(new GridBagLayout());
 
-        JPanel image = createImagePanel("C:\\Users\\Arthur\\Downloads\\10854966.jpg");
+        // Welcome label
+        JLabel titleLabel = createTitleLabel("Merk Produk", Color.black);
+        JScrollPane tableBrands = createTableBrands();
+        JPanel buttonPanel = createButtonPanel();
 
         // Add label to content panel
         GridBagConstraints gbc = new GridBagConstraints();
@@ -120,72 +140,58 @@ public class Cashier_Product_Info {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.CENTER;
 
-        contentPanel.add(image, gbc);
+        contentPanel.add(titleLabel, gbc);
+        contentPanel.add(tableBrands, gbc);
+        contentPanel.add(buttonPanel, gbc);
+
         return contentPanel;
     }
 
-    private static JPanel createImagePanel(String imagePath) {
-        JPanel imagePanel = new JPanel();
-        imagePanel.setLayout(new BoxLayout(imagePanel, BoxLayout.Y_AXIS));
-        imagePanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
-        imagePanel.setBackground(Color.WHITE);
-        imagePanel.setPreferredSize(new Dimension(850, 700));
-
-        try {
-            InputStream input = Cashier_Product_Info.class.getResourceAsStream("/assets/" + Cashier_Product_Info.imageUrl);
-            
-            BufferedImage originalImage = ImageIO.read(input);
-            Image scaledImage = originalImage.getScaledInstance(800, 500, Image.SCALE_SMOOTH);
-            JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
-            imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-            imagePanel.add(imageLabel);
-        } catch (IOException e) {
-            JLabel placeholder = new JLabel("No Image Available");
-            placeholder.setAlignmentX(Component.CENTER_ALIGNMENT);
-            imagePanel.add(placeholder);
-        }
-
-        JPanel productDescription = createDescriptionPanel("Oli Amahay", 20000, "Oli");
-        imagePanel.add(productDescription);
-
-        imagePanel.add(Box.createVerticalStrut(20));
-
-        JPanel buttonContainer = new JPanel();
-        buttonContainer.setLayout(new BorderLayout());
-        buttonContainer.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
-
-        JPanel buttonPanel = createButtonPanel();
-        buttonContainer.add(buttonPanel, BorderLayout.CENTER);
-
-        imagePanel.add(buttonContainer);
-
-        return imagePanel;
+    private static JLabel createTitleLabel(String text, Color color) {
+        JLabel label = new JLabel(text);
+        label.setForeground(color);
+        label.setFont(TITLE_FONT);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        return label;
     }
 
-    private static JPanel createDescriptionPanel(String name, double price, String category) {
-        JPanel descriptionPanel = new JPanel();
-        descriptionPanel.setLayout(new GridBagLayout());
+    private static JScrollPane createTableBrands() {
+        // Nama kolom
+        String[] columnNames = {"id_merk", "merk", "kategori"};
 
-        // Add label to content panel
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.CENTER;
+        // Data kosong untuk inisialisasi awal
+        Object[][] data = {};
 
-        JLabel productName = new JLabel(Cashier_Product_Info.productName);
-        productName.setFont(new Font("Arial", Font.BOLD, 20));
+        // Buat model tabel
+        DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
 
-        JLabel productPrice = new JLabel("Rp " + Cashier_Product_Info.productPrice);
-        productPrice.setFont(new Font("Arial", Font.ITALIC, 18));
+        // Buat tabel
+        JTable table = new JTable(tableModel);
 
-        JLabel productCategory = new JLabel(Cashier_Product_Info.categoryName);
-        productCategory.setFont(new Font("Arial", Font.PLAIN, 16));
+        // Styling tabel
+        table.setBackground(new Color(45, 45, 45));
+        table.setForeground(Color.WHITE);
+        table.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        table.setRowHeight(28);
+        table.setGridColor(Color.DARK_GRAY);
 
-        descriptionPanel.add(productName, gbc);
-        descriptionPanel.add(productPrice, gbc);
-        descriptionPanel.add(productCategory, gbc);
+        // Styling header tabel
+        JTableHeader header = table.getTableHeader();
+        header.setBackground(new Color(30, 30, 30));
+        header.setForeground(Color.WHITE);
+        header.setFont(new Font("SansSerif", Font.BOLD, 15));
+        header.setReorderingAllowed(false);
 
-        return descriptionPanel;
+        // Set preferred width kolom
+        table.getColumnModel().getColumn(0).setPreferredWidth(120);
+        table.getColumnModel().getColumn(1).setPreferredWidth(150);
+        table.getColumnModel().getColumn(2).setPreferredWidth(150);
+
+        // ScrollPane untuk tabel
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.getViewport().setBackground(new Color(45, 45, 45));
+
+        return scrollPane;
     }
 
     private static JPanel createButtonPanel() {
@@ -193,32 +199,22 @@ public class Cashier_Product_Info {
         buttonPanel.setLayout(new BorderLayout());
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         buttonPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
-
-        Cashier_Product cashierProduct = new Cashier_Product();
-
-        JButton cancelBtn = new JButton("Batal");
+        
+        JButton cancelBtn = new JButton("Hapus");
         cancelBtn.setFont(new Font("Arial", Font.PLAIN, 16));
         cancelBtn.setForeground(Color.BLACK);
         cancelBtn.setBackground(new Color(0xE0E0E0));
-        cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                productInfoFrame.dispose();
-                cashierProduct.main(new String[0]);
-            }
-        });
-        
-        Cashier_Product_Edit productEdit = new Cashier_Product_Edit();
 
-        JButton editBtn = new JButton("Edit");
+        Cashier_Brand_Add brandAddPage = new Cashier_Brand_Add();
+        JButton editBtn = new JButton("Tambah Merk+");
         editBtn.setFont(new Font("Arial", Font.PLAIN, 16));
         editBtn.setForeground(Color.WHITE);
         editBtn.setBackground(new Color(0xA0522D));
         editBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                productInfoFrame.dispose();
-                productEdit.main(new String[0]);
+                brandFrame.dispose();
+                brandAddPage.main(new String[0]);
             }
         });
 
@@ -233,5 +229,4 @@ public class Cashier_Product_Info {
 
         return buttonPanel;
     }
-
 }
