@@ -29,10 +29,10 @@ import java.awt.Insets;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 
-public class Cashier_Product_Edit {
+public class Cashier_Brand_Add {
 
     // Constants
-    private static MainFrame productAddFrame = null;
+    private static MainFrame brandAddFrame = null;
 
     public static void main(String[] args) {
         MainFrame frame = new MainFrame("Cashier Dashboard");
@@ -47,7 +47,7 @@ public class Cashier_Product_Edit {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        productAddFrame = frame;
+        brandAddFrame = frame;
     }
 
     private static Nav_Panel createNavPanel() {
@@ -74,12 +74,20 @@ public class Cashier_Product_Edit {
         LogoutButton logoutBtn = new LogoutButton("Keluar");
 
         Cashier_Product cashierProduct = new Cashier_Product();
+        Cashier_Brand cashierBrand = new Cashier_Brand();
 
         navProduct.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                productAddFrame.dispose();
+                brandAddFrame.dispose();
                 cashierProduct.main(new String[0]);
+            }
+        });
+        navBrand.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cashierBrand.main(new String[0]);
+                brandAddFrame.dispose();
             }
         });
 
@@ -104,7 +112,7 @@ public class Cashier_Product_Edit {
         Content_Panel contentPanel = new Content_Panel();
         contentPanel.setLayout(new GridBagLayout());
 
-        JLabel title = createTitleLabel("Edit Produk", Color.BLACK);
+        JLabel title = createTitleLabel("Tambah Merk", Color.BLACK);
         JPanel field = createInputPanel();
         JPanel dropDown = createDropDownPanel();
         JPanel buttonPanel = createButtonPanel();
@@ -136,11 +144,8 @@ public class Cashier_Product_Edit {
         inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
         inputPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        inputPanel.add(createLabeledField("Nama Produk:"));
+        inputPanel.add(createLabeledField("Nama Merk:"));
         inputPanel.add(Box.createVerticalStrut(15));
-        inputPanel.add(createLabeledField("Harga:"));
-        inputPanel.add(Box.createVerticalStrut(15));
-        inputPanel.add(createLabeledField("Stok:"));
 
         return inputPanel;
     }
@@ -165,22 +170,11 @@ public class Cashier_Product_Edit {
 
     private static JPanel createDropDownPanel() {
         // Panel utama untuk dua dropdown disusun horizontal
-        JPanel mainPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 10)); 
+        JPanel mainPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 10));
 
         JPanel brandPanel = new JPanel();
         brandPanel.setLayout(new BoxLayout(brandPanel, BoxLayout.Y_AXIS));
         brandPanel.setAlignmentY(Component.TOP_ALIGNMENT);
-
-        JLabel brandLabel = new JLabel("Merk:");
-        brandLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        String[] brands = {"Yamala", "Honga", "Daisatsu"};
-        JComboBox<String> brandComboBox = new JComboBox<>(brands);
-        brandComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        brandPanel.add(brandLabel);
-        brandPanel.add(Box.createVerticalStrut(5));
-        brandPanel.add(brandComboBox);
 
         JPanel categoryPanel = new JPanel();
         categoryPanel.setLayout(new BoxLayout(categoryPanel, BoxLayout.Y_AXIS));
@@ -206,9 +200,10 @@ public class Cashier_Product_Edit {
     private static JPanel createButtonPanel() {
         JPanel btnPanel = new JPanel(new BorderLayout());
         btnPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-        
-        Cashier_Product cashierProduct = new Cashier_Product();
 
+        Cashier_Brand cashierBrand = new Cashier_Brand();
+
+        // Tombol "Batal"
         JButton cancelBtn = new JButton("Batal");
         cancelBtn.setFont(new Font("Arial", Font.PLAIN, 16));
         cancelBtn.setForeground(Color.BLACK);
@@ -216,35 +211,28 @@ public class Cashier_Product_Edit {
         cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                productAddFrame.dispose();
-                cashierProduct.main(new String[0]);
+                brandAddFrame.dispose();
+                cashierBrand.main(new String[0]);
             }
         });
 
-        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        // Panel kiri untuk tombol "Batal"
+        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        leftPanel.setOpaque(false);
         leftPanel.add(cancelBtn);
 
-        JButton addImageBtn = new JButton("+Gambar");
-        addImageBtn.setFont(new Font("Arial", Font.PLAIN, 16));
-        addImageBtn.setForeground(Color.BLACK);
-        addImageBtn.setBackground(new Color(0xE0E0E0));
-
-        JButton addBtn = new JButton("Update");
+        // Tombol "Tambahkan"
+        JButton addBtn = new JButton("Tambahkan");
         addBtn.setFont(new Font("Arial", Font.PLAIN, 16));
         addBtn.setForeground(Color.WHITE);
         addBtn.setBackground(new Color(0xA0522D));
 
-        JPanel rightPanel = new JPanel();
-        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
-        rightPanel.setAlignmentY(Component.TOP_ALIGNMENT);
-        addImageBtn.setAlignmentX(Component.RIGHT_ALIGNMENT);
-        addBtn.setAlignmentX(Component.RIGHT_ALIGNMENT);
-
-        rightPanel.add(addImageBtn);
-        rightPanel.add(Box.createVerticalStrut(10));
+        // Panel kanan untuk tombol "Tambahkan"
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        rightPanel.setOpaque(false);
         rightPanel.add(addBtn);
 
-        // Tambahkan ke panel utama
+        // Tambahkan panel kiri dan kanan ke panel utama
         btnPanel.add(leftPanel, BorderLayout.WEST);
         btnPanel.add(rightPanel, BorderLayout.EAST);
 
