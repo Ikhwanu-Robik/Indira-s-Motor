@@ -2,110 +2,33 @@ package pages.cashier;
 
 import components.AddInput;
 import components.Content_Panel;
-import components.Nav_Panel;
-import components.ui.LogoutButton;
-import components.ui.MainFrame;
-import components.ui.NavLabel;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
+import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-
+import java.awt.Insets;
+import java.util.function.Consumer;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.Insets;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-
 public class Cashier_Brand_Add {
+    private static Consumer<Content_Panel> reloadCallback;
+    
+    public static Content_Panel init(Consumer<Content_Panel> reloadCallback) {
+        Cashier_Brand_Add.reloadCallback = reloadCallback;
+        Content_Panel cashierBrandAddPanel = createContentPanel();
 
-    // Constants
-    private static MainFrame brandAddFrame = null;
-
-    public static void main(String[] args) {
-        MainFrame frame = new MainFrame("Cashier Dashboard");
-
-        Nav_Panel navPanel = createNavPanel();
-        Content_Panel contentPanel = createContentPanel();
-
-        frame.add(navPanel, BorderLayout.WEST);
-        frame.add(contentPanel, BorderLayout.CENTER);
-
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-
-        brandAddFrame = frame;
-    }
-
-    private static Nav_Panel createNavPanel() {
-        Nav_Panel navPanel = new Nav_Panel();
-        navPanel.setLayout(new BoxLayout(navPanel, BoxLayout.Y_AXIS));
-
-        // Logo
-        ImageIcon icon = new ImageIcon(Cashier_Dashboard.class.getClassLoader().getResource("assets/indira_logo.png"));
-        JLabel logo = new JLabel();
-        logo.setIcon(icon);
-        logo.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-
-        // Nav links
-        NavLabel navProduct = new NavLabel("Produk", false);
-        NavLabel navBrand = new NavLabel("Merk", false);
-        NavLabel navCategory = new NavLabel("Kategori", false);
-        NavLabel navReport = new NavLabel("Laporan", false);
-        navProduct.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        navBrand.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        navCategory.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        navReport.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-        // Logout button
-        LogoutButton logoutBtn = new LogoutButton("Keluar");
-
-        Cashier_Product cashierProduct = new Cashier_Product();
-        Cashier_Brand cashierBrand = new Cashier_Brand();
-
-        navProduct.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                brandAddFrame.dispose();
-                cashierProduct.main(new String[0]);
-            }
-        });
-        navBrand.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                cashierBrand.main(new String[0]);
-                brandAddFrame.dispose();
-            }
-        });
-
-        // Add components to nav panel
-        navPanel.add(Box.createVerticalStrut(70));
-        navPanel.add(logo);
-        navPanel.add(Box.createVerticalStrut(80));
-        navPanel.add(navProduct);
-        navPanel.add(Box.createVerticalStrut(40));
-        navPanel.add(navBrand);
-        navPanel.add(Box.createVerticalStrut(40));
-        navPanel.add(navCategory);
-        navPanel.add(Box.createVerticalStrut(40));
-        navPanel.add(navReport);
-        navPanel.add(Box.createVerticalStrut(100));
-        navPanel.add(logoutBtn);
-
-        return navPanel;
+        return cashierBrandAddPanel;
     }
 
     private static Content_Panel createContentPanel() {
@@ -201,8 +124,6 @@ public class Cashier_Brand_Add {
         JPanel btnPanel = new JPanel(new BorderLayout());
         btnPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
-        Cashier_Brand cashierBrand = new Cashier_Brand();
-
         // Tombol "Batal"
         JButton cancelBtn = new JButton("Batal");
         cancelBtn.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -211,8 +132,7 @@ public class Cashier_Brand_Add {
         cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                brandAddFrame.dispose();
-                cashierBrand.main(new String[0]);
+                reloadCallback.accept(Cashier_Brand.init(reloadCallback));
             }
         });
 

@@ -113,11 +113,10 @@ public class Login {
                 }
                 else if (response.get("status").equals("success")) {
                     //redirect to dashboard
-                    String[] args = {loginSession.username};
                     if (loginSession.role.equals("cashier")) {
                         //display cashier dashboard
                         frame.dispose();
-                        pages.cashier.Cashier_Dashboard.main(args);
+                        CashierLayout.init(loginSession.username);
                     }
                     else if (loginSession.role.equals("admin")) {
                         //display admin dashboard
