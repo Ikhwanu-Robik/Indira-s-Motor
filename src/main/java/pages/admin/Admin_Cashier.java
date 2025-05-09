@@ -11,6 +11,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.Consumer;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -20,17 +21,19 @@ public class Admin_Cashier {
     // Constants
     private static final Color BACKGROUND_COLOR = new Color(0xE4E4E4);
     private static ArrayList<String> cashierNames = new ArrayList<>();
+    private static Consumer<Content_Panel> reloadCallback;
 
-    public static Content_Panel init() {
+    public static Content_Panel init(Consumer<Content_Panel> reloadCallback) {
+        Admin_Cashier.reloadCallback = reloadCallback;
         Content_Panel adminCashierPanel = createContentPanel();
-        
+
         return adminCashierPanel;
     }
-    
-        public static void getCashiers() {
+
+    public static void getCashiers() {
 //        Clear the cashiers array
         cashierNames = new ArrayList<>();
-        
+
         ArrayList<String> columns = new ArrayList<>();
         columns.add("*");
 
@@ -71,7 +74,9 @@ public class Admin_Cashier {
         addButton.addMouseListener(new java.awt.event.MouseAdapter() {
             @SuppressWarnings("static-access")
             public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Content_Panel adminAddCashierPanel = Admin_Add_Cashier.init(reloadCallback);
                 
+                reloadCallback.accept(adminAddCashierPanel);
             }
         });
 
