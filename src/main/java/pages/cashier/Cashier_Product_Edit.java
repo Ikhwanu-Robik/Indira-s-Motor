@@ -2,6 +2,10 @@ package pages.cashier;
 
 import components.AddInput;
 import components.Content_Panel;
+import controllers.BrandController;
+import controllers.CategoryController;
+import controllers.ProductController;
+import indira_s_motor.Indira_s_motor;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -17,18 +21,67 @@ import javax.swing.SwingConstants;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 public class Cashier_Product_Edit {
+
     private static Consumer<Content_Panel> reloadCallback;
-    
-    public static Content_Panel init(Consumer<Content_Panel> reloadCallback) {
+    private static String productPrice;
+    private static String productStock;
+    private static String productName;
+    private static String brandName;
+    private static ArrayList<HashMap<String, String>> brands;
+    private static String categoryName;
+    private static ArrayList<HashMap<String, String>> categories;
+    private static JFileChooser fileChooser;
+    private static int fileChooserReturnValue = -1;
+    private static String imageUrl;
+    private static JComboBox brandComboBox;
+    private static HashMap<String, JTextField> inputFields = new HashMap<>();
+    private static JComboBox<String> categoryComboBox;
+    private static String productId;
+
+    public static Content_Panel init(Consumer<Content_Panel> reloadCallback, String productName) {
         Cashier_Product_Edit.reloadCallback = reloadCallback;
+        Cashier_Product_Edit.productName = productName;
+        fetchDatabase();
 
         Content_Panel cashierProductEditPanel = createContentPanel();
         return cashierProductEditPanel;
+    }
+
+    private static void fetchDatabase() {
+        ArrayList<String> all_col = new ArrayList<>();
+        all_col.add("*");
+        Cashier_Product_Edit.brands = new BrandController().read(all_col);
+
+        all_col.clear();
+        all_col.add("*");
+        Cashier_Product_Edit.categories = new CategoryController().read(all_col);
+
+        all_col.clear();
+        all_col.add("*");
+        HashMap<String, String> product = new ProductController().findWhere("name", productName).getFirst();
+        Cashier_Product_Edit.productId = product.get("id");
+        Cashier_Product_Edit.productPrice = product.get("price");
+        Cashier_Product_Edit.productStock = product.get("stock");
+        Cashier_Product_Edit.imageUrl = product.get("image_url");
+
+        HashMap<String, String> brand = new BrandController().findWhere("id", product.get("brand_id")).getFirst();
+        Cashier_Product_Edit.brandName = brand.get("name");
+        Cashier_Product_Edit.categoryName = new CategoryController().findWhere("id", brand.get("category_id")).getFirst().get("name");
     }
 
     private static Content_Panel createContentPanel() {
@@ -67,16 +120,16 @@ public class Cashier_Product_Edit {
         inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
         inputPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        inputPanel.add(createLabeledField("Nama Produk:"));
+        inputPanel.add(createLabeledField("Nama Produk:", productName));
         inputPanel.add(Box.createVerticalStrut(15));
-        inputPanel.add(createLabeledField("Harga:"));
+        inputPanel.add(createLabeledField("Harga:", productPrice));
         inputPanel.add(Box.createVerticalStrut(15));
-        inputPanel.add(createLabeledField("Stok:"));
+        inputPanel.add(createLabeledField("Stok:", productStock));
 
         return inputPanel;
     }
 
-    private static JPanel createLabeledField(String labelText) {
+    private static JPanel createLabeledField(String labelText, String value) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -86,6 +139,9 @@ public class Cashier_Product_Edit {
 
         JTextField input = new AddInput();
         input.setAlignmentX(Component.LEFT_ALIGNMENT);
+        input.setText(value);
+
+        inputFields.put(labelText, input);
 
         panel.add(label);
         panel.add(Box.createVerticalStrut(5));
@@ -96,7 +152,7 @@ public class Cashier_Product_Edit {
 
     private static JPanel createDropDownPanel() {
         // Panel utama untuk dua dropdown disusun horizontal
-        JPanel mainPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 10)); 
+        JPanel mainPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 10));
 
         JPanel brandPanel = new JPanel();
         brandPanel.setLayout(new BoxLayout(brandPanel, BoxLayout.Y_AXIS));
@@ -105,9 +161,21 @@ public class Cashier_Product_Edit {
         JLabel brandLabel = new JLabel("Merk:");
         brandLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        String[] brands = {"Yamala", "Honga", "Daisatsu"};
+        String[] brands = new String[Cashier_Product_Edit.brands.size()];
+        int i = 0;
+        for (HashMap<String, String> brand : Cashier_Product_Edit.brands) {
+            brands[i++] = brand.get("name");
+        }
         JComboBox<String> brandComboBox = new JComboBox<>(brands);
         brandComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        Cashier_Product_Edit.brandComboBox = brandComboBox;
+
+//        Select the product-to-be-edited's brand
+        for (int row = 0; row < brands.length; row++) {
+            if (brandComboBox.getItemAt(row).trim().equals(brandName)) {
+                brandComboBox.setSelectedIndex(row);
+            }
+        }
 
         brandPanel.add(brandLabel);
         brandPanel.add(Box.createVerticalStrut(5));
@@ -120,9 +188,21 @@ public class Cashier_Product_Edit {
         JLabel categoryLabel = new JLabel("Kategori:");
         categoryLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        String[] categories = {"Oli", "Ban", "Rantai"};
+        String[] categories = new String[Cashier_Product_Edit.categories.size()];
+        int j = 0;
+        for (HashMap<String, String> category : Cashier_Product_Edit.categories) {
+            categories[j++] = category.get("name");
+        }
         JComboBox<String> categoryComboBox = new JComboBox<>(categories);
         categoryComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        Cashier_Product_Edit.categoryComboBox = categoryComboBox;
+
+//        Select the product-to-be-edited's category
+        for (int row = 0; row < categories.length; row++) {
+            if (categoryComboBox.getItemAt(row).trim().equals(categoryName)) {
+                categoryComboBox.setSelectedIndex(row);
+            }
+        }
 
         categoryPanel.add(categoryLabel);
         categoryPanel.add(Box.createVerticalStrut(5));
@@ -156,11 +236,79 @@ public class Cashier_Product_Edit {
         addImageBtn.setFont(new Font("Arial", Font.PLAIN, 16));
         addImageBtn.setForeground(Color.BLACK);
         addImageBtn.setBackground(new Color(0xE0E0E0));
+        addImageBtn.addActionListener((ActionEvent e) -> {
+            final JFileChooser fc = new JFileChooser();
+            int returnVal = fc.showOpenDialog(fc);
+
+            fileChooser = fc;
+            fileChooserReturnValue = returnVal;
+        });
 
         JButton addBtn = new JButton("Update");
         addBtn.setFont(new Font("Arial", Font.PLAIN, 16));
         addBtn.setForeground(Color.WHITE);
         addBtn.setBackground(new Color(0xA0522D));
+        addBtn.addActionListener((ActionEvent e) -> {
+            String productId = Cashier_Product_Edit.productId;
+            String name = inputFields.get("Nama Produk:").getText();
+            String price = inputFields.get("Harga:").getText();
+            String stock = inputFields.get("Stok:").getText();
+            String brandName = Cashier_Product_Edit.brandComboBox.getSelectedItem().toString();
+            String brand_id = null;
+            String brand_category_id = null;
+            for (HashMap<String, String> brand : brands) {
+                if (brand.get("name").trim().equals(brandName.trim())) {
+                    brand_id = brand.get("id");
+                    brand_category_id = brand.get("category_id");
+                }
+            }
+            String categoryName = Cashier_Product_Edit.categoryComboBox.getSelectedItem().toString();
+            String category_id = null;
+            for (HashMap<String, String> category : categories) {
+                if (category.get("name").trim().equals(categoryName.trim())) {
+                    category_id = category.get("id");
+                }
+            }
+            String image_url = Cashier_Product_Edit.imageUrl;
+
+            boolean isBrandMatchCategory = brand_category_id.trim().equals(category_id.trim());
+            if (!isBrandMatchCategory) {
+                JOptionPane.showMessageDialog(null, "Brand tidak sesuai dengan Kategori");
+                return;
+            }
+
+            if (fileChooserReturnValue == JFileChooser.APPROVE_OPTION) {
+                image_url = fileChooser.getSelectedFile().getName();
+                File selectedFile = fileChooser.getSelectedFile();
+
+                try {
+                    File currentDir = new File(".").getCanonicalFile();
+                    File imagesDir = new File(currentDir, "src//main//resources//assets");
+
+                    File targetFile = new File(imagesDir, selectedFile.getName());
+
+                    Files.copy(
+                            selectedFile.toPath(),
+                            targetFile.toPath());
+
+                } catch (IOException ex) {
+                    Logger.getLogger(Indira_s_motor.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            HashMap<String, String> product_data = new HashMap<>();
+            product_data.put("name", name);
+            product_data.put("image_url", image_url);
+            product_data.put("price", price);
+            product_data.put("stock", stock);
+            product_data.put("brand_id", brand_id);
+            new ProductController().update(Integer.parseInt(productId), product_data);
+
+            JOptionPane.showMessageDialog(null, "Produk diedit");
+            for (String key : inputFields.keySet()) {
+                inputFields.get(key).setText("");
+            }
+        });
 
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
@@ -178,5 +326,4 @@ public class Cashier_Product_Edit {
 
         return btnPanel;
     }
-
 }
