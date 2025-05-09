@@ -83,7 +83,7 @@ public class AdminLayout {
         navProduct.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadContent(Admin_Products.init());
+                reloadContent(Admin_Products.init(AdminLayout::reloadContent));
             }
         });
 

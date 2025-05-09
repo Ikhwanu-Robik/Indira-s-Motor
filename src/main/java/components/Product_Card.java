@@ -11,11 +11,11 @@ import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URL;
+import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import pages.cashier.Cashier_Product_Info;
@@ -28,8 +28,10 @@ public class Product_Card extends JPanel {
     private String productPrice;
     private String imageUrl;
     private String categoryName;
+    private Consumer<Content_Panel> reloadCallback;
 
-    public Product_Card(String id, String name, int price, String image_url, String categoryName) {
+    public Product_Card(Consumer<Content_Panel> reloadCallback, String id, String name, int price, String image_url, String categoryName) {
+        this.reloadCallback = reloadCallback;
         this.productName = name;
         this.productPrice = Integer.toString(price);
         this.imageUrl = image_url;
@@ -75,13 +77,14 @@ public class Product_Card extends JPanel {
         logo.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                String[] args = {
-                    Product_Card.this.productName,
-                    Product_Card.this.productPrice,
-                    Product_Card.this.imageUrl,
-                    Product_Card.this.categoryName
-                };
-                Cashier_Product_Info.main(args);
+                reloadCallback.accept(Cashier_Product_Info.init(
+                        Product_Card.this.reloadCallback,
+                        Product_Card.this.productName,
+                        Product_Card.this.productPrice,
+                        Product_Card.this.imageUrl,
+                        Product_Card.this.categoryName
+                ));
+//                  Admin_Product_Info.init();
             }
         });
 
