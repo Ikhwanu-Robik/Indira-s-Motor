@@ -1,6 +1,8 @@
 package pages.cashier;
 
 import components.Content_Panel;
+import controllers.BrandController;
+import controllers.CategoryController;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -8,10 +10,13 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.function.Consumer;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -23,12 +28,26 @@ public class Cashier_Brand {
     private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 30);
     private static final Color BROWN_COLOR = new Color(0xA0522D);
     private static Consumer<Content_Panel> reloadCallback;
-
+    private static ArrayList<HashMap<String, String>> brands;
+    private static ArrayList<HashMap<String, String>> categories;
+    private static JTable brandTable;
+    
     public static Content_Panel init(Consumer<Content_Panel> reloadCallback) {
         Cashier_Brand.reloadCallback = reloadCallback;
+        fetchDatabase();
+        
         Content_Panel contentPanel = createContentPanel();
         
         return contentPanel;
+    }
+    
+    private static void fetchDatabase() {
+        ArrayList<String> all_col = new ArrayList<>();
+        all_col.add("*");
+        Cashier_Brand.brands = new BrandController().read(all_col);
+        all_col.clear();
+        all_col.add("*");
+        Cashier_Brand.categories = new CategoryController().read(all_col);
     }
 
     private static Content_Panel createContentPanel() {
@@ -66,13 +85,30 @@ public class Cashier_Brand {
         String[] columnNames = {"id_merk", "merk", "kategori"};
 
         // Data kosong untuk inisialisasi awal
-        Object[][] data = {};
+        int brandsCount = brands.size();
+        int i = 0;
+        Object[][] data = new Object[brandsCount][3];
+        for (HashMap<String, String> brand : brands) {
+            String brandCategory = "??";
+            for (HashMap<String, String> category : categories) {
+                if (brand.get("category_id").trim().equals(category.get("id").trim())) {
+                    brandCategory = category.get("name");
+                }
+            }
+            
+            data[i][0] = brand.get("id");
+            data[i][1] = brand.get("name");
+            data[i][2] = brandCategory;
+            
+            i++;
+        }
 
         // Buat model tabel
         DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
 
         // Buat tabel
         JTable table = new JTable(tableModel);
+        Cashier_Brand.brandTable = table;
 
         // Styling tabel
         table.setBackground(new Color(45, 45, 45));
@@ -106,10 +142,26 @@ public class Cashier_Brand {
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         buttonPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
         
-        JButton cancelBtn = new JButton("Hapus");
-        cancelBtn.setFont(new Font("Arial", Font.PLAIN, 16));
-        cancelBtn.setForeground(Color.BLACK);
-        cancelBtn.setBackground(new Color(0xE0E0E0));
+        JButton deleteBtn = new JButton("Hapus");
+        deleteBtn.setFont(new Font("Arial", Font.PLAIN, 16));
+        deleteBtn.setForeground(Color.BLACK);
+        deleteBtn.setBackground(new Color(0xE0E0E0));
+        deleteBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int response = JOptionPane.showConfirmDialog(null, "Semua Produk dari Merek ini akan ikut terhapus", "PERINGATAN!", JOptionPane.WARNING_MESSAGE);
+                
+                if (response == JOptionPane.YES_OPTION) {
+                    int row = brandTable.getSelectedRow();
+                    int brandId = Integer.parseInt(brandTable.getValueAt(row, 0).toString());
+                    
+                    new BrandController().delete(brandId);
+                   
+                    JOptionPane.showMessageDialog(null, "Merek dan semua produknya dihapus.");
+                    reloadCallback.accept(Cashier_Brand.init(reloadCallback));
+                }
+            }
+        });
 
         JButton addBtn = new JButton("Tambah Merk+");
         addBtn.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -118,12 +170,12 @@ public class Cashier_Brand {
         addBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadCallback.accept(Cashier_Brand_Add.init(reloadCallback));
+                reloadCallback.accept(Cashier_Brand_Add.init(reloadCallback, categories));
             }
         });
 
         JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        leftPanel.add(cancelBtn);
+        leftPanel.add(deleteBtn);
 
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         rightPanel.add(addBtn);
