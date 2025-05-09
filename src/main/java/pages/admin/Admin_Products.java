@@ -1,20 +1,11 @@
 package pages.admin;
 
 import java.awt.BorderLayout;
-import java.awt.Cursor;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-
 import components.Content_Panel;
-import components.Nav_Panel;
 import components.Product_Card;
 import components.Search_Bar;
-import components.ui.LogoutButton;
-import components.ui.MainFrame;
-import components.ui.NavLabel;
 import controllers.BrandController;
 import controllers.CategoryController;
 import controllers.ProductController;
@@ -24,22 +15,26 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 public class Admin_Products {
 
-    // Constants
-    private static MainFrame adminProductFrame = null;
     private static Search_Bar searchBar = null;
-//    private static final Color BACKGROUND_COLOR = new Color(0xE4E4E4);
     public static JPanel cardPanel = null;
     private static ArrayList<HashMap<String, String>> categories = null;
     private static ArrayList<HashMap<String, String>> brands = null;
     private static ArrayList<HashMap<String, String>> products = null;
 
-    public void main(String[] args) {
+    public static Content_Panel init() {
+        fetchDatabase();
+
+        Content_Panel adminProductsPanel = createContentPanel();
+
+        return adminProductsPanel;
+    }
+
+    private static void fetchDatabase() {
         ArrayList<String> columns = new ArrayList<>();
         columns.add("id");
         columns.add("name");
@@ -50,79 +45,9 @@ public class Admin_Products {
         ArrayList<String> all_col = new ArrayList<>();
         all_col.add("*");
         Admin_Products.brands = new BrandController().read(all_col);
-        // TODO : upon usage, the value of all_col is changed with brand's columns. FIND OUT WHY
         all_col.clear();
         all_col.add("*");
         Admin_Products.categories = new CategoryController().read(all_col);
-
-        MainFrame frame = new MainFrame("Admin Products");
-
-        Nav_Panel navPanel = createNavPanel();
-        Content_Panel contentPanel = createContentPanel();
-
-        frame.add(navPanel, BorderLayout.WEST);
-        frame.add(contentPanel, BorderLayout.CENTER);
-
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-
-        adminProductFrame = frame;
-    }
-
-    private static Nav_Panel createNavPanel() {
-        Nav_Panel navPanel = new Nav_Panel();
-        navPanel.setLayout(new BoxLayout(navPanel, BoxLayout.Y_AXIS));
-
-        // Logo
-        ImageIcon icon = new ImageIcon(new Admin_Cashier().getClass().getResource("/assets/indira_logo.png"));
-        JLabel logo = new JLabel();
-        logo.setIcon(icon);
-        logo.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-
-        // Nav links
-        NavLabel navEmployee = new NavLabel("Pegawai", false);
-        NavLabel navProduct = new NavLabel("Produk", true);
-        NavLabel navReport = new NavLabel("Laporan", false);
-        navEmployee.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        navProduct.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        navReport.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-        // Logout button
-        LogoutButton logoutBtn = new LogoutButton("Keluar");
-
-        Admin_Cashier adminCashier = new Admin_Cashier();
-        Admin_Report adminReport = new Admin_Report();
-
-        navEmployee.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                adminCashier.main(new String[0]);
-                adminProductFrame.dispose();
-            }
-        });
-
-        navReport.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                adminReport.main(new String[0]);
-                adminProductFrame.dispose();
-            }
-        });
-
-        // Add components to nav panel
-        navPanel.add(Box.createVerticalStrut(70));
-        navPanel.add(logo);
-        navPanel.add(Box.createVerticalStrut(80));
-        navPanel.add(navEmployee);
-        navPanel.add(Box.createVerticalStrut(40));
-        navPanel.add(navProduct);
-        navPanel.add(Box.createVerticalStrut(40));
-        navPanel.add(navReport);
-        navPanel.add(Box.createVerticalStrut(150));
-        navPanel.add(logoutBtn);
-
-        return navPanel;
     }
 
     private static Content_Panel createContentPanel() {

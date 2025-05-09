@@ -29,7 +29,7 @@ public class API_Documentation {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+//    public static void main(String[] args) {
 // *
 // *      
 // *      
@@ -478,5 +478,5 @@ public class API_Documentation {
           newData.put("name", "oli");
           new CategoryController().update(id, newData);
          */
-    }
+//    }
 }

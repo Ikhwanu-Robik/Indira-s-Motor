@@ -21,7 +21,7 @@ import javax.swing.SwingConstants;
 
 public class Login {
 
-    public static void main(String[] args) {
+    public static void init() {
         // Create the main frame with specified size
         JFrame frame = new JFrame("Login Application");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -122,7 +122,7 @@ public class Login {
                     else if (loginSession.role.equals("admin")) {
                         //display admin dashboard
                         frame.dispose();
-                        pages.admin.Admin_Dashboard.main(args);
+                        AdminLayout.init();
                     }
                 }
             }

@@ -12,6 +12,6 @@ import pages.Login;
  */
 public class Indira_s_motor {
     public static void main(String[] args) {
-        Login.main(null);
+        Login.init();
     }
 }
