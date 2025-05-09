@@ -90,7 +90,8 @@ public class AdminLayout {
         navReport.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadContent(Admin_Report.init());
+                Content_Panel adminReportPanel = Admin_Report.init(AdminLayout::reloadContent);
+                reloadContent(adminReportPanel);
             }
         });
 
