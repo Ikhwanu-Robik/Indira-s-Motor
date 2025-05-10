@@ -71,6 +71,10 @@ public class AdminLayout {
         navReport.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         LogoutButton logoutBtn = new LogoutButton("Keluar");
+        logoutBtn.addActionListener((e) -> {
+            frame.dispose();
+            Login.init();
+        });
 
         navEmployee.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override

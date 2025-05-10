@@ -77,6 +77,10 @@ public class CashierLayout {
 
         // Logout button
         LogoutButton logoutBtn = new LogoutButton("Keluar");
+        logoutBtn.addActionListener((e) -> {
+            frame.dispose();
+            Login.init();
+        });
 
         navProduct.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
