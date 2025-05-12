@@ -44,10 +44,22 @@ public class TransactionController {
 
     public void makeOrder(int cart_id, int fee) {
         //reduce the stock
-        ArrayList<HashMap<String, String>> cart_products = new CartController().getCartProducts(cart_id);
-        for (HashMap<String, String> product: cart_products) {
-            HashMap<String, String> oldValues = new ProductController().findWhere("id", product.get("product_id")).getFirst();
+        ArrayList<HashMap<String, String>> cartProducts = new CartController().getCartProducts(cart_id);
+        for (HashMap<String, String> product: cartProducts) {            
+            HashMap<String, String> oldValues = new HashMap<>();
+            oldValues.put("name", product.get("name"));
+            oldValues.put("image_url", product.get("image_url"));
+            oldValues.put("price", product.get("price"));
+            oldValues.put("stock", product.get("stock"));
+            oldValues.put("brand_id", product.get("brand_id"));
+            
+            for (String key : oldValues.keySet()) {
+                System.out.print(key + " : " + oldValues.get(key) + " | ");
+            }
+            System.out.println();
+            
             HashMap<String, String> newValues = new HashMap<>();
+            
             newValues.put("name", oldValues.get("name"));
             newValues.put("image_url", oldValues.get("image_url"));
             newValues.put("price", oldValues.get("price"));
