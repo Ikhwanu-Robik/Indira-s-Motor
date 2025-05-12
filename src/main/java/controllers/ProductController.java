@@ -35,6 +35,9 @@ public class ProductController extends AbstractController {
         //edge case where the frontend puts in *
         if (stringColumns.equals("*")) {
             stringColumns = "id, name, image_url, price, stock, brand_id";
+            
+            columns.clear();
+            
             columns.add("id");
             columns.add("name");
             columns.add("image_url");
