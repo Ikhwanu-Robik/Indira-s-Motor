@@ -160,10 +160,8 @@ public class PrintController {
                 ArrayList<HashMap<String, String>> cart_products = new CartController().getCartProducts(Integer.parseInt(row.get("cart_id")));
                 int product_counter = 1;
                 for (HashMap<String, String> cart_product : cart_products) {
-                    HashMap<String, String> product = new ProductController().findWhere("id", cart_product.get("product_id")).getFirst();
-
                     if (product_counter == 1) {
-                        body += "      <td>" + product.get("name") + "</td>\n";
+                        body += "      <td>" + cart_product.get("name") + "</td>\n";
                         body += "      <td>" + cart_product.get("qty") + "</td>\n";
                         body += "    </tr>\n";
 
@@ -172,7 +170,7 @@ public class PrintController {
                     }
 
                     body += "    <tr>\n";
-                    body += "      <td>" + product.get("name") + "</td>\n";
+                    body += "      <td>" + cart_product.get("name") + "</td>\n";
                     body += "      <td>" + cart_product.get("qty") + "</td>\n";
                     body += "    </tr>";
                 }
