@@ -28,8 +28,10 @@ public class Product_Card extends JPanel {
     private String productPrice;
     private String imageUrl;
     private String categoryName;
+    private boolean isCallerCashier;
 
-    public Product_Card(String id, String name, int price, String image_url, String categoryName) {
+    public Product_Card(boolean isCallerCashier, String id, String name, int price, String image_url, String categoryName) {
+    	this.isCallerCashier = isCallerCashier;
         this.productName = name;
         this.productPrice = Integer.toString(price);
         this.imageUrl = image_url;
@@ -75,13 +77,18 @@ public class Product_Card extends JPanel {
         logo.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                String[] args = {
-                    Product_Card.this.productName,
-                    Product_Card.this.productPrice,
-                    Product_Card.this.imageUrl,
-                    Product_Card.this.categoryName
-                };
-                Cashier_Product_Info.main(args);
+                if (isCallerCashier) {
+                	String[] args = {
+                            Product_Card.this.productName,
+                            Product_Card.this.productPrice,
+                            Product_Card.this.imageUrl,
+                            Product_Card.this.categoryName
+                        };
+                        Cashier_Product_Info.main(args);
+                } else {
+                	JOptionPane.showMessageDialog(null, "Admin's Product Info page is not ready yet :(", "SORRY!", JOptionPane.INFORMATION_MESSAGE);
+//                	TODO : make Admin_Product_Info
+                }
             }
         });
 
