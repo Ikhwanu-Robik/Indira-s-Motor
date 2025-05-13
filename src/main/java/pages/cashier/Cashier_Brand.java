@@ -5,26 +5,19 @@ import components.Nav_Panel;
 import components.ui.LogoutButton;
 import components.ui.MainFrame;
 import components.ui.NavLabel;
-import controllers.CartController;
-import controllers.ReportController;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.ArrayList;
-import java.util.HashMap;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -33,19 +26,15 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 
 public class Cashier_Brand {
 
     // Constants
     private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 30);
-    private static final Color BROWN_COLOR = new Color(0xA0522D);
     private static MainFrame brandFrame = null;
 
     public static void main(String[] args) {
-        MainFrame frame = new MainFrame("Cashier Dashboard");
+        MainFrame frame = new MainFrame("Cashier Brand");
 
         Nav_Panel navPanel = createNavPanel();
         Content_Panel contentPanel = createContentPanel();
@@ -73,25 +62,27 @@ public class Cashier_Brand {
         // Nav items
         // Nav links
         NavLabel navProduct = new NavLabel("Produk", false);
-        NavLabel navBrand = new NavLabel("Merk", false);
+        NavLabel navBrand = new NavLabel("Merk", true);
         NavLabel navCategory = new NavLabel("Kategori", false);
-        NavLabel navReport = new NavLabel("Transaksi", false);
+        NavLabel navTransaction = new NavLabel("Transaksi", false);
         navProduct.setCursor(new Cursor(Cursor.HAND_CURSOR));
         navBrand.setCursor(new Cursor(Cursor.HAND_CURSOR));
         navCategory.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        navReport.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        navTransaction.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         // Logout button
         LogoutButton logoutBtn = new LogoutButton("Keluar");
 
         Cashier_Product cashierProduct = new Cashier_Product();
         Cashier_Brand cashierBrand = new Cashier_Brand();
-
+        Cashier_Category cashierCategory = new Cashier_Category();
+        Cashier_Transaction cashierTransaction = new Cashier_Transaction();
+        
         navProduct.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                brandFrame.dispose();
                 cashierProduct.main(new String[0]);
+                brandFrame.dispose();
             }
         });
         navBrand.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -101,13 +92,20 @@ public class Cashier_Brand {
                 brandFrame.dispose();
             }
         });
-        // nav.addMouseListener(new java.awt.event.MouseAdapter() {
-        //     @Override
-        //     public void mouseClicked(java.awt.event.MouseEvent evt) {
-        //         adminReport.main(new String[0]);
-        //         dashboardFrame.dispose();
-        //     }
-        // });
+        navCategory.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cashierCategory.main(new String[0]);
+                brandFrame.dispose();
+            }
+        });
+        navTransaction.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cashierTransaction.main(new String[0]);
+                brandFrame.dispose();
+            }
+        });
         // Add components to nav panel
         navPanel.add(Box.createVerticalStrut(70));
         navPanel.add(logo);
@@ -118,7 +116,7 @@ public class Cashier_Brand {
         navPanel.add(Box.createVerticalStrut(40));
         navPanel.add(navCategory);
         navPanel.add(Box.createVerticalStrut(40));
-        navPanel.add(navReport);
+        navPanel.add(navTransaction);
         navPanel.add(Box.createVerticalStrut(100));
         navPanel.add(logoutBtn);
 

@@ -32,10 +32,10 @@ import javax.swing.JComboBox;
 public class Cashier_Product_Edit {
 
     // Constants
-    private static MainFrame productAddFrame = null;
+    private static MainFrame productEditFrame = null;
 
     public static void main(String[] args) {
-        MainFrame frame = new MainFrame("Cashier Dashboard");
+        MainFrame frame = new MainFrame("Cashier Product Edit");
 
         Nav_Panel navPanel = createNavPanel();
         Content_Panel contentPanel = createContentPanel();
@@ -47,7 +47,7 @@ public class Cashier_Product_Edit {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        productAddFrame = frame;
+        productEditFrame = frame;
     }
 
     private static Nav_Panel createNavPanel() {
@@ -64,25 +64,48 @@ public class Cashier_Product_Edit {
         NavLabel navProduct = new NavLabel("Produk", false);
         NavLabel navBrand = new NavLabel("Merk", false);
         NavLabel navCategory = new NavLabel("Kategori", false);
-        NavLabel navReport = new NavLabel("Laporan", false);
+        NavLabel navTransaction = new NavLabel("Transaksi", false);
         navProduct.setCursor(new Cursor(Cursor.HAND_CURSOR));
         navBrand.setCursor(new Cursor(Cursor.HAND_CURSOR));
         navCategory.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        navReport.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        navTransaction.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         // Logout button
         LogoutButton logoutBtn = new LogoutButton("Keluar");
 
         Cashier_Product cashierProduct = new Cashier_Product();
+        Cashier_Brand cashierBrand = new Cashier_Brand();
+        Cashier_Category cashierCategory = new Cashier_Category();
+        Cashier_Transaction cashierTransaction = new Cashier_Transaction();
 
         navProduct.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                productAddFrame.dispose();
                 cashierProduct.main(new String[0]);
+                productEditFrame.dispose();
             }
         });
-
+        navBrand.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cashierBrand.main(new String[0]);
+                productEditFrame.dispose();
+            }
+        });
+        navCategory.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cashierCategory.main(new String[0]);
+                productEditFrame.dispose();
+            }
+        });
+        navTransaction.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cashierTransaction.main(new String[0]);
+                productEditFrame.dispose();
+            }
+        });
         // Add components to nav panel
         navPanel.add(Box.createVerticalStrut(70));
         navPanel.add(logo);
@@ -93,7 +116,7 @@ public class Cashier_Product_Edit {
         navPanel.add(Box.createVerticalStrut(40));
         navPanel.add(navCategory);
         navPanel.add(Box.createVerticalStrut(40));
-        navPanel.add(navReport);
+        navPanel.add(navTransaction);
         navPanel.add(Box.createVerticalStrut(100));
         navPanel.add(logoutBtn);
 
@@ -216,7 +239,7 @@ public class Cashier_Product_Edit {
         cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                productAddFrame.dispose();
+                productEditFrame.dispose();
                 cashierProduct.main(new String[0]);
             }
         });

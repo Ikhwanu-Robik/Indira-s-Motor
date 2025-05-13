@@ -60,38 +60,48 @@ public class Cashier_Dashboard {
         NavLabel navProduct = new NavLabel("Produk", false);
         NavLabel navBrand = new NavLabel("Merk", false);
         NavLabel navCategory = new NavLabel("Kategori", false);
-        NavLabel navReport = new NavLabel("Transaksi", false);
+        NavLabel navTransaction = new NavLabel("Transaksi", false);
         navProduct.setCursor(new Cursor(Cursor.HAND_CURSOR));
         navBrand.setCursor(new Cursor(Cursor.HAND_CURSOR));
         navCategory.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        navReport.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        navTransaction.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         // Logout button
         LogoutButton logoutBtn = new LogoutButton("Keluar");
 
         Cashier_Product cashierProduct = new Cashier_Product();
-
+        Cashier_Brand cashierBrand = new Cashier_Brand();
+        Cashier_Category cashierCategory = new Cashier_Category();
+        Cashier_Transaction cashierTransaction = new Cashier_Transaction();
+        
         navProduct.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                dashboardFrame.dispose();
                 cashierProduct.main(new String[0]);
+                dashboardFrame.dispose();
             }
         });
-        // nav.addMouseListener(new java.awt.event.MouseAdapter() {
-        //     @Override
-        //     public void mouseClicked(java.awt.event.MouseEvent evt) {
-        //         adminProducts.main(new String[0]);
-        //         dashboardFrame.dispose();
-        //     }
-        // });
-        // nav.addMouseListener(new java.awt.event.MouseAdapter() {
-        //     @Override
-        //     public void mouseClicked(java.awt.event.MouseEvent evt) {
-        //         adminReport.main(new String[0]);
-        //         dashboardFrame.dispose();
-        //     }
-        // });
+        navBrand.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cashierBrand.main(new String[0]);
+                dashboardFrame.dispose();
+            }
+        });
+        navCategory.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cashierCategory.main(new String[0]);
+                dashboardFrame.dispose();
+            }
+        });
+        navTransaction.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cashierTransaction.main(new String[0]);
+                dashboardFrame.dispose();
+            }
+        });
         // Add components to nav panel
         navPanel.add(Box.createVerticalStrut(70));
         navPanel.add(logo);
@@ -102,7 +112,7 @@ public class Cashier_Dashboard {
         navPanel.add(Box.createVerticalStrut(40));
         navPanel.add(navCategory);
         navPanel.add(Box.createVerticalStrut(40));
-        navPanel.add(navReport);
+        navPanel.add(navTransaction);
         navPanel.add(Box.createVerticalStrut(100));
         navPanel.add(logoutBtn);
 

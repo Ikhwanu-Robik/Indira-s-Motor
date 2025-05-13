@@ -57,7 +57,7 @@ public class Cashier_Product {
         all_col.add("*");
         Cashier_Product.categories = new CategoryController().read(all_col);
 
-        MainFrame frame = new MainFrame("Cashier Dashboard");
+        MainFrame frame = new MainFrame("Cashier Product");
 
         Nav_Panel navPanel = createNavPanel();
         Content_Panel contentPanel = createContentPanel();
@@ -87,36 +87,48 @@ public class Cashier_Product {
         NavLabel navProduct = new NavLabel("Produk", true);
         NavLabel navBrand = new NavLabel("Merk", false);
         NavLabel navCategory = new NavLabel("Kategori", false);
-        NavLabel navReport = new NavLabel("Laporan", false);
+        NavLabel navTransaction = new NavLabel("Laporan", false);
         navProduct.setCursor(new Cursor(Cursor.HAND_CURSOR));
         navBrand.setCursor(new Cursor(Cursor.HAND_CURSOR));
         navCategory.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        navReport.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        navTransaction.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         // Logout button
         LogoutButton logoutBtn = new LogoutButton("Keluar");
 
-        // nav.addMouseListener(new java.awt.event.MouseAdapter() {
-        //     @Override
-        //     public void mouseClicked(java.awt.event.MouseEvent evt) {
-        //         dashboardFrame.dispose();
-        //         adminCashier.main(new String[0]);
-        //     }
-        // });
-        // nav.addMouseListener(new java.awt.event.MouseAdapter() {
-        //     @Override
-        //     public void mouseClicked(java.awt.event.MouseEvent evt) {
-        //         adminProducts.main(new String[0]);
-        //         dashboardFrame.dispose();
-        //     }
-        // });
-        // nav.addMouseListener(new java.awt.event.MouseAdapter() {
-        //     @Override
-        //     public void mouseClicked(java.awt.event.MouseEvent evt) {
-        //         adminReport.main(new String[0]);
-        //         dashboardFrame.dispose();
-        //     }
-        // });
+        Cashier_Product cashierProduct = new Cashier_Product();
+        Cashier_Brand cashierBrand = new Cashier_Brand();
+        Cashier_Category cashierCategory = new Cashier_Category();
+        Cashier_Transaction cashierTransaction = new Cashier_Transaction();
+
+        navProduct.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cashierProduct.main(new String[0]);
+                productFrame.dispose();
+            }
+        });
+        navBrand.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cashierBrand.main(new String[0]);
+                productFrame.dispose();
+            }
+        });
+        navCategory.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cashierCategory.main(new String[0]);
+                productFrame.dispose();
+            }
+        });
+        navTransaction.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cashierTransaction.main(new String[0]);
+                productFrame.dispose();
+            }
+        });
         // Add components to nav panel
         navPanel.add(Box.createVerticalStrut(70));
         navPanel.add(logo);
@@ -127,7 +139,7 @@ public class Cashier_Product {
         navPanel.add(Box.createVerticalStrut(40));
         navPanel.add(navCategory);
         navPanel.add(Box.createVerticalStrut(40));
-        navPanel.add(navReport);
+        navPanel.add(navTransaction);
         navPanel.add(Box.createVerticalStrut(100));
         navPanel.add(logoutBtn);
 
@@ -213,7 +225,7 @@ public class Cashier_Product {
                     break;
                 }
             }
-            
+
             cardPanel.add(new Product_Card(product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
         }
 

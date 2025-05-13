@@ -1,6 +1,6 @@
 package pages.cashier;
 
-import components.AddInput;
+import components.Button_Brown;
 import components.Content_Panel;
 import components.Nav_Panel;
 import components.ui.LogoutButton;
@@ -9,33 +9,33 @@ import components.ui.NavLabel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.Insets;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-
-public class Cashier_Brand_Add {
+public class Cashier_Transaction {
 
     // Constants
-    private static MainFrame brandAddFrame = null;
+    private static MainFrame transactionFrame = null;
 
     public static void main(String[] args) {
-        MainFrame frame = new MainFrame("Cashier Add Brand");
+        MainFrame frame = new MainFrame("Cashier Dashboard");
 
         Nav_Panel navPanel = createNavPanel();
         Content_Panel contentPanel = createContentPanel();
@@ -47,7 +47,7 @@ public class Cashier_Brand_Add {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        brandAddFrame = frame;
+        transactionFrame = frame;
     }
 
     private static Nav_Panel createNavPanel() {
@@ -60,6 +60,7 @@ public class Cashier_Brand_Add {
         logo.setIcon(icon);
         logo.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 
+        // Nav items
         // Nav links
         NavLabel navProduct = new NavLabel("Produk", false);
         NavLabel navBrand = new NavLabel("Merk", false);
@@ -77,36 +78,35 @@ public class Cashier_Brand_Add {
         Cashier_Brand cashierBrand = new Cashier_Brand();
         Cashier_Category cashierCategory = new Cashier_Category();
         Cashier_Transaction cashierTransaction = new Cashier_Transaction();
-        
+
         navProduct.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 cashierProduct.main(new String[0]);
-                brandAddFrame.dispose();
+                transactionFrame.dispose();
             }
         });
         navBrand.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 cashierBrand.main(new String[0]);
-                brandAddFrame.dispose();
+                transactionFrame.dispose();
             }
         });
         navCategory.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 cashierCategory.main(new String[0]);
-                brandAddFrame.dispose();
+                transactionFrame.dispose();
             }
         });
         navTransaction.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 cashierTransaction.main(new String[0]);
-                brandAddFrame.dispose();
+                transactionFrame.dispose();
             }
         });
-
         // Add components to nav panel
         navPanel.add(Box.createVerticalStrut(70));
         navPanel.add(logo);
@@ -128,21 +128,22 @@ public class Cashier_Brand_Add {
         Content_Panel contentPanel = new Content_Panel();
         contentPanel.setLayout(new GridBagLayout());
 
-        JLabel title = createTitleLabel("Tambah Merk", Color.BLACK);
-        JPanel field = createInputPanel();
-        JPanel dropDown = createDropDownPanel();
-        JPanel buttonPanel = createButtonPanel();
+        // Welcome label
+        JLabel titleLabel = createTitleLabel("Transaksi", Color.BLACK);
 
+        JScrollPane transactionTable = createTableTransaction();
+
+        JPanel transactionField = createTransactionFieldPanel();
+
+        // Add label to content panel
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(10, 20, 10, 20);
 
-        contentPanel.add(title, gbc);
-        contentPanel.add(field, gbc);
-        contentPanel.add(dropDown, gbc);
-        contentPanel.add(buttonPanel, gbc);
+        contentPanel.add(titleLabel, gbc);
+        contentPanel.add(transactionTable, gbc);
+        contentPanel.add(transactionField, gbc);
 
         return contentPanel;
     }
@@ -155,104 +156,89 @@ public class Cashier_Brand_Add {
         return label;
     }
 
-    private static JPanel createInputPanel() {
-        JPanel inputPanel = new JPanel();
-        inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
-        inputPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+    private static JScrollPane createTableTransaction() {
+        // Nama kolom
+        String[] columnNames = {"uuid", "nama_produk", "kategori", "harga", "jumlah", "total"};
 
-        inputPanel.add(createLabeledField("Nama Merk:"));
-        inputPanel.add(Box.createVerticalStrut(15));
+        // Data kosong untuk inisialisasi awal
+        Object[][] data = {};
 
-        return inputPanel;
+        // Buat model tabel
+        DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
+
+        // Buat tabel
+        JTable table = new JTable(tableModel);
+
+        // Styling tabel
+        table.setBackground(new Color(45, 45, 45));
+        table.setForeground(Color.WHITE);
+        table.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        table.setRowHeight(28);
+        table.setGridColor(Color.DARK_GRAY);
+
+        // Styling header tabel
+        JTableHeader header = table.getTableHeader();
+        header.setBackground(new Color(30, 30, 30));
+        header.setForeground(Color.WHITE);
+        header.setFont(new Font("SansSerif", Font.BOLD, 15));
+        header.setReorderingAllowed(false);
+
+        // Set preferred width kolom
+        table.getColumnModel().getColumn(0).setPreferredWidth(400);
+        table.getColumnModel().getColumn(1).setPreferredWidth(1000);
+        table.getColumnModel().getColumn(2).setPreferredWidth(500);
+        table.getColumnModel().getColumn(3).setPreferredWidth(500);
+        table.getColumnModel().getColumn(4).setPreferredWidth(500);
+        table.getColumnModel().getColumn(5).setPreferredWidth(500);
+
+        // ScrollPane untuk tabel
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.getViewport().setBackground(new Color(45, 45, 45));
+
+        return scrollPane;
     }
 
-    private static JPanel createLabeledField(String labelText) {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+    private static JPanel createTransactionFieldPanel() {
+        JPanel transactionField = new JPanel();
+        transactionField.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
-        JLabel label = new JLabel(labelText);
-        label.setFont(new Font("SansSerif", Font.PLAIN, 14));
-
-        JTextField input = new AddInput();
-        input.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        panel.add(label);
-        panel.add(Box.createVerticalStrut(5));
-        panel.add(input);
-
-        return panel;
-    }
-
-    private static JPanel createDropDownPanel() {
-        // Panel utama untuk dua dropdown disusun horizontal
-        JPanel mainPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 10));
-
-        JPanel brandPanel = new JPanel();
-        brandPanel.setLayout(new BoxLayout(brandPanel, BoxLayout.Y_AXIS));
-        brandPanel.setAlignmentY(Component.TOP_ALIGNMENT);
-
-        JPanel categoryPanel = new JPanel();
-        categoryPanel.setLayout(new BoxLayout(categoryPanel, BoxLayout.Y_AXIS));
-        categoryPanel.setAlignmentY(Component.TOP_ALIGNMENT);
-
-        JLabel categoryLabel = new JLabel("Kategori:");
-        categoryLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        String[] categories = {"Oli", "Ban", "Rantai"};
-        JComboBox<String> categoryComboBox = new JComboBox<>(categories);
-        categoryComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        categoryPanel.add(categoryLabel);
-        categoryPanel.add(Box.createVerticalStrut(5));
-        categoryPanel.add(categoryComboBox);
-
-        mainPanel.add(brandPanel);
-        mainPanel.add(categoryPanel);
-
-        return mainPanel;
-    }
-
-    private static JPanel createButtonPanel() {
-        JPanel btnPanel = new JPanel(new BorderLayout());
-        btnPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-
-        Cashier_Brand cashierBrand = new Cashier_Brand();
-
-        // Tombol "Batal"
-        JButton cancelBtn = new JButton("Batal");
-        cancelBtn.setFont(new Font("Arial", Font.PLAIN, 16));
-        cancelBtn.setForeground(Color.BLACK);
-        cancelBtn.setBackground(new Color(0xE0E0E0));
-        cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                brandAddFrame.dispose();
-                cashierBrand.main(new String[0]);
-            }
-        });
-
-        // Panel kiri untuk tombol "Batal"
+        // Left Panel
+        JButton deleteBtn = new JButton("Hapus");
+        deleteBtn.setFont(new Font("Arial", Font.PLAIN, 16));
+        deleteBtn.setForeground(Color.BLACK);
+        deleteBtn.setBackground(new Color(0xE0E0E0));
         JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         leftPanel.setOpaque(false);
-        leftPanel.add(cancelBtn);
+        leftPanel.add(deleteBtn);
 
-        // Tombol "Tambahkan"
-        JButton addBtn = new JButton("Tambahkan");
-        addBtn.setFont(new Font("Arial", Font.PLAIN, 16));
-        addBtn.setForeground(Color.WHITE);
-        addBtn.setBackground(new Color(0xA0522D));
+        // Right Panel
+        JLabel serviceLabel = new JLabel("Jasa:");
+        serviceLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        JTextField serviceField = new JTextField();
+        serviceField.setPreferredSize(new Dimension(300, 50));
+        JPanel servicePanel = new JPanel();
+        servicePanel.add(serviceLabel);
+        servicePanel.add(serviceField);
 
-        // Panel kanan untuk tombol "Tambahkan"
+        JLabel totalLabel = new JLabel("Total:");
+        totalLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        JTextField totalField = new JTextField();
+        totalField.setPreferredSize(new Dimension(300, 50));
+        JPanel totalPanel = new JPanel();
+        totalPanel.add(totalLabel);
+        totalPanel.add(totalField);
+
+        JButton payBtn = new Button_Brown("Bayar");
+
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
         rightPanel.setOpaque(false);
-        rightPanel.add(addBtn);
+        rightPanel.add(servicePanel);
+        rightPanel.add(totalPanel);
+        rightPanel.add(payBtn);
 
-        // Tambahkan panel kiri dan kanan ke panel utama
-        btnPanel.add(leftPanel, BorderLayout.WEST);
-        btnPanel.add(rightPanel, BorderLayout.EAST);
+        transactionField.add(leftPanel, BorderLayout.WEST);
+        transactionField.add(rightPanel, BorderLayout.EAST);
 
-        return btnPanel;
+        return transactionField;
     }
-
 }

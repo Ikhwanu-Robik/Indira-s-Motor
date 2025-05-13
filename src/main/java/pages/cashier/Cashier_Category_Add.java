@@ -27,15 +27,14 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Insets;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 
-public class Cashier_Brand_Add {
+public class Cashier_Category_Add {
 
     // Constants
-    private static MainFrame brandAddFrame = null;
+    private static MainFrame categoryAddFrame = null;
 
     public static void main(String[] args) {
-        MainFrame frame = new MainFrame("Cashier Add Brand");
+        MainFrame frame = new MainFrame("Cashier Add Category");
 
         Nav_Panel navPanel = createNavPanel();
         Content_Panel contentPanel = createContentPanel();
@@ -47,7 +46,7 @@ public class Cashier_Brand_Add {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        brandAddFrame = frame;
+        categoryAddFrame = frame;
     }
 
     private static Nav_Panel createNavPanel() {
@@ -82,28 +81,28 @@ public class Cashier_Brand_Add {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 cashierProduct.main(new String[0]);
-                brandAddFrame.dispose();
+                categoryAddFrame.dispose();
             }
         });
         navBrand.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 cashierBrand.main(new String[0]);
-                brandAddFrame.dispose();
+                categoryAddFrame.dispose();
             }
         });
         navCategory.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 cashierCategory.main(new String[0]);
-                brandAddFrame.dispose();
+                categoryAddFrame.dispose();
             }
         });
         navTransaction.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 cashierTransaction.main(new String[0]);
-                brandAddFrame.dispose();
+                categoryAddFrame.dispose();
             }
         });
 
@@ -128,9 +127,8 @@ public class Cashier_Brand_Add {
         Content_Panel contentPanel = new Content_Panel();
         contentPanel.setLayout(new GridBagLayout());
 
-        JLabel title = createTitleLabel("Tambah Merk", Color.BLACK);
+        JLabel title = createTitleLabel("Tambah Kategori", Color.BLACK);
         JPanel field = createInputPanel();
-        JPanel dropDown = createDropDownPanel();
         JPanel buttonPanel = createButtonPanel();
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -141,7 +139,6 @@ public class Cashier_Brand_Add {
 
         contentPanel.add(title, gbc);
         contentPanel.add(field, gbc);
-        contentPanel.add(dropDown, gbc);
         contentPanel.add(buttonPanel, gbc);
 
         return contentPanel;
@@ -160,7 +157,7 @@ public class Cashier_Brand_Add {
         inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
         inputPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        inputPanel.add(createLabeledField("Nama Merk:"));
+        inputPanel.add(createLabeledField("Kategori:"));
         inputPanel.add(Box.createVerticalStrut(15));
 
         return inputPanel;
@@ -184,40 +181,11 @@ public class Cashier_Brand_Add {
         return panel;
     }
 
-    private static JPanel createDropDownPanel() {
-        // Panel utama untuk dua dropdown disusun horizontal
-        JPanel mainPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 10));
-
-        JPanel brandPanel = new JPanel();
-        brandPanel.setLayout(new BoxLayout(brandPanel, BoxLayout.Y_AXIS));
-        brandPanel.setAlignmentY(Component.TOP_ALIGNMENT);
-
-        JPanel categoryPanel = new JPanel();
-        categoryPanel.setLayout(new BoxLayout(categoryPanel, BoxLayout.Y_AXIS));
-        categoryPanel.setAlignmentY(Component.TOP_ALIGNMENT);
-
-        JLabel categoryLabel = new JLabel("Kategori:");
-        categoryLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        String[] categories = {"Oli", "Ban", "Rantai"};
-        JComboBox<String> categoryComboBox = new JComboBox<>(categories);
-        categoryComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        categoryPanel.add(categoryLabel);
-        categoryPanel.add(Box.createVerticalStrut(5));
-        categoryPanel.add(categoryComboBox);
-
-        mainPanel.add(brandPanel);
-        mainPanel.add(categoryPanel);
-
-        return mainPanel;
-    }
-
     private static JPanel createButtonPanel() {
         JPanel btnPanel = new JPanel(new BorderLayout());
         btnPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
-        Cashier_Brand cashierBrand = new Cashier_Brand();
+        Cashier_Category cashierCategory = new Cashier_Category();
 
         // Tombol "Batal"
         JButton cancelBtn = new JButton("Batal");
@@ -227,8 +195,8 @@ public class Cashier_Brand_Add {
         cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                brandAddFrame.dispose();
-                cashierBrand.main(new String[0]);
+                categoryAddFrame.dispose();
+                cashierCategory.main(new String[0]);
             }
         });
 
