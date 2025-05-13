@@ -6,14 +6,17 @@ import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import components.Content_Panel;
 import controllers.CartController;
+import controllers.PrintController;
 import controllers.ReportController;
 import java.awt.Component;
 import java.awt.Font;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -24,6 +27,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 public class Admin_Report {
+
     private static ArrayList<HashMap<String, String>> reports = null;
 
     public static Content_Panel init() {
@@ -37,6 +41,7 @@ public class Admin_Report {
         contentPanel.setLayout(new GridBagLayout());
 
         JLabel titleLabel = createTitleLabel("Laporan Penjualan", new Color(0x00000));
+        JButton printBtn = createPrintButton();
         JScrollPane reportTable = createTableReport();
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -45,6 +50,7 @@ public class Admin_Report {
         gbc.anchor = GridBagConstraints.CENTER;
 
         contentPanel.add(titleLabel, gbc);
+        contentPanel.add(printBtn, gbc);
         contentPanel.add(reportTable, gbc);
 
         return contentPanel;
@@ -56,6 +62,29 @@ public class Admin_Report {
         label.setFont(new Font("Arial", Font.BOLD, 30));
         label.setHorizontalAlignment(SwingConstants.CENTER);
         return label;
+    }
+
+    private static JButton createPrintButton() {
+        JButton printBtn = new JButton();
+        printBtn.setText("Print");
+        printBtn.addActionListener((e) -> {
+            ArrayList<HashMap<String, String>> data = new ArrayList<>();
+            HashMap<String, String> type = new HashMap<>();
+            type.put("type", "report");
+            data.add(type);
+
+            for (HashMap<String, String> report_row : reports) {
+                data.add(report_row);
+            }
+
+            try {
+                new PrintController().print(data);
+            } catch (IOException er) {
+                JOptionPane.showMessageDialog(null, "Gagal mengprint data : " + er.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        return printBtn;
     }
 
     private static JScrollPane createTableReport() {

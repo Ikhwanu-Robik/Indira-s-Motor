@@ -225,8 +225,13 @@ public class Cashier_Product {
                     break;
                 }
             }
+<<<<<<< HEAD
 
             cardPanel.add(new Product_Card(product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
+=======
+            
+            cardPanel.add(new Product_Card(true, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
+>>>>>>> d04897f1125c14a835212437bf577fb651a159c1
         }
 
         cardPanel.updateUI();
@@ -260,7 +265,7 @@ public class Cashier_Product {
         }
 
         if (product != null) {
-            cardPanel.add(new Product_Card(product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
+            cardPanel.add(new Product_Card(true, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
         } else {
             cardPanel.add(new JLabel("Produk tidak ditemukan"));
         }
@@ -289,7 +294,7 @@ public class Cashier_Product {
             }
 
             if (categoryName.equals(productCategory) && brandName.equals(productBrand.get("name"))) {
-                cardPanel.add(new Product_Card(product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
+                cardPanel.add(new Product_Card(true, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
             }
         }
 
