@@ -23,18 +23,15 @@ public class TransactionController {
     }
 
     public void createCartIfMissing() {
+    	this.cart_id = new CartController().checkCartExistence(this.cashier_id);
+    	
         if (cart_id == -1) {
             HashMap<String, String> values = new HashMap<>();
             values.put("cashier_id", Integer.toString(this.cashier_id));
             values.put("has_order", "0");
             new CartController().create(values);
 
-            ArrayList<String> columns = new ArrayList<>();
-            columns.add("*");
-            ArrayList<HashMap<String, String>> carts = new CartController().read(columns);
-            HashMap<String, String> latestCart = carts.getLast();
-
-            this.cart_id = Integer.parseInt(latestCart.get("id"));
+            this.cart_id = new CartController().checkCartExistence(this.cashier_id);
         }
     }
 
