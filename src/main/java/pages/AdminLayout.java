@@ -9,6 +9,8 @@ import components.Nav_Panel;
 import components.ui.LogoutButton;
 import components.ui.MainFrame;
 import components.ui.NavLabel;
+import controllers.LoginController;
+
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import javax.swing.Box;
@@ -16,6 +18,8 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import pages.admin.Admin_Cashier;
 import pages.admin.Admin_Dashboard;
 import pages.admin.Admin_Products;
@@ -28,8 +32,10 @@ import pages.admin.Admin_Report;
 public class AdminLayout {
     private static MainFrame frame;
     private static Content_Panel contentPanel;
+    private static LoginController loginSession;
 
-    public static void init() {
+    public static void init(LoginController loginSession) {
+    	AdminLayout.loginSession = loginSession;
         frame = new MainFrame("Admin Dashboard");
 
         Nav_Panel navPanel = createNavPanel();
@@ -72,8 +78,12 @@ public class AdminLayout {
 
         LogoutButton logoutBtn = new LogoutButton("Keluar");
         logoutBtn.addActionListener((e) -> {
-            frame.dispose();
-            Login.init();
+        	if (loginSession.logout(loginSession.authenticated_user_id)) {
+        		frame.dispose();
+                Login.init();
+        	} else {
+        		JOptionPane.showMessageDialog(null, "Logout unsuccessful", "ERROR", JOptionPane.ERROR_MESSAGE);
+        	}
         });
 
         navEmployee.addMouseListener(new java.awt.event.MouseAdapter() {
