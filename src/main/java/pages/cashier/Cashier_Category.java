@@ -1,27 +1,24 @@
 package pages.cashier;
 
 import components.Content_Panel;
-import components.Nav_Panel;
-import components.ui.LogoutButton;
-import components.ui.MainFrame;
-import components.ui.NavLabel;
+import controllers.BrandController;
+import controllers.CategoryController;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -34,13 +31,23 @@ public class Cashier_Category {
     // Constants
     private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 30);
     private static Consumer<Content_Panel> reloadCallback;
+	private static ArrayList<HashMap<String, String>> categories;
+	private static JTable categoryTable;
 
     public static Content_Panel init(Consumer<Content_Panel> reloadCallback) {
     	Cashier_Category.reloadCallback = reloadCallback;
     	
+    	fetchDatabase();
+    	
         Content_Panel cashierCategoryPanel = createContentPanel();
 
         return cashierCategoryPanel;
+    }
+    
+    private static void fetchDatabase() {
+        ArrayList<String> all_col = new ArrayList<>();
+        all_col.add("*");
+        Cashier_Category.categories = new CategoryController().read(all_col);
     }
 
     private static Content_Panel createContentPanel() {
@@ -75,16 +82,27 @@ public class Cashier_Category {
 
     private static JScrollPane createTableBrands() {
         // Nama kolom
-        String[] columnNames = {"id_merk", "kategori"};
+        String[] columnNames = {"id_kategori", "kategori"};
 
         // Data kosong untuk inisialisasi awal
-        Object[][] data = {};
+        int brandsCount = categories.size();
+        int i = 0;
+        Object[][] data = new Object[brandsCount][3];
+        for (HashMap<String, String> category : categories) {
+            String brandCategory = "??";
+            
+            data[i][0] = category.get("id");
+            data[i][1] = category.get("name");
+            
+            i++;
+        }
 
         // Buat model tabel
         DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
 
         // Buat tabel
         JTable table = new JTable(tableModel);
+        Cashier_Category.categoryTable = table;
 
         // Styling tabel
         table.setBackground(new Color(45, 45, 45));
@@ -121,6 +139,22 @@ public class Cashier_Category {
         cancelBtn.setFont(new Font("Arial", Font.PLAIN, 16));
         cancelBtn.setForeground(Color.BLACK);
         cancelBtn.setBackground(new Color(0xE0E0E0));
+        cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int response = JOptionPane.showConfirmDialog(null, "Semua Produk dari Merek ini akan ikut terhapus", "PERINGATAN!", JOptionPane.WARNING_MESSAGE);
+                
+                if (response == JOptionPane.YES_OPTION) {
+                    int row = categoryTable.getSelectedRow();
+                    int brandId = Integer.parseInt(categoryTable.getValueAt(row, 0).toString());
+                    
+                    new CategoryController().delete(brandId);
+                   
+                    JOptionPane.showMessageDialog(null, "Merek dan semua produknya dihapus.");
+                    reloadCallback.accept(Cashier_Category.init(reloadCallback));
+                }
+            }
+        });
 
         Cashier_Category_Add categoryAddPage = new Cashier_Category_Add();
         JButton editBtn = new JButton("Tambah Kategori+");

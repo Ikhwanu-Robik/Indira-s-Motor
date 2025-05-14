@@ -6,6 +6,9 @@ import components.Nav_Panel;
 import components.ui.LogoutButton;
 import components.ui.MainFrame;
 import components.ui.NavLabel;
+import controllers.BrandController;
+import controllers.CategoryController;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -19,6 +22,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -26,12 +30,14 @@ import javax.swing.SwingConstants;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Insets;
+import java.util.HashMap;
 import java.util.function.Consumer;
 
 import javax.swing.JButton;
 
 public class Cashier_Category_Add {
 	private static Consumer<Content_Panel> reloadCallback;
+	private static JTextField categoryNameField;
 	
     public static Content_Panel init(Consumer<Content_Panel> reloadCallback) {
     	Cashier_Category_Add.reloadCallback = reloadCallback;
@@ -90,6 +96,7 @@ public class Cashier_Category_Add {
 
         JTextField input = new AddInput();
         input.setAlignmentX(Component.LEFT_ALIGNMENT);
+        Cashier_Category_Add.categoryNameField = input;
 
         panel.add(label);
         panel.add(Box.createVerticalStrut(5));
@@ -126,6 +133,17 @@ public class Cashier_Category_Add {
         addBtn.setFont(new Font("Arial", Font.PLAIN, 16));
         addBtn.setForeground(Color.WHITE);
         addBtn.setBackground(new Color(0xA0522D));
+        addBtn.addActionListener((e) -> {
+        	String name = Cashier_Category_Add.categoryNameField.getText();
+            
+            HashMap<String, String> values = new HashMap<>();
+            values.put("name", name);
+            
+            new CategoryController().create(values);
+            
+            JOptionPane.showMessageDialog(null, "Berhasil menambahkan Kategori");
+            categoryNameField.setText("");
+        });
 
         // Panel kanan untuk tombol "Tambahkan"
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
