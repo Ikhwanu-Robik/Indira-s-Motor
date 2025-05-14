@@ -5,6 +5,8 @@ import components.Nav_Panel;
 import components.ui.LogoutButton;
 import components.ui.MainFrame;
 import components.ui.NavLabel;
+import controllers.LoginController;
+
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import javax.swing.Box;
@@ -12,6 +14,8 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import pages.cashier.Cashier_Brand;
 import pages.cashier.Cashier_Category;
 import pages.cashier.Cashier_Dashboard;
@@ -30,14 +34,14 @@ import pages.cashier.Cashier_Transaction;
 public class CashierLayout {
     private static MainFrame frame;
     private static Content_Panel contentPanel;
-    private static String username;
+    private static LoginController loginSession;
 
-    public static void init(String username) {
-        CashierLayout.username = username;
+    public static void init(LoginController loginSession) {
+        CashierLayout.loginSession = loginSession;
         frame = new MainFrame("Cashier Dashboard");
 
         Nav_Panel navPanel = createNavPanel();
-        contentPanel = Cashier_Dashboard.init(CashierLayout::reloadContent, username);
+        contentPanel = Cashier_Dashboard.init(CashierLayout::reloadContent, loginSession.username);
 
         frame.add(navPanel, BorderLayout.WEST);
         frame.add(contentPanel, BorderLayout.CENTER);
@@ -79,6 +83,14 @@ public class CashierLayout {
 
         // Logout button
         LogoutButton logoutBtn = new LogoutButton("Keluar");
+        logoutBtn.addActionListener((e) -> {
+        	if (loginSession.logout(loginSession.authenticated_user_id)) {
+        		frame.dispose();
+                Login.init();
+        	} else {
+        		JOptionPane.showMessageDialog(null, "Logout unsuccessful", "ERROR", JOptionPane.ERROR_MESSAGE);
+        	}
+        });
 
         navProduct.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override

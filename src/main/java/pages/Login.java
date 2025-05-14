@@ -116,12 +116,12 @@ public class Login {
                     if (loginSession.role.equals("cashier")) {
                         //display cashier dashboard
                         frame.dispose();
-                        CashierLayout.init(loginSession.username);
+                        CashierLayout.init(loginSession);
                     }
                     else if (loginSession.role.equals("admin")) {
                         //display admin dashboard
                         frame.dispose();
-                        AdminLayout.init();
+                        AdminLayout.init(loginSession);
                     }
                 }
             }
