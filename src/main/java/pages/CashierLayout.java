@@ -13,8 +13,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import pages.cashier.Cashier_Brand;
+import pages.cashier.Cashier_Category;
 import pages.cashier.Cashier_Dashboard;
 import pages.cashier.Cashier_Product;
+import pages.cashier.Cashier_Transaction;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -90,13 +92,19 @@ public class CashierLayout {
                  reloadContent(Cashier_Brand.init(CashierLayout::reloadContent));
              }
          });
-        // nav.addMouseListener(new java.awt.event.MouseAdapter() {
-        //     @Override
-        //     public void mouseClicked(java.awt.event.MouseEvent evt) {
-        //         adminReport.main(new String[0]);
-        //         dashboardFrame.dispose();
-        //     }
-        // });
+         navCategory.addMouseListener(new java.awt.event.MouseAdapter() {
+             @Override
+             public void mouseClicked(java.awt.event.MouseEvent evt) {
+                 reloadContent(Cashier_Category.init(CashierLayout::reloadContent));
+             }
+         });
+         navReport.addMouseListener(new java.awt.event.MouseAdapter() {
+             @Override
+             public void mouseClicked(java.awt.event.MouseEvent evt) {
+                 reloadContent(Cashier_Transaction.init(CashierLayout::reloadContent));
+             }
+         });
+
         // Add components to nav panel
         navPanel.add(Box.createVerticalStrut(70));
         navPanel.add(logo);

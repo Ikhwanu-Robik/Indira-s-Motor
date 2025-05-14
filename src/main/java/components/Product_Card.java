@@ -16,6 +16,7 @@ import java.util.function.Consumer;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import pages.cashier.Cashier_Product_Info;
@@ -29,9 +30,11 @@ public class Product_Card extends JPanel {
     private String imageUrl;
     private String categoryName;
     private Consumer<Content_Panel> reloadCallback;
+    private boolean isCallerCashier;
 
-    public Product_Card(Consumer<Content_Panel> reloadCallback, String id, String name, int price, String image_url, String categoryName) {
-        this.reloadCallback = reloadCallback;
+    public Product_Card(Consumer<Content_Panel> reloadCallback, boolean isCallerCashier, String id, String name, int price, String image_url, String categoryName) {
+    	this.reloadCallback = reloadCallback;
+    	this.isCallerCashier = isCallerCashier;
         this.productName = name;
         this.productPrice = Integer.toString(price);
         this.imageUrl = image_url;
@@ -77,14 +80,18 @@ public class Product_Card extends JPanel {
         logo.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                reloadCallback.accept(Cashier_Product_Info.init(
-                        Product_Card.this.reloadCallback,
-                        Product_Card.this.productName,
-                        Product_Card.this.productPrice,
-                        Product_Card.this.imageUrl,
-                        Product_Card.this.categoryName
-                ));
-//                  Admin_Product_Info.init();
+                if (isCallerCashier) {
+                	reloadCallback.accept(Cashier_Product_Info.init(
+                            Product_Card.this.reloadCallback,
+                            Product_Card.this.productName,
+                            Product_Card.this.productPrice,
+                            Product_Card.this.imageUrl,
+                            Product_Card.this.categoryName
+                    ));
+                } else {
+                	JOptionPane.showMessageDialog(null, "Admin's Product Info page is not ready yet :(", "SORRY!", JOptionPane.INFORMATION_MESSAGE);
+//                	TODO : make Admin_Product_Info
+                }
             }
         });
 

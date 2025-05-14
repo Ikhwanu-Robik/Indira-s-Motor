@@ -118,7 +118,7 @@ public class Admin_Products {
                 }
             }
 
-            cardPanel.add(new Product_Card(reloadCallback, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
+            cardPanel.add(new Product_Card(reloadCallback, false, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
         }
     }
 
@@ -150,7 +150,7 @@ public class Admin_Products {
                 }
             }
 
-            cardPanel.add(new Product_Card(reloadCallback, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
+            cardPanel.add(new Product_Card(reloadCallback, false, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
         } else {
             cardPanel.add(new JLabel("Produk tidak ditemukan"));
         }
@@ -179,7 +179,7 @@ public class Admin_Products {
             }
 
             if (categoryName.equals(productCategory) && brandName.equals(productBrand.get("name"))) {
-                cardPanel.add(new Product_Card(reloadCallback, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
+                cardPanel.add(new Product_Card(reloadCallback, false, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
             }
         }
 
