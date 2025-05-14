@@ -14,6 +14,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.Consumer;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -25,8 +26,10 @@ public class Admin_Products {
     private static ArrayList<HashMap<String, String>> categories = null;
     private static ArrayList<HashMap<String, String>> brands = null;
     private static ArrayList<HashMap<String, String>> products = null;
+    private static Consumer<Content_Panel> reloadCallback;
 
-    public static Content_Panel init() {
+    public static Content_Panel init(Consumer<Content_Panel> reloadCallback) {
+        Admin_Products.reloadCallback = reloadCallback;
         fetchDatabase();
 
         Content_Panel adminProductsPanel = createContentPanel();
@@ -115,7 +118,7 @@ public class Admin_Products {
                 }
             }
 
-            cardPanel.add(new Product_Card(false, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
+            cardPanel.add(new Product_Card(reloadCallback, false, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
         }
     }
 
@@ -147,7 +150,7 @@ public class Admin_Products {
                 }
             }
 
-            cardPanel.add(new Product_Card(false, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
+            cardPanel.add(new Product_Card(reloadCallback, false, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
         } else {
             cardPanel.add(new JLabel("Produk tidak ditemukan"));
         }
@@ -176,7 +179,7 @@ public class Admin_Products {
             }
 
             if (categoryName.equals(productCategory) && brandName.equals(productBrand.get("name"))) {
-                cardPanel.add(new Product_Card(false, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
+                cardPanel.add(new Product_Card(reloadCallback, false, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
             }
         }
 

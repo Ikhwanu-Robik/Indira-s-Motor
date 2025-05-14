@@ -28,7 +28,7 @@ import pages.admin.Admin_Report;
 public class AdminLayout {
     private static MainFrame frame;
     private static Content_Panel contentPanel;
-    
+
     public static void init() {
         frame = new MainFrame("Admin Dashboard");
 
@@ -43,6 +43,15 @@ public class AdminLayout {
         frame.setVisible(true);
     }
     
+    public static void reloadContent(Content_Panel newPanel) {
+        frame.remove(contentPanel);
+
+        contentPanel = newPanel;
+        frame.add(contentPanel);
+
+        contentPanel.updateUI();
+    }
+
     private static Nav_Panel createNavPanel() {
         Nav_Panel navPanel = new Nav_Panel();
         navPanel.setLayout(new BoxLayout(navPanel, BoxLayout.Y_AXIS));
@@ -66,36 +75,23 @@ public class AdminLayout {
         navEmployee.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                frame.remove(contentPanel);
-                
-                contentPanel = Admin_Cashier.init();
-                frame.add(contentPanel);
-                
-                contentPanel.updateUI();
+                Content_Panel adminCashierPanel = Admin_Cashier.init(AdminLayout::reloadContent);
+                reloadContent(adminCashierPanel);
             }
         });
 
         navProduct.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                frame.remove(contentPanel);
-                
-                contentPanel = Admin_Products.init();
-                frame.add(contentPanel);
-                
-                contentPanel.updateUI();
+                reloadContent(Admin_Products.init(AdminLayout::reloadContent));
             }
         });
 
         navReport.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                frame.remove(contentPanel);
-                
-                contentPanel = Admin_Report.init();
-                frame.add(contentPanel);
-                
-                contentPanel.updateUI();
+                Content_Panel adminReportPanel = Admin_Report.init(AdminLayout::reloadContent);
+                reloadContent(adminReportPanel);
             }
         });
 

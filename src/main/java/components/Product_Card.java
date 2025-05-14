@@ -11,6 +11,7 @@ import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URL;
+import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -28,9 +29,11 @@ public class Product_Card extends JPanel {
     private String productPrice;
     private String imageUrl;
     private String categoryName;
+    private Consumer<Content_Panel> reloadCallback;
     private boolean isCallerCashier;
 
-    public Product_Card(boolean isCallerCashier, String id, String name, int price, String image_url, String categoryName) {
+    public Product_Card(Consumer<Content_Panel> reloadCallback, boolean isCallerCashier, String id, String name, int price, String image_url, String categoryName) {
+    	this.reloadCallback = reloadCallback;
     	this.isCallerCashier = isCallerCashier;
         this.productName = name;
         this.productPrice = Integer.toString(price);
@@ -78,13 +81,13 @@ public class Product_Card extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (isCallerCashier) {
-                	String[] args = {
+                	reloadCallback.accept(Cashier_Product_Info.init(
+                            Product_Card.this.reloadCallback,
                             Product_Card.this.productName,
                             Product_Card.this.productPrice,
                             Product_Card.this.imageUrl,
                             Product_Card.this.categoryName
-                        };
-                        Cashier_Product_Info.main(args);
+                    ));
                 } else {
                 	JOptionPane.showMessageDialog(null, "Admin's Product Info page is not ready yet :(", "SORRY!", JOptionPane.INFORMATION_MESSAGE);
 //                	TODO : make Admin_Product_Info

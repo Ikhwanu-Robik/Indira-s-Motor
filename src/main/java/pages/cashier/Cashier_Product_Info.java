@@ -1,14 +1,9 @@
 package pages.cashier;
 
 import components.Content_Panel;
-import components.Nav_Panel;
-import components.ui.LogoutButton;
-import components.ui.MainFrame;
-import components.ui.NavLabel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -18,118 +13,32 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.function.Consumer;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class Cashier_Product_Info {
-
-    // Constants
-    private static MainFrame productInfoFrame = null;
     private static String productName;
     private static String productPrice;
     private static String imageUrl;
     private static String categoryName;
+    private static Consumer<Content_Panel> reloadCallback;
 
-    public static void main(String[] args) {
-        Cashier_Product_Info.productName = args[0];
-        Cashier_Product_Info.productPrice = args[1];
-        Cashier_Product_Info.imageUrl = args[2];
-        Cashier_Product_Info.categoryName = args[3];
-        
-        MainFrame frame = new MainFrame("Cashier Product Info");
+    public static Content_Panel init(Consumer<Content_Panel> reloadCallback, String productName, String productPrice, String imageUrl, String categoryName) {
+        Cashier_Product_Info.reloadCallback = reloadCallback;
+        Cashier_Product_Info.productName = productName;
+        Cashier_Product_Info.productPrice = productPrice;
+        Cashier_Product_Info.imageUrl = imageUrl;
+        Cashier_Product_Info.categoryName = categoryName;
 
-        Nav_Panel navPanel = createNavPanel();
-        Content_Panel contentPanel = createContentPanel();
-
-        frame.add(navPanel, BorderLayout.WEST);
-        frame.add(contentPanel, BorderLayout.CENTER);
-
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-
-        productInfoFrame = frame;
-    }
-
-    private static Nav_Panel createNavPanel() {
-        Nav_Panel navPanel = new Nav_Panel();
-        navPanel.setLayout(new BoxLayout(navPanel, BoxLayout.Y_AXIS));
-
-        // Logo
-        ImageIcon icon = new ImageIcon(Cashier_Dashboard.class.getClassLoader().getResource("assets/indira_logo.png"));
-        JLabel logo = new JLabel();
-        logo.setIcon(icon);
-        logo.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-
-        // Nav links
-        NavLabel navProduct = new NavLabel("Produk", false);
-        NavLabel navBrand = new NavLabel("Merk", false);
-        NavLabel navCategory = new NavLabel("Kategori", false);
-        NavLabel navTransaction = new NavLabel("Transaksi", false);
-        navProduct.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        navBrand.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        navCategory.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        navTransaction.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-        // Logout button
-        LogoutButton logoutBtn = new LogoutButton("Keluar");
-
-        Cashier_Product cashierProduct = new Cashier_Product();
-        Cashier_Brand cashierBrand = new Cashier_Brand();
-        Cashier_Category cashierCategory = new Cashier_Category();
-        Cashier_Transaction cashierTransaction = new Cashier_Transaction();
-
-        navProduct.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                cashierProduct.main(new String[0]);
-                productInfoFrame.dispose();
-            }
-        });
-        navBrand.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                cashierBrand.main(new String[0]);
-                productInfoFrame.dispose();
-            }
-        });
-        navCategory.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                cashierCategory.main(new String[0]);
-                productInfoFrame.dispose();
-            }
-        });
-        navTransaction.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                cashierTransaction.main(new String[0]);
-                productInfoFrame.dispose();
-            }
-        });
-
-        // Add components to nav panel
-        navPanel.add(Box.createVerticalStrut(70));
-        navPanel.add(logo);
-        navPanel.add(Box.createVerticalStrut(80));
-        navPanel.add(navProduct);
-        navPanel.add(Box.createVerticalStrut(40));
-        navPanel.add(navBrand);
-        navPanel.add(Box.createVerticalStrut(40));
-        navPanel.add(navCategory);
-        navPanel.add(Box.createVerticalStrut(40));
-        navPanel.add(navTransaction);
-        navPanel.add(Box.createVerticalStrut(100));
-        navPanel.add(logoutBtn);
-
-        return navPanel;
+        Content_Panel cashierProductInfoPanel = createContentPanel();
+        return cashierProductInfoPanel;
     }
 
     private static Content_Panel createContentPanel() {
@@ -227,8 +136,7 @@ public class Cashier_Product_Info {
         cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                productInfoFrame.dispose();
-                cashierProduct.main(new String[0]);
+                reloadCallback.accept(Cashier_Product.init(reloadCallback));
             }
         });
         
@@ -241,8 +149,7 @@ public class Cashier_Product_Info {
         editBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                productInfoFrame.dispose();
-                productEdit.main(new String[0]);
+                reloadCallback.accept(Cashier_Product_Edit.init(reloadCallback));
             }
         });
 

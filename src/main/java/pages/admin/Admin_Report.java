@@ -13,6 +13,7 @@ import java.awt.Font;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.Consumer;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -29,8 +30,11 @@ import javax.swing.table.TableColumnModel;
 public class Admin_Report {
 
     private static ArrayList<HashMap<String, String>> reports = null;
+    private static Consumer<Content_Panel> reloadCallback;
 
-    public static Content_Panel init() {
+    public static Content_Panel init(Consumer<Content_Panel> reloadCallback) {
+        Admin_Report.reloadCallback = reloadCallback;
+        
         Content_Panel adminReportPanel = createContentPanel();
 
         return adminReportPanel;
@@ -191,7 +195,7 @@ public class Admin_Report {
                     ArrayList<HashMap<String, String>> cartProducts = new CartController()
                             .getCartProducts(Integer.parseInt(cartId));
 
-//                    Admin_Report_Detail.main(cartProducts);
+                    reloadCallback.accept(Admin_Report_Detail.init(cartProducts, reloadCallback));
                 }
                 clicked = false;
                 return label;
