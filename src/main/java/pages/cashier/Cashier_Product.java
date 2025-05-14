@@ -224,14 +224,8 @@ public class Cashier_Product {
                     productCategory = category.get("name");
                     break;
                 }
-            }
-<<<<<<< HEAD
-
-            cardPanel.add(new Product_Card(product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
-=======
-            
+            }            
             cardPanel.add(new Product_Card(true, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
->>>>>>> d04897f1125c14a835212437bf577fb651a159c1
         }
 
         cardPanel.updateUI();
