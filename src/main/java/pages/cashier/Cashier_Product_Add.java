@@ -241,11 +241,12 @@ public class Cashier_Product_Add {
                 File selectedFile = fileChooser.getSelectedFile();
 
                 try {
-                    // Get the current directory's canonical path
-                    File currentDir = new File(".").getCanonicalFile();
-
                     // Create a File object for the "images" directory within the current directory
-                    File imagesDir = new File(currentDir, "src//main//resources//assets");
+                    File imagesDir = new File("C:/IndiraMotorKasir/assets");
+                    
+                    if (!imagesDir.exists()) {
+                    	imagesDir.mkdirs();
+                    }
 
                     // Define the target file within the images directory
                     File targetFile = new File(imagesDir, selectedFile.getName());

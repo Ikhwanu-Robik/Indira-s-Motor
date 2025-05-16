@@ -11,6 +11,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.function.Consumer;
@@ -65,7 +67,13 @@ public class Cashier_Product_Info {
         imagePanel.setPreferredSize(new Dimension(850, 700));
 
         try {
-            InputStream input = Cashier_Product_Info.class.getResourceAsStream("/assets/" + Cashier_Product_Info.imageUrl);
+        	File dir = new File("C:/IndiraMotorKasir/assets");
+        	if (!dir.exists()) {
+        		dir.mkdirs();
+        	}
+        	
+        	File image = new File("C:/IndiraMotorKasir/assets/" + Cashier_Product_Info.imageUrl);
+            InputStream input = new FileInputStream(image);
             
             BufferedImage originalImage = ImageIO.read(input);
             Image scaledImage = originalImage.getScaledInstance(800, 500, Image.SCALE_SMOOTH);

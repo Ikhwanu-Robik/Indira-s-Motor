@@ -20,6 +20,7 @@ public class TransactionController {
 
     public TransactionController(int cashier_id) {
         this.cashier_id = cashier_id;
+        this.createCartIfMissing();
     }
 
     public void createCartIfMissing() {
@@ -50,11 +51,6 @@ public class TransactionController {
             oldValues.put("stock", product.get("stock"));
             oldValues.put("brand_id", product.get("brand_id"));
             
-            for (String key : oldValues.keySet()) {
-                System.out.print(key + " : " + oldValues.get(key) + " | ");
-            }
-            System.out.println();
-            
             HashMap<String, String> newValues = new HashMap<>();
             
             newValues.put("name", oldValues.get("name"));
@@ -63,6 +59,12 @@ public class TransactionController {
             
             int oldStock = Integer.parseInt(oldValues.get("stock"));
             int qtyBought = Integer.parseInt(product.get("qty"));
+            
+            if (qtyBought > oldStock) {
+            	System.err.println("kamu belinya kebanyakan kami gak stoknya kurang");
+            	return;
+            }
+            
             int newStock = oldStock - qtyBought;
             
             newValues.put("stock", Integer.toString(newStock));

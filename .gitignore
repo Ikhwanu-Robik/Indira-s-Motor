@@ -6,3 +6,5 @@
 .classpath
 .project
 .settings/
+html_templates/receipt.html
+html_templates/report.html

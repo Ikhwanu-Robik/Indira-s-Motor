@@ -145,27 +145,60 @@ public class CartController extends AbstractController {
 		// only allow this function to run if has_order = false
 		HashMap<String, String> cart = this.findWhere("id", Integer.toString(cart_id)).getFirst();
 		if (!cart.get("has_order").equals("0")) {
-			// no
-		} else {
-			Database db = new Database();
+			return;
+		}
 
-			// cart_product.create(cart_id, product_id, qty)
-			String createQuery = "INSERT INTO cart_product (cart_id, product_id, qty) VALUES (" + cart_id + ", "
-					+ product_id + ", " + qty + ")";
-			Statement createStatement;
-			try {
-				createStatement = db.connect().createStatement();
-				createStatement.execute(createQuery);
-			} catch (SQLException ex) {
-				Logger.getLogger(CartController.class.getName()).log(Level.SEVERE, null, ex);
+		String createQuery;
+		
+		boolean isProductInCart = false;
+		int oldQty = 0;
+		ArrayList<HashMap<String, String>> cartProducts = getCartProducts(cart_id);
+		if (cartProducts != null) {
+			for (HashMap<String, String> cartProduct : cartProducts) {
+				if (cartProduct.get("product_id").trim().equals(Integer.toString(product_id))) {
+					isProductInCart = true;
+					oldQty = Integer.parseInt(cartProduct.get("qty"));
+				}
 			}
+		}
+		if (!isProductInCart) {
+			createQuery = "INSERT INTO cart_product (cart_id, product_id, qty) VALUES (" + cart_id + ", "
+					+ product_id + ", " + qty + ")";
+		} else {
+			int newQty = oldQty + qty;
+			createQuery = "UPDATE cart_product SET qty = " + newQty + " WHERE cart_id = " + cart_id + " AND " + " product_id = " + product_id; 
+		}
+		
+		Database db = new Database();
+
+		Statement createStatement;
+		try {
+			createStatement = db.connect().createStatement();
+			createStatement.execute(createQuery);
+		} catch (SQLException ex) {
+			Logger.getLogger(CartController.class.getName()).log(Level.SEVERE, null, ex);
+		}
+
+	}
+
+	public void removeProduct(int product_id, int cart_id) {
+		Database db = new Database();
+
+		String deleteQuery = "DELETE FROM cart_product WHERE product_id = " + product_id + " AND cart_id = " + cart_id;
+		System.out.println(deleteQuery);
+		Statement createStatement;
+		try {
+			createStatement = db.connect().createStatement();
+			createStatement.execute(deleteQuery);
+		} catch (SQLException ex) {
+			Logger.getLogger(CartController.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
 	public ArrayList<HashMap<String, String>> getCartProducts(int cart_id) {
 		Database db = new Database();
 		ResultSet rs;
-		String query = "SELECT cart_product.id, cart_product.cart_id, cart_product.qty, products.id AS product_id, products.name, products.image_url, products.price, products.stock, products.brand_id FROM cart_product JOIN products ON cart_product.product_id = products.id WHERE cart_product.cart_id = "
+		String query = "SELECT cart_product.id, cart_product.cart_id, cart_product.qty, products.id AS product_id, products.name, products.image_url, products.price, products.stock, products.brand_id, categories.name AS category_name FROM cart_product JOIN products ON cart_product.product_id = products.id JOIN brands ON products.brand_id = brands.id JOIN categories ON brands.category_id = categories.id WHERE cart_product.cart_id = "
 				+ cart_id;
 		ArrayList<HashMap<String, String>> cart_products = new ArrayList<>();
 		ArrayList<String> columns = new ArrayList<>();
@@ -179,6 +212,7 @@ public class CartController extends AbstractController {
 		columns.add("image_url");
 		columns.add("stock");
 		columns.add("brand_id");
+		columns.add("category_name");
 
 		try {
 			Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -262,7 +296,7 @@ public class CartController extends AbstractController {
 		} catch (SQLException ex) {
 			JOptionPane.showMessageDialog(null, ex, "SQL ERROR - CHECK CART EXISTENCE", JOptionPane.ERROR_MESSAGE);
 		}
-		
+
 		return -1;
 	}
 }

@@ -6,6 +6,7 @@ import components.ui.LogoutButton;
 import components.ui.MainFrame;
 import components.ui.NavLabel;
 import controllers.LoginController;
+import controllers.TransactionController;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
@@ -26,9 +27,11 @@ public class CashierLayout {
     private static MainFrame frame;
     private static Content_Panel contentPanel;
     private static LoginController loginSession;
+    private static TransactionController transactionSession;
 
     public static void init(LoginController loginSession) {
         CashierLayout.loginSession = loginSession;
+        startTransactionSession();
         frame = new MainFrame("Cashier Dashboard");
 
         Nav_Panel navPanel = createNavPanel();
@@ -40,6 +43,10 @@ public class CashierLayout {
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+    
+    public static void startTransactionSession() {
+    	transactionSession = new TransactionController(loginSession.authenticated_user_id);
     }
     
     public static void reloadContent(Content_Panel newPanel) {
@@ -105,7 +112,7 @@ public class CashierLayout {
          navReport.addMouseListener(new java.awt.event.MouseAdapter() {
              @Override
              public void mouseClicked(java.awt.event.MouseEvent evt) {
-                 reloadContent(Cashier_Transaction.init(CashierLayout::reloadContent));
+                 reloadContent(Cashier_Transaction.init(CashierLayout::reloadContent, loginSession, transactionSession));
              }
          });
 
