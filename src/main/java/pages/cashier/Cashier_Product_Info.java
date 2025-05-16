@@ -136,7 +136,7 @@ public class Cashier_Product_Info {
         cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadCallback.accept(Cashier_Product.init(reloadCallback));
+                reloadCallback.accept(cashierProduct.init(reloadCallback));
             }
         });
         
@@ -149,7 +149,7 @@ public class Cashier_Product_Info {
         editBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadCallback.accept(Cashier_Product_Edit.init(reloadCallback, productName));
+                reloadCallback.accept(productEdit.init(reloadCallback, productName));
             }
         });
 
