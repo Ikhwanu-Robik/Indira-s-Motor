@@ -135,10 +135,13 @@ public class Cashier_Product_Add {
         JLabel brandLabel = new JLabel("Merk:");
         brandLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        String[] brands = new String[Cashier_Product_Add.brands.size()];
-        int i = 0;
-        for (HashMap<String, String> brand : Cashier_Product_Add.brands) {
-            brands[i++] = brand.get("name");
+        String[] brands = {"Kosong"};
+        if (Cashier_Product_Add.brands != null) {
+        	brands = new String[Cashier_Product_Add.brands.size()];
+            int i = 0;
+            for (HashMap<String, String> brand : Cashier_Product_Add.brands) {
+                brands[i++] = brand.get("name");
+            }
         }
 
         JComboBox<String> brandComboBox = new JComboBox<>(brands);
@@ -155,10 +158,13 @@ public class Cashier_Product_Add {
         JLabel categoryLabel = new JLabel("Kategori:");
         categoryLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        String[] categories = new String[Cashier_Product_Add.categories.size()];
-        int j = 0;
-        for (HashMap<String, String> category : Cashier_Product_Add.categories) {
-            categories[j++] = category.get("name");
+        String[] categories = {"Kosong"};
+        if (Cashier_Product_Add.categories != null) {
+        	categories = new String[Cashier_Product_Add.categories.size()];
+            int j = 0;
+            for (HashMap<String, String> category : Cashier_Product_Add.categories) {
+                categories[j++] = category.get("name");
+            }
         }
 
         JComboBox<String> categoryComboBox = new JComboBox<>(categories);

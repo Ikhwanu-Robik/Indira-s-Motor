@@ -96,20 +96,24 @@ public class Admin_Report {
 
         reports = new ReportController().getReports();
 
-        Object[][] data = new Object[reports.size()][columnNames.length];
+        Object[][] data = {};
+        
+        if (reports != null) {
+        	data = new Object[reports.size()][columnNames.length];
 
-        int i = 0;
-        for (HashMap<String, String> report : reports) {
-            data[i] = new Object[]{
-                report.get("date"), // perbaiki urutan kolom sesuai header
-                report.get("username"),
-                report.get("product_types"),
-                report.get("total"),
-                report.get("fee"),
-                "Detail",
-                report.get("cart_id")
-            };
-            i++;
+            int i = 0;
+            for (HashMap<String, String> report : reports) {
+                data[i] = new Object[]{
+                    report.get("date"), // perbaiki urutan kolom sesuai header
+                    report.get("username"),
+                    report.get("product_types"),
+                    report.get("total"),
+                    report.get("fee"),
+                    "Detail",
+                    report.get("cart_id")
+                };
+                i++;
+            }
         }
 
         DefaultTableModel tableModel = new DefaultTableModel(data, columnNames) {

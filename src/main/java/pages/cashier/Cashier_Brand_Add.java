@@ -118,11 +118,15 @@ public class Cashier_Brand_Add {
         JLabel categoryLabel = new JLabel("Kategori:");
         categoryLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        String[] categoriesArray = new String[Cashier_Brand_Add.categories.size()];
-        int i = 0;
-        for (HashMap<String, String> category : categories) {
-            categoriesArray[i++] = category.get("name");
+        String[] categoriesArray = {"Kosong"};
+        if (Cashier_Brand_Add.categories != null) {
+        	categoriesArray = new String[Cashier_Brand_Add.categories.size()];
+            int i = 0;
+            for (HashMap<String, String> category : categories) {
+                categoriesArray[i++] = category.get("name");
+            }
         }
+        
         JComboBox<String> categoryComboBox = new JComboBox<>(categoriesArray);
         categoryComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
         

@@ -51,12 +51,15 @@ public class Search_Bar extends JPanel {
         columns.add("name");
         ArrayList<HashMap<String, String>> categoriesDB = new CategoryController().read(columns);
         
-        String[] categories = new String[categoriesDB.size()];
-        
-        int i = 0;
-        for (HashMap<String, String> category : categoriesDB) {
-            categories[i++] = category.get("name");
+        String[] categories = {"Kosong"};
+        if (categoriesDB != null) {
+        	categories = new String[categoriesDB.size()];
+            int i = 0;
+            for (HashMap<String, String> category : categoriesDB) {
+                categories[i++] = category.get("name");
+            }
         }
+        
         JComboBox<String> combo = new JComboBox<>(categories);
         combo.setMaximumSize(new Dimension(WIDTH, 25));
         return combo;
@@ -67,12 +70,15 @@ public class Search_Bar extends JPanel {
         columns.add("name");
         ArrayList<HashMap<String, String>> categoriesDB = new BrandController().read(columns);
         
-        String[] brands = new String[categoriesDB.size()];
-        
-        int i = 0;
-        for (HashMap<String, String> category : categoriesDB) {
-            brands[i++] = category.get("name");
+        String[] brands = {"Kosong"};
+        if (categoriesDB != null) {
+        	brands = new String[categoriesDB.size()];
+        	int i = 0;
+            for (HashMap<String, String> category : categoriesDB) {
+                brands[i++] = category.get("name");
+            }
         }
+        
         JComboBox<String> combo = new JComboBox<>(brands);
         combo.setMaximumSize(new Dimension(WIDTH, 25));
         return combo;

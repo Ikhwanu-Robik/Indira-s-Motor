@@ -85,16 +85,20 @@ public class Cashier_Category {
         String[] columnNames = {"id_kategori", "kategori"};
 
         // Data kosong untuk inisialisasi awal
-        int brandsCount = categories.size();
-        int i = 0;
-        Object[][] data = new Object[brandsCount][3];
-        for (HashMap<String, String> category : categories) {
-            String brandCategory = "??";
-            
-            data[i][0] = category.get("id");
-            data[i][1] = category.get("name");
-            
-            i++;
+        Object[][] data = {};
+        
+        if (categories != null) {
+        	int brandsCount = categories.size();
+            int i = 0;
+            data = new Object[brandsCount][3];
+            for (HashMap<String, String> category : categories) {
+                String brandCategory = "??";
+                
+                data[i][0] = category.get("id");
+                data[i][1] = category.get("name");
+                
+                i++;
+            }
         }
 
         // Buat model tabel

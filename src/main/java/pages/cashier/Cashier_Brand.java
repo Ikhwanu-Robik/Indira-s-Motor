@@ -84,22 +84,26 @@ public class Cashier_Brand {
         String[] columnNames = {"id_merk", "merk", "kategori"};
 
         // Data kosong untuk inisialisasi awal
-        int brandsCount = brands.size();
-        int i = 0;
-        Object[][] data = new Object[brandsCount][3];
-        for (HashMap<String, String> brand : brands) {
-            String brandCategory = "??";
-            for (HashMap<String, String> category : categories) {
-                if (brand.get("category_id").trim().equals(category.get("id").trim())) {
-                    brandCategory = category.get("name");
+        Object[][] data = {};
+        
+        if (brands != null) {
+        	int brandsCount = brands.size();
+            int i = 0;
+            data = new Object[brandsCount][3];
+            for (HashMap<String, String> brand : brands) {
+                String brandCategory = "??";
+                for (HashMap<String, String> category : categories) {
+                    if (brand.get("category_id").trim().equals(category.get("id").trim())) {
+                        brandCategory = category.get("name");
+                    }
                 }
+                
+                data[i][0] = brand.get("id");
+                data[i][1] = brand.get("name");
+                data[i][2] = brandCategory;
+                
+                i++;
             }
-            
-            data[i][0] = brand.get("id");
-            data[i][1] = brand.get("name");
-            data[i][2] = brandCategory;
-            
-            i++;
         }
 
         // Buat model tabel
