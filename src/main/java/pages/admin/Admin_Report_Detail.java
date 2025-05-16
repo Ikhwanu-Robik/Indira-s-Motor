@@ -1,27 +1,46 @@
 package pages.admin;
 
+import components.Button_Brown;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 
 import components.Content_Panel;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.Consumer;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+
+import org.jdatepicker.impl.*;
+import java.util.Properties;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class Admin_Report_Detail {
+
     private static ArrayList<HashMap<String, String>> products = null;
     private static Consumer<Content_Panel> reloadCallback;
 
     public static Content_Panel init(ArrayList<HashMap<String, String>> products, Consumer<Content_Panel> reloadCallback) {
         Admin_Report_Detail.products = products;
         Admin_Report_Detail.reloadCallback = reloadCallback;
-        
+
         Content_Panel contentPanel = createContentPanel();
-        
+
         return contentPanel;
     }
 
@@ -30,6 +49,9 @@ public class Admin_Report_Detail {
         contentPanel.setLayout(new GridBagLayout());
 
         JLabel titleLabel = createTitleLabel("Laporan Penjualan", new Color(0x00000));
+        JPanel filterPanel = createFilterPanel();
+        JScrollPane tableDetails = createTableDetails();
+        JPanel btnPanel = createButtonPanel();
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
@@ -37,7 +59,9 @@ public class Admin_Report_Detail {
         gbc.anchor = GridBagConstraints.CENTER;
 
         contentPanel.add(titleLabel, gbc);
-//        contentPanel.add("", gbc);
+        contentPanel.add(filterPanel, gbc);
+        contentPanel.add(tableDetails, gbc);
+        contentPanel.add(btnPanel, gbc);
 
         return contentPanel;
     }
@@ -50,4 +74,126 @@ public class Admin_Report_Detail {
         return label;
     }
 
+    private static JScrollPane createTableDetails() {
+        // Nama kolom
+        String[] columnNames = {"nama_kasir", "tanggal", "kategori", "produk", "jumlah", "total"};
+
+        // Data kosong untuk inisialisasi awal
+        Object[][] data = {};
+        // Buat model tabel
+        DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
+
+        // Buat tabel
+        JTable table = new JTable(tableModel);
+
+        // Styling tabel
+        table.setBackground(new Color(45, 45, 45));
+        table.setForeground(Color.WHITE);
+        table.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        table.setRowHeight(28);
+        table.setGridColor(Color.DARK_GRAY);
+
+        // Styling header tabel
+        JTableHeader header = table.getTableHeader();
+        header.setBackground(new Color(30, 30, 30));
+        header.setForeground(Color.WHITE);
+        header.setFont(new Font("SansSerif", Font.BOLD, 15));
+        header.setReorderingAllowed(false);
+
+        // Set preferred width kolom
+        table.getColumnModel().getColumn(0).setPreferredWidth(120);
+        table.getColumnModel().getColumn(1).setPreferredWidth(150);
+        table.getColumnModel().getColumn(2).setPreferredWidth(150);
+        table.getColumnModel().getColumn(3).setPreferredWidth(150);
+        table.getColumnModel().getColumn(4).setPreferredWidth(150);
+        table.getColumnModel().getColumn(5).setPreferredWidth(150);
+
+        // ScrollPane untuk tabel
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.getViewport().setBackground(new Color(45, 45, 45));
+
+        return scrollPane;
+    }
+
+    public static JPanel createButtonPanel() {
+        JPanel btnPanel = new JPanel();
+        btnPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+
+        JButton backBtn = new JButton("Kembali");
+        backBtn.setFont(new Font("Arial", Font.PLAIN, 16));
+        backBtn.setForeground(Color.BLACK);
+        backBtn.setBackground(new Color(0xE0E0E0));
+
+        Admin_Report reportPage = new Admin_Report();
+
+        backBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                reloadCallback.accept(reportPage.init(reloadCallback));
+            }
+        });
+        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        leftPanel.setOpaque(false);
+        leftPanel.add(backBtn);
+
+        JButton printBtn = new Button_Brown("Cetak Struk");
+
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        rightPanel.setOpaque(false);
+        rightPanel.add(printBtn);
+
+        btnPanel.add(leftPanel, BorderLayout.WEST);
+        btnPanel.add(rightPanel, BorderLayout.EAST);
+
+        return btnPanel;
+    }
+
+    public static JPanel createFilterPanel() {
+        JPanel filterPanel = new JPanel();
+
+        // ComboBox Timeline
+        String[] time = {"Sebelum", "Sekarang", "Sesudah"};
+        JComboBox<String> timeline = new JComboBox<>(time);
+        timeline.setBounds(20, 20, 120, 30);
+        filterPanel.add(timeline);
+
+        // Model dan Properti untuk DatePicker
+        UtilDateModel model = new UtilDateModel();
+        model.setSelected(true); // Menandai tanggal saat ini sebagai default
+
+        Properties p = new Properties();
+        p.put("text.today", "Hari Ini");
+        p.put("text.month", "Bulan");
+        p.put("text.year", "Tahun");
+
+        JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
+        JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+        datePicker.setBounds(160, 20, 150, 30);
+        filterPanel.add(datePicker);
+
+        return filterPanel;
+    }
+
+    // Formatter untuk DatePicker
+    static class DateLabelFormatter extends JFormattedTextField.AbstractFormatter {
+
+        private final String datePattern = "dd-MM-yyyy";
+        private final SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+
+        @Override
+        public Object stringToValue(String text) throws ParseException {
+            return dateFormatter.parseObject(text);
+        }
+
+        @Override
+        public String valueToString(Object value) {
+            if (value != null) {
+                Calendar cal = (Calendar) value;
+                return dateFormatter.format(cal.getTime());
+            }
+            return "";
+        }
+    }
+
 }
+    

@@ -1,127 +1,166 @@
-//package pages.admin;
-//
-//import java.awt.BorderLayout;
-//import java.awt.Color;
-//import java.awt.Cursor;
-//import java.awt.GridBagConstraints;
-//import java.awt.GridBagLayout;
-//import javax.swing.Box;
-//import javax.swing.BoxLayout;
-//import javax.swing.ImageIcon;
-//import javax.swing.JLabel;
-//
-//import components.Content_Panel;
-//import components.Nav_Panel;
-//import components.ui.LogoutButton;
-//import components.ui.MainFrame;
-//import components.ui.NavLabel;
-//import controllers.CartController;
-//import controllers.ReportController;
-//import java.awt.Font;
-//import java.util.ArrayList;
-//import java.util.HashMap;
-//import javax.swing.SwingConstants;
-//
-//public class Admin_Product_Info {
-//
-//    // Constants
-//    private static MainFrame adminReportFrame = null;
-////    private static final Color BACKGROUND_COLOR = new Color(0xE4E4E4);
-//    public void main(String[] args) {
-//        MainFrame frame = new MainFrame("Admin Products");
-//
-//        Nav_Panel navPanel = createNavPanel();
-//        Content_Panel contentPanel = createContentPanel();
-//
-//        frame.add(navPanel, BorderLayout.WEST);
-//        frame.add(contentPanel, BorderLayout.CENTER);
-//
-//        frame.setLocationRelativeTo(null);
-//        frame.setVisible(true);
-//        
-//        adminReportFrame = frame;
-//    }
-//
-//    private static Nav_Panel createNavPanel() {
-//        Nav_Panel navPanel = new Nav_Panel();
-//        navPanel.setLayout(new BoxLayout(navPanel, BoxLayout.Y_AXIS));
-//
-//        // Logo
-//        ImageIcon icon = new ImageIcon(new Admin_Cashier().getClass().getResource("/assets/indira_logo.png"));
-//        JLabel logo = new JLabel();
-//        logo.setIcon(icon);
-//        logo.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-//
-//        // Nav links
-//        NavLabel navEmployee = new NavLabel("Pegawai", false);
-//        NavLabel navProduct = new NavLabel("Produk", false);
-//        NavLabel navReport = new NavLabel("Laporan", true);
-//        navEmployee.setCursor(new Cursor(Cursor.HAND_CURSOR));
-//        navProduct.setCursor(new Cursor(Cursor.HAND_CURSOR));
-//        navReport.setCursor(new Cursor(Cursor.HAND_CURSOR));
-//
-//        Admin_Cashier adminCashier = new Admin_Cashier();
-//        Admin_Products adminProducts = new Admin_Products();
-//
-//        navEmployee.addMouseListener(new java.awt.event.MouseAdapter() {
+package pages.admin;
+
+import components.Content_Panel;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.function.Consumer;
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import pages.admin.Admin_Products;
+
+public class Admin_Product_Info {
+
+    private static String productName;
+    private static String productPrice;
+    private static String imageUrl;
+    private static String categoryName;
+    private static Consumer<Content_Panel> reloadCallback;
+
+    public static Content_Panel init(Consumer<Content_Panel> reloadCallback, String productName, String productPrice, String imageUrl, String categoryName) {
+        Admin_Product_Info.reloadCallback = reloadCallback;
+        Admin_Product_Info.productName = productName;
+        Admin_Product_Info.productPrice = productPrice;
+        Admin_Product_Info.imageUrl = imageUrl;
+        Admin_Product_Info.categoryName = categoryName;
+
+        Content_Panel cashierProductInfoPanel = createContentPanel();
+        return cashierProductInfoPanel;
+    }
+
+    private static Content_Panel createContentPanel() {
+        Content_Panel contentPanel = new Content_Panel();
+        contentPanel.setLayout(new GridBagLayout());
+
+        JPanel image = createImagePanel("C:\\Users\\Arthur\\Downloads\\10854966.jpg");
+
+        // Add label to content panel
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.CENTER;
+
+        contentPanel.add(image, gbc);
+        return contentPanel;
+    }
+
+    private static JPanel createImagePanel(String imagePath) {
+        JPanel imagePanel = new JPanel();
+        imagePanel.setLayout(new BoxLayout(imagePanel, BoxLayout.Y_AXIS));
+        imagePanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+        imagePanel.setBackground(Color.WHITE);
+        imagePanel.setPreferredSize(new Dimension(850, 700));
+
+        try {
+            InputStream input = Admin_Product_Info.class.getResourceAsStream("/assets/" + Admin_Product_Info.imageUrl);
+
+            BufferedImage originalImage = ImageIO.read(input);
+            Image scaledImage = originalImage.getScaledInstance(800, 500, Image.SCALE_SMOOTH);
+            JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
+            imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            imagePanel.add(imageLabel);
+        } catch (IOException e) {
+            JLabel placeholder = new JLabel("No Image Available");
+            placeholder.setAlignmentX(Component.CENTER_ALIGNMENT);
+            imagePanel.add(placeholder);
+        }
+
+        JPanel productDescription = createDescriptionPanel("Oli Amahay", 20000, "Oli");
+        imagePanel.add(productDescription);
+
+        imagePanel.add(Box.createVerticalStrut(20));
+
+        JPanel buttonContainer = new JPanel();
+        buttonContainer.setLayout(new BorderLayout());
+        buttonContainer.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+
+        JPanel buttonPanel = createButtonPanel();
+        buttonContainer.add(buttonPanel, BorderLayout.CENTER);
+
+        imagePanel.add(buttonContainer);
+
+        return imagePanel;
+    }
+
+    private static JPanel createDescriptionPanel(String name, double price, String category) {
+        JPanel descriptionPanel = new JPanel();
+        descriptionPanel.setLayout(new GridBagLayout());
+
+        // Add label to content panel
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.CENTER;
+
+        JLabel productName = new JLabel(Admin_Product_Info.productName);
+        productName.setFont(new Font("Arial", Font.BOLD, 20));
+
+        JLabel productPrice = new JLabel("Rp " + Admin_Product_Info.productPrice);
+        productPrice.setFont(new Font("Arial", Font.ITALIC, 18));
+
+        JLabel productCategory = new JLabel(Admin_Product_Info.categoryName);
+        productCategory.setFont(new Font("Arial", Font.PLAIN, 16));
+
+        descriptionPanel.add(productName, gbc);
+        descriptionPanel.add(productPrice, gbc);
+        descriptionPanel.add(productCategory, gbc);
+
+        return descriptionPanel;
+    }
+
+    private static JPanel createButtonPanel() {
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BorderLayout());
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        buttonPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+
+        Admin_Products adminProduct = new Admin_Products();
+
+        JButton cancelBtn = new JButton("Batal");
+        cancelBtn.setFont(new Font("Arial", Font.PLAIN, 16));
+        cancelBtn.setForeground(Color.BLACK);
+        cancelBtn.setBackground(new Color(0xE0E0E0));
+        cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                reloadCallback.accept(adminProduct.init(reloadCallback));
+            }
+        });
+
+//        JButton editBtn = new JButton("Edit");
+//        editBtn.setFont(new Font("Arial", Font.PLAIN, 16));
+//        editBtn.setForeground(Color.WHITE);
+//        editBtn.setBackground(new Color(0xA0522D));
+//        editBtn.addMouseListener(new java.awt.event.MouseAdapter() {
 //            @Override
 //            public void mouseClicked(java.awt.event.MouseEvent evt) {
-//                adminCashier.main(new String[0]);
-//                adminReportFrame.dispose();
+//                reloadCallback.accept(productEdit.init(reloadCallback, productName));
 //            }
 //        });
-//
-//        navProduct.addMouseListener(new java.awt.event.MouseAdapter() {
-//            @Override
-//            public void mouseClicked(java.awt.event.MouseEvent evt) {
-//                adminProducts.main(new String[0]);
-//                adminReportFrame.dispose();
-//            }
-//        });
-//
-//        // Logout button
-//        LogoutButton logoutBtn = new LogoutButton("Keluar");
-//
-//        // Add components to nav panel
-//        navPanel.add(Box.createVerticalStrut(70));
-//        navPanel.add(logo);
-//        navPanel.add(Box.createVerticalStrut(80));
-//        navPanel.add(navEmployee);
-//        navPanel.add(Box.createVerticalStrut(40));
-//        navPanel.add(navProduct);
-//        navPanel.add(Box.createVerticalStrut(40));
-//        navPanel.add(navReport);
-//        navPanel.add(Box.createVerticalStrut(150));
-//        navPanel.add(logoutBtn);
-//
-//        return navPanel;
-//    }
-//
-//    private static Content_Panel createContentPanel() {
-//        Content_Panel contentPanel = new Content_Panel();
-//        contentPanel.setLayout(new GridBagLayout());
-//
-//        JLabel titleLabel = createTitleLabel("Laporan Penjualan", new Color(0x00000));
-//
-//        GridBagConstraints gbc = new GridBagConstraints();
-//        gbc.gridwidth = GridBagConstraints.REMAINDER;
-//        gbc.fill = GridBagConstraints.HORIZONTAL;
-//        gbc.anchor = GridBagConstraints.CENTER;
-//
-//        contentPanel.add(titleLabel, gbc);
-////        contentPanel.add("", gbc);
-//
-//        return contentPanel;
-//    }
-//
-//    private static JLabel createTitleLabel(String text, Color color) {
-//        JLabel label = new JLabel(text);
-//        label.setForeground(color);
-//        label.setFont(new Font("Arial", Font.BOLD, 30));
-//        label.setHorizontalAlignment(SwingConstants.CENTER);
-//        return label;
-//    }
-//
-//
-//
-//}
+        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        leftPanel.add(cancelBtn);
+
+//        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+//        rightPanel.add(editBtn);
+        buttonPanel.add(leftPanel, BorderLayout.WEST);
+//        buttonPanel.add(rightPanel, BorderLayout.EAST);
+
+        return buttonPanel;
+    }
+
+}
