@@ -11,9 +11,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
+
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -22,8 +26,12 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +41,7 @@ import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class Cashier_Product_Edit {
@@ -256,6 +265,7 @@ public class Cashier_Product_Edit {
             String brandName = Cashier_Product_Edit.brandComboBox.getSelectedItem().toString();
             String brand_id = null;
             String brand_category_id = null;
+            String newImageName = null;
             for (HashMap<String, String> brand : brands) {
                 if (brand.get("name").trim().equals(brandName.trim())) {
                     brand_id = brand.get("id");
@@ -277,16 +287,23 @@ public class Cashier_Product_Edit {
                 return;
             }
 
+            //save the new image
             if (fileChooserReturnValue == JFileChooser.APPROVE_OPTION) {
-                image_url = fileChooser.getSelectedFile().getName();
-                File selectedFile = fileChooser.getSelectedFile();
+            	File selectedFile = fileChooser.getSelectedFile();
+            	newImageName = selectedFile.getName();
 
                 try {
-                    File currentDir = new File(".").getCanonicalFile();
-                    File imagesDir = new File(currentDir, "src//main//resources//assets");
+                    // Create a File object for the "images" directory within the current directory
+                    File imagesDir = new File("C:/IndiraMotorKasir/assets");
+                    
+                    if (!imagesDir.exists()) {
+                    	imagesDir.mkdirs();
+                    }
 
+                    // Define the target file within the images directory
                     File targetFile = new File(imagesDir, selectedFile.getName());
 
+                    // Copy the selected file to the target location
                     Files.copy(
                             selectedFile.toPath(),
                             targetFile.toPath());
@@ -295,10 +312,16 @@ public class Cashier_Product_Edit {
                     Logger.getLogger(Indira_s_motor.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            
+//           delete the old image
+//           TODO : the image cannot be deleted because it is being opened by this program
+            String oldImageUrl = new ProductController().findWhere("id", productId).getFirst().get("image_url");
+            File oldImage = new File("C:/IndiraMotorKasir/assets/" + oldImageUrl);
+            oldImage.delete();
 
             HashMap<String, String> product_data = new HashMap<>();
             product_data.put("name", name);
-            product_data.put("image_url", image_url);
+            product_data.put("image_url", newImageName);
             product_data.put("price", price);
             product_data.put("stock", stock);
             product_data.put("brand_id", brand_id);
