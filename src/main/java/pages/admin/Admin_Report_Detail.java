@@ -15,12 +15,20 @@ import java.util.HashMap;
 import java.util.function.Consumer;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+
+import org.jdatepicker.impl.*;
+import java.util.Properties;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class Admin_Report_Detail {
 
@@ -41,6 +49,7 @@ public class Admin_Report_Detail {
         contentPanel.setLayout(new GridBagLayout());
 
         JLabel titleLabel = createTitleLabel("Laporan Penjualan", new Color(0x00000));
+        JPanel filterPanel = createFilterPanel();
         JScrollPane tableDetails = createTableDetails();
         JPanel btnPanel = createButtonPanel();
 
@@ -50,6 +59,7 @@ public class Admin_Report_Detail {
         gbc.anchor = GridBagConstraints.CENTER;
 
         contentPanel.add(titleLabel, gbc);
+        contentPanel.add(filterPanel, gbc);
         contentPanel.add(tableDetails, gbc);
         contentPanel.add(btnPanel, gbc);
 
@@ -113,6 +123,15 @@ public class Admin_Report_Detail {
         backBtn.setFont(new Font("Arial", Font.PLAIN, 16));
         backBtn.setForeground(Color.BLACK);
         backBtn.setBackground(new Color(0xE0E0E0));
+
+        Admin_Report reportPage = new Admin_Report();
+
+        backBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                reloadCallback.accept(reportPage.init(reloadCallback));
+            }
+        });
         JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         leftPanel.setOpaque(false);
         leftPanel.add(backBtn);
@@ -129,4 +148,52 @@ public class Admin_Report_Detail {
         return btnPanel;
     }
 
+    public static JPanel createFilterPanel() {
+        JPanel filterPanel = new JPanel();
+
+        // ComboBox Timeline
+        String[] time = {"Sebelum", "Sekarang", "Sesudah"};
+        JComboBox<String> timeline = new JComboBox<>(time);
+        timeline.setBounds(20, 20, 120, 30);
+        filterPanel.add(timeline);
+
+        // Model dan Properti untuk DatePicker
+        UtilDateModel model = new UtilDateModel();
+        model.setSelected(true); // Menandai tanggal saat ini sebagai default
+
+        Properties p = new Properties();
+        p.put("text.today", "Hari Ini");
+        p.put("text.month", "Bulan");
+        p.put("text.year", "Tahun");
+
+        JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
+        JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+        datePicker.setBounds(160, 20, 150, 30);
+        filterPanel.add(datePicker);
+
+        return filterPanel;
+    }
+
+    // Formatter untuk DatePicker
+    static class DateLabelFormatter extends JFormattedTextField.AbstractFormatter {
+
+        private final String datePattern = "dd-MM-yyyy";
+        private final SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+
+        @Override
+        public Object stringToValue(String text) throws ParseException {
+            return dateFormatter.parseObject(text);
+        }
+
+        @Override
+        public String valueToString(Object value) {
+            if (value != null) {
+                Calendar cal = (Calendar) value;
+                return dateFormatter.format(cal.getTime());
+            }
+            return "";
+        }
+    }
+
 }
+    
