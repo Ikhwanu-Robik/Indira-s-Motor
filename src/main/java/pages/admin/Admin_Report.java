@@ -18,6 +18,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -42,9 +43,9 @@ import org.jdatepicker.impl.UtilDateModel;
 public class Admin_Report {
 
     private static ArrayList<HashMap<String, String>> reports = null;
-    private static Consumer<Content_Panel> reloadCallback;
+    private static BiConsumer<Content_Panel, Integer> reloadCallback;
 
-    public static Content_Panel init(Consumer<Content_Panel> reloadCallback) {
+    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback) {
         Admin_Report.reloadCallback = reloadCallback;
         reports = new ReportController().getReports();
         
@@ -53,7 +54,7 @@ public class Admin_Report {
         return adminReportPanel;
     }
     
-    public static Content_Panel init(Consumer<Content_Panel> reloadCallback, ArrayList<HashMap<String, String>> filteredReport) {
+    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback, ArrayList<HashMap<String, String>> filteredReport) {
         Admin_Report.reloadCallback = reloadCallback;
         reports = filteredReport;
         
@@ -220,7 +221,7 @@ public class Admin_Report {
                     String date = tableModel.getValueAt(row, 0).toString();
                     String username = tableModel.getValueAt(row, 1).toString();
 
-                    reloadCallback.accept(Admin_Report_Detail.init(cartId, date, username, reloadCallback));
+                    reloadCallback.accept(Admin_Report_Detail.init(cartId, date, username, reloadCallback), Integer.valueOf(3));
                 }
                 clicked = false;
                 return label;
@@ -286,7 +287,7 @@ public class Admin_Report {
         	int when = timeline.getSelectedIndex();
         	
         	ArrayList<HashMap<String, String>> filteredReport = new ReportController().filter(when, date, month, year);
-        	reloadCallback.accept(Admin_Report.init(reloadCallback, filteredReport));
+        	reloadCallback.accept(Admin_Report.init(reloadCallback, filteredReport), Integer.valueOf(3));
         });
         filterPanel.add(applyFilterBtn);
         

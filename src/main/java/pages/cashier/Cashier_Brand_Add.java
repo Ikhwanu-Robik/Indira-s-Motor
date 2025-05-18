@@ -13,6 +13,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -27,12 +28,12 @@ import javax.swing.SwingConstants;
 
 public class Cashier_Brand_Add {
 
-    private static Consumer<Content_Panel> reloadCallback;
+    private static BiConsumer<Content_Panel, Integer> reloadCallback;
     private static ArrayList<HashMap<String, String>> categories;
     private static JTextField brandNameField;
     private static JComboBox<String> categoryCombo;
 
-    public static Content_Panel init(Consumer<Content_Panel> reloadCallback, ArrayList<HashMap<String, String>> categories) {
+    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback, ArrayList<HashMap<String, String>> categories) {
         Cashier_Brand_Add.reloadCallback = reloadCallback;
         Cashier_Brand_Add.categories = categories;
 
@@ -164,7 +165,7 @@ public class Cashier_Brand_Add {
         cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadCallback.accept(Cashier_Brand.init(reloadCallback));
+                reloadCallback.accept(Cashier_Brand.init(reloadCallback), Integer.valueOf(2));
             }
         });
 

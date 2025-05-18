@@ -13,6 +13,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -27,9 +28,9 @@ public class Cashier_Product {
     private static ArrayList<HashMap<String, String>> categories = null;
     private static ArrayList<HashMap<String, String>> brands = null;
     private static ArrayList<HashMap<String, String>> products = null;
-    private static Consumer<Content_Panel> reloadCallback;
+    private static BiConsumer<Content_Panel, Integer> reloadCallback;
 
-    public static Content_Panel init(Consumer<Content_Panel> reloadCallback) {
+    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback) {
         Cashier_Product.reloadCallback = reloadCallback;
         fetchDatabase();
 
@@ -100,7 +101,7 @@ public class Cashier_Product {
         addButton.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadCallback.accept(Cashier_Product_Add.init(reloadCallback));
+                reloadCallback.accept(Cashier_Product_Add.init(reloadCallback), Integer.valueOf(1));
             }
         });
         rightPanel.add(addButton);

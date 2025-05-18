@@ -19,6 +19,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -40,12 +41,12 @@ import java.util.Calendar;
 public class Admin_Report_Detail {
 	private static String cartId;
     private static ArrayList<HashMap<String, String>> products = null;
-    private static Consumer<Content_Panel> reloadCallback;
+    private static BiConsumer<Content_Panel, Integer> reloadCallback;
 	private static String date;
 	private static String cashierName;
 	private static HashMap<String, String> order;
 
-    public static Content_Panel init(String cartId, String date, String cashierName, Consumer<Content_Panel> reloadCallback) {
+    public static Content_Panel init(String cartId, String date, String cashierName, BiConsumer<Content_Panel, Integer> reloadCallback) {
     	Admin_Report_Detail.cartId = cartId;
     	Admin_Report_Detail.date = date;
     	Admin_Report_Detail.cashierName = cashierName;
@@ -158,7 +159,7 @@ public class Admin_Report_Detail {
         backBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadCallback.accept(Admin_Report.init(reloadCallback));
+                reloadCallback.accept(Admin_Report.init(reloadCallback), Integer.valueOf(3));
             }
         });
         JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));

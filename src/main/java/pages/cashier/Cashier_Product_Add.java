@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,9 +44,9 @@ public class Cashier_Product_Add {
     private static JComboBox categoryComboBox = null;
     private static JFileChooser fileChooser = null;
     private static int fileChooserReturnValue = 0;
-    private static Consumer<Content_Panel> reloadCallback;
+    private static BiConsumer<Content_Panel, Integer> reloadCallback;
 
-    public static Content_Panel init(Consumer<Content_Panel> reloadCallback) {
+    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback) {
         Cashier_Product_Add.reloadCallback = reloadCallback;
         
         ArrayList<String> all_col = new ArrayList<>();
@@ -194,7 +195,7 @@ public class Cashier_Product_Add {
         cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadCallback.accept(Cashier_Product.init(reloadCallback));
+                reloadCallback.accept(Cashier_Product.init(reloadCallback), Integer.valueOf(1));
             }
         });
 

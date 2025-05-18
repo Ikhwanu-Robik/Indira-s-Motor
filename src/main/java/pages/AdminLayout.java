@@ -33,6 +33,11 @@ public class AdminLayout {
     private static MainFrame frame;
     private static Content_Panel contentPanel;
     private static LoginController loginSession;
+    private static int origin;
+    private static int ORIGIN_EMPLOYEE = 1;
+    private static int ORIGIN_PRODUCT = 2;
+    private static int ORIGIN_REPORT = 3;
+	private static Nav_Panel navPanel;
 
     public static void init(LoginController loginSession) {
     	AdminLayout.loginSession = loginSession;
@@ -49,17 +54,25 @@ public class AdminLayout {
         frame.setVisible(true);
     }
     
-    public static void reloadContent(Content_Panel newPanel) {
+    public static void reloadContent(Content_Panel newPanel, Integer origin) {
+    	AdminLayout.origin = origin;
+    	frame.remove(navPanel);
+    	
+    	navPanel = createNavPanel();
+    	frame.add(navPanel, BorderLayout.WEST);
+    	
+    	navPanel.updateUI();
+    	
         frame.remove(contentPanel);
 
         contentPanel = newPanel;
-        frame.add(contentPanel);
+        frame.add(contentPanel, BorderLayout.CENTER);
 
         contentPanel.updateUI();
     }
 
     private static Nav_Panel createNavPanel() {
-        Nav_Panel navPanel = new Nav_Panel();
+        AdminLayout.navPanel = new Nav_Panel();
         navPanel.setLayout(new BoxLayout(navPanel, BoxLayout.Y_AXIS));
 
         ImageIcon icon = new ImageIcon(Admin_Dashboard.class.getClassLoader().getResource("assets/indira_logo.png"));
@@ -69,9 +82,30 @@ public class AdminLayout {
 
         // Nav items
         // Nav links
-        NavLabel navEmployee = new NavLabel("Pegawai", false);
-        NavLabel navProduct = new NavLabel("Produk", false);
-        NavLabel navReport = new NavLabel("Laporan", false);
+        NavLabel navEmployee = null;
+        if (AdminLayout.origin == AdminLayout.ORIGIN_EMPLOYEE) {
+        	navEmployee = new NavLabel("Pegawai", true);
+        }
+        else {
+        	navEmployee = new NavLabel("Pegawai", false);
+        }
+        
+        NavLabel navProduct = null;
+        if (AdminLayout.origin == AdminLayout.ORIGIN_PRODUCT) {
+        	navProduct = new NavLabel("Produk", true);
+        }
+        else {
+        	navProduct = new NavLabel("Produk", false);
+        }
+        
+        NavLabel navReport = null;
+        if (AdminLayout.origin == AdminLayout.ORIGIN_REPORT) {
+        	navReport =  new NavLabel("Laporan", true);
+        }
+        else {
+        	navReport =  new NavLabel("Laporan", false);
+        }
+        
         navEmployee.setCursor(new Cursor(Cursor.HAND_CURSOR));
         navProduct.setCursor(new Cursor(Cursor.HAND_CURSOR));
         navReport.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -90,14 +124,15 @@ public class AdminLayout {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 Content_Panel adminCashierPanel = Admin_Cashier.init(AdminLayout::reloadContent);
-                reloadContent(adminCashierPanel);
+                reloadContent(adminCashierPanel, Integer.valueOf(1));
             }
         });
 
         navProduct.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadContent(Admin_Products.init(AdminLayout::reloadContent));
+            	Content_Panel adminProductsPanel = Admin_Products.init(AdminLayout::reloadContent);
+                reloadContent(adminProductsPanel, Integer.valueOf(2));
             }
         });
 
@@ -105,7 +140,7 @@ public class AdminLayout {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 Content_Panel adminReportPanel = Admin_Report.init(AdminLayout::reloadContent);
-                reloadContent(adminReportPanel);
+                reloadContent(adminReportPanel, Integer.valueOf(3));
             }
         });
 

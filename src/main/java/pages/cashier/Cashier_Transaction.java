@@ -18,6 +18,7 @@ import java.awt.GridBagLayout;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
@@ -38,7 +39,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 public class Cashier_Transaction {
-	private static Consumer<Content_Panel> reloadCallback;
+	private static BiConsumer<Content_Panel, Integer> reloadCallback;
 	private static LoginController loginSession;
 	private static ArrayList<HashMap<String, String>> cartProducts;
 	private static TransactionController transactionSession;
@@ -48,7 +49,7 @@ public class Cashier_Transaction {
 	private static JTable table;
 	private static DefaultTableModel tableModel;
  
-    public static Content_Panel init(Consumer<Content_Panel> reloadCallback, LoginController loginSession, TransactionController transactionSession) {
+    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback, LoginController loginSession, TransactionController transactionSession) {
     	Cashier_Transaction.reloadCallback = reloadCallback;
     	Cashier_Transaction.loginSession = loginSession;
     	Cashier_Transaction.transactionSession = transactionSession;
@@ -264,7 +265,7 @@ public class Cashier_Transaction {
             	};
             	
             	transactionSession.createCartIfMissing();
-            	reloadCallback.accept(Cashier_Transaction.init(reloadCallback, loginSession, transactionSession));
+            	reloadCallback.accept(Cashier_Transaction.init(reloadCallback, loginSession, transactionSession), Integer.valueOf(4));
         	}
         });
 

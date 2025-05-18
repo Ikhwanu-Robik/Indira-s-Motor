@@ -18,6 +18,7 @@ import components.Button_White;
 import components.Content_Panel;
 import controllers.CashierController;
 import java.util.HashMap;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class Admin_Add_Cashier {
@@ -28,9 +29,9 @@ public class Admin_Add_Cashier {
     private static final Font LABEL_FONT = new Font("Arial", Font.BOLD, 24);
     private static JTextField usernameInput = null;
     private static JPasswordField passwordInput = null;
-    private static Consumer<Content_Panel> reloadCallback;
+    private static BiConsumer<Content_Panel, Integer> reloadCallback;
 
-    public static Content_Panel init(Consumer<Content_Panel> reloadCallback) {
+    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback) {
         Admin_Add_Cashier.reloadCallback = reloadCallback;
         
         Content_Panel adminAddCashierPanel = createContentPanel();
@@ -150,14 +151,14 @@ public class Admin_Add_Cashier {
                 cashier_data.put("password", password);
                 
                 new CashierController().create(cashier_data);
-                reloadCallback.accept(Admin_Cashier.init(reloadCallback));
+                reloadCallback.accept(Admin_Cashier.init(reloadCallback), Integer.valueOf(1));
             }
         });
         cancelButton.addMouseListener(new java.awt.event.MouseAdapter() {
             @SuppressWarnings("static-access")
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadCallback.accept(Admin_Cashier.init(reloadCallback));
+                reloadCallback.accept(Admin_Cashier.init(reloadCallback), Integer.valueOf(1));
             }
         });
 

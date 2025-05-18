@@ -11,6 +11,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -21,9 +22,9 @@ public class Admin_Cashier {
     // Constants
     private static final Color BACKGROUND_COLOR = new Color(0xE4E4E4);
     private static ArrayList<String> cashierNames = new ArrayList<>();
-    private static Consumer<Content_Panel> reloadCallback;
+    private static BiConsumer<Content_Panel, Integer> reloadCallback;
 
-    public static Content_Panel init(Consumer<Content_Panel> reloadCallback) {
+    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback) {
         Admin_Cashier.reloadCallback = reloadCallback;
         Content_Panel adminCashierPanel = createContentPanel();
 
@@ -76,7 +77,7 @@ public class Admin_Cashier {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 Content_Panel adminAddCashierPanel = Admin_Add_Cashier.init(reloadCallback);
                 
-                reloadCallback.accept(adminAddCashierPanel);
+                reloadCallback.accept(adminAddCashierPanel, Integer.valueOf(1));
             }
         });
 

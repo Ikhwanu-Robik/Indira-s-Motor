@@ -14,6 +14,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -26,9 +27,9 @@ public class Admin_Products {
     private static ArrayList<HashMap<String, String>> categories = null;
     private static ArrayList<HashMap<String, String>> brands = null;
     private static ArrayList<HashMap<String, String>> products = null;
-    private static Consumer<Content_Panel> reloadCallback;
+    private static BiConsumer<Content_Panel, Integer> reloadCallback;
 
-    public static Content_Panel init(Consumer<Content_Panel> reloadCallback) {
+    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback) {
         Admin_Products.reloadCallback = reloadCallback;
         fetchDatabase();
 

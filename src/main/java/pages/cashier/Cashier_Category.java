@@ -13,6 +13,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
@@ -30,11 +31,11 @@ public class Cashier_Category {
 
     // Constants
     private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 30);
-    private static Consumer<Content_Panel> reloadCallback;
+    private static BiConsumer<Content_Panel, Integer> reloadCallback;
 	private static ArrayList<HashMap<String, String>> categories;
 	private static JTable categoryTable;
 
-    public static Content_Panel init(Consumer<Content_Panel> reloadCallback) {
+    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback) {
     	Cashier_Category.reloadCallback = reloadCallback;
     	
     	fetchDatabase();
@@ -155,7 +156,7 @@ public class Cashier_Category {
                     new CategoryController().delete(brandId);
                    
                     JOptionPane.showMessageDialog(null, "Merek dan semua produknya dihapus.");
-                    reloadCallback.accept(Cashier_Category.init(reloadCallback));
+                    reloadCallback.accept(Cashier_Category.init(reloadCallback), Integer.valueOf(3));
                 }
             }
         });
@@ -168,7 +169,7 @@ public class Cashier_Category {
         editBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadCallback.accept(Cashier_Category_Add.init(reloadCallback));
+                reloadCallback.accept(Cashier_Category_Add.init(reloadCallback), Integer.valueOf(3));
             }
         });
 

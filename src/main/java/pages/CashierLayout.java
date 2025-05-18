@@ -28,6 +28,12 @@ public class CashierLayout {
     private static Content_Panel contentPanel;
     private static LoginController loginSession;
     private static TransactionController transactionSession;
+    private static int origin;
+    private static int ORIGIN_PRODUCT = 1;
+    private static int ORIGIN_BRAND = 2;
+    private static int ORIGIN_CATEGORY = 3;
+    private static int ORIGIN_TRANSACTION = 4;
+	private static Nav_Panel navPanel;
 
     public static void init(LoginController loginSession) {
         CashierLayout.loginSession = loginSession;
@@ -49,7 +55,15 @@ public class CashierLayout {
     	transactionSession = new TransactionController(loginSession.authenticated_user_id);
     }
     
-    public static void reloadContent(Content_Panel newPanel) {
+    public static void reloadContent(Content_Panel newPanel, Integer origin) {
+    	CashierLayout.origin = origin;
+		frame.remove(navPanel);
+    	
+    	navPanel = createNavPanel();
+    	frame.add(navPanel, BorderLayout.WEST);
+    	
+    	navPanel.updateUI();
+    	
         frame.remove(contentPanel);
 
         contentPanel = newPanel;
@@ -60,7 +74,7 @@ public class CashierLayout {
     }
     
     private static Nav_Panel createNavPanel() {
-        Nav_Panel navPanel = new Nav_Panel();
+        CashierLayout.navPanel = new Nav_Panel();
         navPanel.setLayout(new BoxLayout(navPanel, BoxLayout.Y_AXIS));
 
         // Logo
@@ -71,14 +85,42 @@ public class CashierLayout {
 
         // Nav items
         // Nav links
-        NavLabel navProduct = new NavLabel("Produk", false);
-        NavLabel navBrand = new NavLabel("Merk", false);
-        NavLabel navCategory = new NavLabel("Kategori", false);
-        NavLabel navReport = new NavLabel("Transaksi", false);
+        NavLabel navProduct = null;
+        if (CashierLayout.origin == CashierLayout.ORIGIN_PRODUCT) {
+        	navProduct = new NavLabel("Produk", true);
+        }
+        else {
+        	navProduct = new NavLabel("Produk", false);
+        }
+        
+        NavLabel navBrand = null;
+        if (CashierLayout.origin == CashierLayout.ORIGIN_BRAND) {
+        	navBrand =  new NavLabel("Brand", true);
+        }
+        else {
+        	navBrand =  new NavLabel("Brand", false);
+        }
+        
+        NavLabel navCategory = null;
+        if (CashierLayout.origin == CashierLayout.ORIGIN_CATEGORY) {
+        	navCategory = new NavLabel("Kategori", true);
+        }
+        else {
+        	navCategory = new NavLabel("Kategori", false);
+        }
+        
+        NavLabel navTransaction = null;
+        if (CashierLayout.origin == CashierLayout.ORIGIN_TRANSACTION) {
+        	navTransaction = new NavLabel("Transaksi", true);
+        }
+        else {
+        	navTransaction = new NavLabel("Transaksi", false);
+        }
+        
         navProduct.setCursor(new Cursor(Cursor.HAND_CURSOR));
         navBrand.setCursor(new Cursor(Cursor.HAND_CURSOR));
         navCategory.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        navReport.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        navTransaction.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         // Logout button
         LogoutButton logoutBtn = new LogoutButton("Keluar");
@@ -94,25 +136,25 @@ public class CashierLayout {
         navProduct.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadContent(Cashier_Product.init(CashierLayout::reloadContent));
+                reloadContent(Cashier_Product.init(CashierLayout::reloadContent), Integer.valueOf(1));
             }
         });
          navBrand.addMouseListener(new java.awt.event.MouseAdapter() {
              @Override
              public void mouseClicked(java.awt.event.MouseEvent evt) {
-                 reloadContent(Cashier_Brand.init(CashierLayout::reloadContent));
+                 reloadContent(Cashier_Brand.init(CashierLayout::reloadContent), Integer.valueOf(2));
              }
          });
          navCategory.addMouseListener(new java.awt.event.MouseAdapter() {
              @Override
              public void mouseClicked(java.awt.event.MouseEvent evt) {
-                 reloadContent(Cashier_Category.init(CashierLayout::reloadContent));
+                 reloadContent(Cashier_Category.init(CashierLayout::reloadContent), Integer.valueOf(3));
              }
          });
-         navReport.addMouseListener(new java.awt.event.MouseAdapter() {
+         navTransaction.addMouseListener(new java.awt.event.MouseAdapter() {
              @Override
              public void mouseClicked(java.awt.event.MouseEvent evt) {
-                 reloadContent(Cashier_Transaction.init(CashierLayout::reloadContent, loginSession, transactionSession));
+                 reloadContent(Cashier_Transaction.init(CashierLayout::reloadContent, loginSession, transactionSession), Integer.valueOf(4));
              }
          });
 
@@ -126,7 +168,7 @@ public class CashierLayout {
         navPanel.add(Box.createVerticalStrut(40));
         navPanel.add(navCategory);
         navPanel.add(Box.createVerticalStrut(40));
-        navPanel.add(navReport);
+        navPanel.add(navTransaction);
         navPanel.add(Box.createVerticalStrut(100));
         navPanel.add(logoutBtn);
 

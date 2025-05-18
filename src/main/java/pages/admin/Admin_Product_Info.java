@@ -13,6 +13,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -30,9 +31,9 @@ public class Admin_Product_Info {
     private static String productPrice;
     private static String imageUrl;
     private static String categoryName;
-    private static Consumer<Content_Panel> reloadCallback;
+    private static BiConsumer<Content_Panel, Integer> reloadCallback;
 
-    public static Content_Panel init(Consumer<Content_Panel> reloadCallback, String productName, String productPrice, String imageUrl, String categoryName) {
+    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback, String productName, String productPrice, String imageUrl, String categoryName) {
         Admin_Product_Info.reloadCallback = reloadCallback;
         Admin_Product_Info.productName = productName;
         Admin_Product_Info.productPrice = productPrice;
@@ -129,8 +130,6 @@ public class Admin_Product_Info {
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         buttonPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
 
-        Admin_Products adminProduct = new Admin_Products();
-
         JButton cancelBtn = new JButton("Batal");
         cancelBtn.setFont(new Font("Arial", Font.PLAIN, 16));
         cancelBtn.setForeground(Color.BLACK);
@@ -138,7 +137,7 @@ public class Admin_Product_Info {
         cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadCallback.accept(adminProduct.init(reloadCallback));
+                reloadCallback.accept(Admin_Products.init(reloadCallback), Integer.valueOf(2));
             }
         });
 
