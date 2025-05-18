@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -30,9 +31,9 @@ public class Cashier_Product_Info {
     private static String productPrice;
     private static String imageUrl;
     private static String categoryName;
-    private static Consumer<Content_Panel> reloadCallback;
+    private static BiConsumer<Content_Panel, Integer> reloadCallback;
 
-    public static Content_Panel init(Consumer<Content_Panel> reloadCallback, String productName, String productPrice, String imageUrl, String categoryName) {
+    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback, String productName, String productPrice, String imageUrl, String categoryName) {
         Cashier_Product_Info.reloadCallback = reloadCallback;
         Cashier_Product_Info.productName = productName;
         Cashier_Product_Info.productPrice = productPrice;
@@ -144,7 +145,7 @@ public class Cashier_Product_Info {
         cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadCallback.accept(cashierProduct.init(reloadCallback));
+                reloadCallback.accept(cashierProduct.init(reloadCallback), Integer.valueOf(1));
             }
         });
         
@@ -157,7 +158,7 @@ public class Cashier_Product_Info {
         editBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadCallback.accept(productEdit.init(reloadCallback, productName));
+                reloadCallback.accept(productEdit.init(reloadCallback, productName), Integer.valueOf(1));
             }
         });
 

@@ -35,6 +35,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,7 +47,7 @@ import javax.swing.JOptionPane;
 
 public class Cashier_Product_Edit {
 
-    private static Consumer<Content_Panel> reloadCallback;
+    private static BiConsumer<Content_Panel, Integer> reloadCallback;
     private static String productPrice;
     private static String productStock;
     private static String productName;
@@ -62,7 +63,7 @@ public class Cashier_Product_Edit {
     private static JComboBox<String> categoryComboBox;
     private static String productId;
 
-    public static Content_Panel init(Consumer<Content_Panel> reloadCallback, String productName) {
+    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback, String productName) {
         Cashier_Product_Edit.reloadCallback = reloadCallback;
         Cashier_Product_Edit.productName = productName;
         fetchDatabase();
@@ -234,7 +235,7 @@ public class Cashier_Product_Edit {
         cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadCallback.accept(Cashier_Product.init(reloadCallback));
+                reloadCallback.accept(Cashier_Product.init(reloadCallback), Integer.valueOf(1));
             }
         });
 

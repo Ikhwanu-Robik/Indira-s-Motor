@@ -4,14 +4,22 @@ import components.Button_Brown;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.io.IOException;
+
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 import components.Content_Panel;
+import controllers.CartController;
+import controllers.OrderController;
+import controllers.PrintController;
+
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -31,12 +39,21 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class Admin_Report_Detail {
-
+	private static String cartId;
     private static ArrayList<HashMap<String, String>> products = null;
-    private static Consumer<Content_Panel> reloadCallback;
+    private static BiConsumer<Content_Panel, Integer> reloadCallback;
+	private static String date;
+	private static String cashierName;
+	private static HashMap<String, String> order;
 
-    public static Content_Panel init(ArrayList<HashMap<String, String>> products, Consumer<Content_Panel> reloadCallback) {
-        Admin_Report_Detail.products = products;
+    public static Content_Panel init(String cartId, String date, String cashierName, BiConsumer<Content_Panel, Integer> reloadCallback) {
+    	Admin_Report_Detail.cartId = cartId;
+    	Admin_Report_Detail.date = date;
+    	Admin_Report_Detail.cashierName = cashierName;
+    	Admin_Report_Detail.order = new OrderController().findWhere("cart_id", cartId).getLast();
+        products = new CartController()
+                .getCartProducts(Integer.parseInt(cartId));
+    	
         Admin_Report_Detail.reloadCallback = reloadCallback;
 
         Content_Panel contentPanel = createContentPanel();
@@ -49,8 +66,11 @@ public class Admin_Report_Detail {
         contentPanel.setLayout(new GridBagLayout());
 
         JLabel titleLabel = createTitleLabel("Laporan Penjualan", new Color(0x00000));
-        JPanel filterPanel = createFilterPanel();
+        JLabel reportCashier = createTitleLabel("Kasir : " + cashierName, new Color(0x00000));
+        JLabel reportDate = createTitleLabel("Tanggal : " + date, new Color(0x00000));
         JScrollPane tableDetails = createTableDetails();
+        JLabel totalLabel = createTitleLabel("Total : " + new CartController().getTotal(Integer.parseInt(cartId)), new Color(0x00000));
+        JLabel feeLabel = createTitleLabel("Jasa : " + order.get("fee"), new Color(0x00000));
         JPanel btnPanel = createButtonPanel();
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -59,8 +79,11 @@ public class Admin_Report_Detail {
         gbc.anchor = GridBagConstraints.CENTER;
 
         contentPanel.add(titleLabel, gbc);
-        contentPanel.add(filterPanel, gbc);
+        contentPanel.add(reportCashier, gbc);
+        contentPanel.add(reportDate, gbc);
         contentPanel.add(tableDetails, gbc);
+        contentPanel.add(totalLabel, gbc);
+        contentPanel.add(feeLabel, gbc);
         contentPanel.add(btnPanel, gbc);
 
         return contentPanel;
@@ -76,10 +99,21 @@ public class Admin_Report_Detail {
 
     private static JScrollPane createTableDetails() {
         // Nama kolom
-        String[] columnNames = {"nama_kasir", "tanggal", "kategori", "produk", "jumlah", "total"};
+        String[] columnNames = {"Produk", "Jumlah", "Harga", "Total"};
 
         // Data kosong untuk inisialisasi awal
         Object[][] data = {};
+        if (products != null) {
+        	data = new Object[products.size()][4];
+        	int i = 0;
+            for (HashMap<String, String> product : products) {
+            	data[i][0] = product.get("name");
+            	data[i][1] = product.get("qty");
+            	data[i][2] = product.get("price");
+            	data[i][3] = Integer.parseInt(product.get("qty")) * Integer.parseInt(product.get("price"));
+            }
+        }
+         
         // Buat model tabel
         DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
 
@@ -105,8 +139,6 @@ public class Admin_Report_Detail {
         table.getColumnModel().getColumn(1).setPreferredWidth(150);
         table.getColumnModel().getColumn(2).setPreferredWidth(150);
         table.getColumnModel().getColumn(3).setPreferredWidth(150);
-        table.getColumnModel().getColumn(4).setPreferredWidth(150);
-        table.getColumnModel().getColumn(5).setPreferredWidth(150);
 
         // ScrollPane untuk tabel
         JScrollPane scrollPane = new JScrollPane(table);
@@ -124,12 +156,10 @@ public class Admin_Report_Detail {
         backBtn.setForeground(Color.BLACK);
         backBtn.setBackground(new Color(0xE0E0E0));
 
-        Admin_Report reportPage = new Admin_Report();
-
         backBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadCallback.accept(reportPage.init(reloadCallback));
+                reloadCallback.accept(Admin_Report.init(reloadCallback), Integer.valueOf(3));
             }
         });
         JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -137,6 +167,19 @@ public class Admin_Report_Detail {
         leftPanel.add(backBtn);
 
         JButton printBtn = new Button_Brown("Cetak Struk");
+        printBtn.addActionListener((e) -> {
+        	ArrayList<HashMap<String, String>> data = new ArrayList<>();
+        	HashMap<String, String> type = new HashMap<>();
+        	type.put("type", "receipt");
+        	data.add(type);
+        	data.add(order);
+        	
+        	try {
+				new PrintController().print(data);
+			} catch (IOException e1) {
+				JOptionPane.showMessageDialog(null, "Something is wrong " + e1, "ERROR", JOptionPane.ERROR_MESSAGE);
+			}
+        });
 
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
         rightPanel.setOpaque(false);
@@ -147,53 +190,5 @@ public class Admin_Report_Detail {
 
         return btnPanel;
     }
-
-    public static JPanel createFilterPanel() {
-        JPanel filterPanel = new JPanel();
-
-        // ComboBox Timeline
-        String[] time = {"Sebelum", "Sekarang", "Sesudah"};
-        JComboBox<String> timeline = new JComboBox<>(time);
-        timeline.setBounds(20, 20, 120, 30);
-        filterPanel.add(timeline);
-
-        // Model dan Properti untuk DatePicker
-        UtilDateModel model = new UtilDateModel();
-        model.setSelected(true); // Menandai tanggal saat ini sebagai default
-
-        Properties p = new Properties();
-        p.put("text.today", "Hari Ini");
-        p.put("text.month", "Bulan");
-        p.put("text.year", "Tahun");
-
-        JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
-        JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
-        datePicker.setBounds(160, 20, 150, 30);
-        filterPanel.add(datePicker);
-
-        return filterPanel;
-    }
-
-    // Formatter untuk DatePicker
-    static class DateLabelFormatter extends JFormattedTextField.AbstractFormatter {
-
-        private final String datePattern = "dd-MM-yyyy";
-        private final SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
-
-        @Override
-        public Object stringToValue(String text) throws ParseException {
-            return dateFormatter.parseObject(text);
-        }
-
-        @Override
-        public String valueToString(Object value) {
-            if (value != null) {
-                Calendar cal = (Calendar) value;
-                return dateFormatter.format(cal.getTime());
-            }
-            return "";
-        }
-    }
-
 }
     

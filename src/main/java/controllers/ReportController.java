@@ -19,57 +19,127 @@ import java.util.logging.Logger;
  */
 public class ReportController {
 
-    public ArrayList<HashMap<String, String>> getReports() {
-        Database db = new Database();
-        ResultSet rs = null;
-        ArrayList<HashMap<String, String>> result = new ArrayList<>();
+	public ArrayList<HashMap<String, String>> getReports() {
+		Database db = new Database();
+		ResultSet rs = null;
+		ArrayList<HashMap<String, String>> result = new ArrayList<>();
 
-        String query = """
-                       SELECT `orders`.`id`, `orders`.`cart_id`, `orders`.`fee`, `orders`.`total`, `orders`.`date`, `cashiers`.`username`, COUNT(`cart_product`.`id`) AS product_types FROM `orders`
-                       JOIN `carts` ON `orders`.`cart_id` = `carts`.`id`
-                       JOIN `cashiers` ON `carts`.`cashier_id` = `cashiers`.id
-                       JOIN `cart_product` ON `carts`.`id` = `cart_product`.`cart_id`
-                       GROUP BY cart_id""";
-        try {
-            Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            rs = stmt.executeQuery(query);
-        } catch (SQLException er) {
-            System.out.println(er);
-        }
+		String query = """
+				SELECT `orders`.`id`, `orders`.`cart_id`, `orders`.`fee`, `orders`.`total`, `orders`.`date`, `cashiers`.`username`, COUNT(`cart_product`.`id`) AS product_types FROM `orders`
+				JOIN `carts` ON `orders`.`cart_id` = `carts`.`id`
+				JOIN `cashiers` ON `carts`.`cashier_id` = `cashiers`.id
+				JOIN `cart_product` ON `carts`.`id` = `cart_product`.`cart_id`
+				GROUP BY cart_id""";
+		try {
+			Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_READ_ONLY);
+			rs = stmt.executeQuery(query);
+		} catch (SQLException er) {
+			System.out.println(er);
+		}
 
-        try {
-            if (!rs.isBeforeFirst()) {
-                return null;
-            }
+		try {
+			if (!rs.isBeforeFirst()) {
+				return null;
+			}
 
-            rs.first();
-            do {
-                HashMap<String, String> row = new HashMap<>();
-                
-                row.put("id", rs.getString("id"));
-                row.put("cart_id", rs.getString("cart_id"));
-                row.put("fee", rs.getString("fee"));
-                row.put("total", rs.getString("total"));
-                row.put("date", rs.getString("date"));
-                row.put("username", rs.getString("username"));
-                row.put("product_types", rs.getString("product_types"));
+			rs.first();
+			do {
+				HashMap<String, String> row = new HashMap<>();
+
+				row.put("id", rs.getString("id"));
+				row.put("cart_id", rs.getString("cart_id"));
+				row.put("fee", rs.getString("fee"));
+				row.put("total", rs.getString("total"));
+				row.put("date", rs.getString("date"));
+				row.put("username", rs.getString("username"));
+				row.put("product_types", rs.getString("product_types"));
 // TODO : a bug where the result will be filled with rs length amount of last resultset duplicates 
 // FIX : moving the definition of row HashMap from outside to inside the do while block
 // EXPLANATION : when we call result.add(row), we add a pointer to the location of row into result. Basically it's putting one same variable twice
 
-                result.add(row);
-            } while(rs.next());
-            
-        } catch (SQLException er) {
-            System.out.println(er);
-        }
+				result.add(row);
+			} while (rs.next());
 
-        try {
-            db.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(ReportController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+		} catch (SQLException er) {
+			System.out.println(er);
+		}
 
-        return result;
-    }
+		try {
+			db.close();
+		} catch (SQLException ex) {
+			Logger.getLogger(ReportController.class.getName()).log(Level.SEVERE, null, ex);
+		}
+
+		return result;
+	}
+
+	public ArrayList<HashMap<String, String>> filter(int when, int date, int month, int year) {
+		Database db = new Database();
+		ResultSet rs = null;
+		ArrayList<HashMap<String, String>> result = new ArrayList<>();
+		String operator = "=";
+		switch (when) {
+		case 0:
+			operator = "<";
+			break;
+		case 1:
+			operator = "=";
+			break;
+		case 2:
+			operator = ">";
+			break;
+		}
+
+		String query = """
+				SELECT `orders`.`id`, `orders`.`cart_id`, `orders`.`fee`, `orders`.`total`, `orders`.`date`, `cashiers`.`username`, COUNT(`cart_product`.`id`) AS product_types FROM `orders`
+				JOIN `carts` ON `orders`.`cart_id` = `carts`.`id`
+				JOIN `cashiers` ON `carts`.`cashier_id` = `cashiers`.id
+				JOIN `cart_product` ON `carts`.`id` = `cart_product`.`cart_id`
+				"""
+				+ "WHERE date " + operator + " \"" + year + "-" + month + "-" + date + "\" GROUP BY cart_id";
+
+		try {
+			Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_READ_ONLY);
+			rs = stmt.executeQuery(query);
+		} catch (SQLException er) {
+			System.out.println(er);
+		}
+
+		try {
+			if (!rs.isBeforeFirst()) {
+				return null;
+			}
+
+			rs.first();
+			do {
+				HashMap<String, String> row = new HashMap<>();
+
+				row.put("id", rs.getString("id"));
+				row.put("cart_id", rs.getString("cart_id"));
+				row.put("fee", rs.getString("fee"));
+				row.put("total", rs.getString("total"));
+				row.put("date", rs.getString("date"));
+				row.put("username", rs.getString("username"));
+				row.put("product_types", rs.getString("product_types"));
+// TODO : a bug where the result will be filled with rs length amount of last resultset duplicates 
+// FIX : moving the definition of row HashMap from outside to inside the do while block
+// EXPLANATION : when we call result.add(row), we add a pointer to the location of row into result. Basically it's putting one same variable twice
+
+				result.add(row);
+			} while (rs.next());
+
+		} catch (SQLException er) {
+			System.out.println(er);
+		}
+
+		try {
+			db.close();
+		} catch (SQLException ex) {
+			Logger.getLogger(ReportController.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		
+		return result;
+	}
 }

@@ -132,7 +132,7 @@ public class OrderController extends AbstractController {
         try {
             Database db = new Database();
             ResultSet rs;
-            ArrayList<HashMap<String, String>> categories = new ArrayList<>();
+            ArrayList<HashMap<String, String>> orders = new ArrayList<>();
             Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             rs = stmt.executeQuery(whereStatement);
 
@@ -145,13 +145,15 @@ public class OrderController extends AbstractController {
             do {
                 HashMap<String, String> row = new HashMap<>();
                 row.put("id", rs.getString("id"));
-                row.put("name", rs.getString("name"));
-                categories.add(row);
+                row.put("cart_id", rs.getString("cart_id"));
+                row.put("fee", rs.getString("fee"));
+                row.put("date", rs.getString("date"));
+                orders.add(row);
             } while (rs.next());
 
             db.close();
 
-            return categories;
+            return orders;
         } catch (SQLException ex) {
             Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
         }

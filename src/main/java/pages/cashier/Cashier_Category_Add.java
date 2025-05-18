@@ -31,15 +31,16 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.util.HashMap;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import javax.swing.JButton;
 
 public class Cashier_Category_Add {
-	private static Consumer<Content_Panel> reloadCallback;
+	private static BiConsumer<Content_Panel, Integer> reloadCallback;
 	private static JTextField categoryNameField;
 	
-    public static Content_Panel init(Consumer<Content_Panel> reloadCallback) {
+    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback) {
     	Cashier_Category_Add.reloadCallback = reloadCallback;
         Content_Panel cashierCategoryAddPanel = createContentPanel();
 
@@ -109,8 +110,6 @@ public class Cashier_Category_Add {
         JPanel btnPanel = new JPanel(new BorderLayout());
         btnPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
-        Cashier_Category cashierCategory = new Cashier_Category();
-
         // Tombol "Batal"
         JButton cancelBtn = new JButton("Batal");
         cancelBtn.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -119,7 +118,7 @@ public class Cashier_Category_Add {
         cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadCallback.accept(cashierCategory.init(reloadCallback));
+                reloadCallback.accept(Cashier_Category.init(reloadCallback), Integer.valueOf(3));
             }
         });
 

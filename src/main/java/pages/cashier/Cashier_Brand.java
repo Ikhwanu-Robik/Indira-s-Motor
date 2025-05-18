@@ -12,6 +12,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -26,12 +27,12 @@ import javax.swing.table.JTableHeader;
 
 public class Cashier_Brand {
     private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 30);
-    private static Consumer<Content_Panel> reloadCallback;
+    private static BiConsumer<Content_Panel, Integer> reloadCallback;
     private static ArrayList<HashMap<String, String>> brands;
     private static ArrayList<HashMap<String, String>> categories;
     private static JTable brandTable;
     
-    public static Content_Panel init(Consumer<Content_Panel> reloadCallback) {
+    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback) {
         Cashier_Brand.reloadCallback = reloadCallback;
         fetchDatabase();
         
@@ -161,7 +162,7 @@ public class Cashier_Brand {
                     new BrandController().delete(brandId);
                    
                     JOptionPane.showMessageDialog(null, "Merek dan semua produknya dihapus.");
-                    reloadCallback.accept(Cashier_Brand.init(reloadCallback));
+                    reloadCallback.accept(Cashier_Brand.init(reloadCallback), Integer.valueOf(2));
                 }
             }
         });
@@ -173,7 +174,7 @@ public class Cashier_Brand {
         addBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadCallback.accept(Cashier_Brand_Add.init(reloadCallback, categories));
+                reloadCallback.accept(Cashier_Brand_Add.init(reloadCallback, categories), Integer.valueOf(2));
             }
         });
 

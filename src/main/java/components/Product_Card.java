@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import javax.imageio.ImageIO;
@@ -110,7 +111,7 @@ public class Product_Card extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (isCallerCashier) {
-                    reloadCallback.accept(Cashier_Product_Info.init(Product_Card.this.reloadCallback,
+                    reloadCallback.accept(Cashier_Product_Info.init((BiConsumer<Content_Panel, Integer>) Product_Card.this.reloadCallback,
                             Product_Card.this.productName, Product_Card.this.productPrice, Product_Card.this.imageUrl,
                             Product_Card.this.categoryName));
                 } else {

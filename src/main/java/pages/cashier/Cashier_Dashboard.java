@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -15,9 +16,9 @@ public class Cashier_Dashboard {
     private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 40);
     private static final Color BROWN_COLOR = new Color(0xA0522D);
     private static String loggedInUsername = "Cashier";
-    private static Consumer<Content_Panel> reloadCallback;
+    private static BiConsumer<Content_Panel, Integer> reloadCallback;
 
-    public static Content_Panel init(Consumer<Content_Panel> reloadCallback, String loggedInUsername) {
+    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback, String loggedInUsername) {
         Cashier_Dashboard.loggedInUsername = loggedInUsername;
         Cashier_Dashboard.reloadCallback = reloadCallback;
         
