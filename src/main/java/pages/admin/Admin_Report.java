@@ -5,19 +5,27 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import components.Content_Panel;
-import controllers.CartController;
 import controllers.PrintController;
 import controllers.ReportController;
+
 import java.awt.Component;
 import java.awt.Font;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.function.Consumer;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -27,6 +35,10 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
+
 public class Admin_Report {
 
     private static ArrayList<HashMap<String, String>> reports = null;
@@ -34,6 +46,16 @@ public class Admin_Report {
 
     public static Content_Panel init(Consumer<Content_Panel> reloadCallback) {
         Admin_Report.reloadCallback = reloadCallback;
+        reports = new ReportController().getReports();
+        
+        Content_Panel adminReportPanel = createContentPanel();
+
+        return adminReportPanel;
+    }
+    
+    public static Content_Panel init(Consumer<Content_Panel> reloadCallback, ArrayList<HashMap<String, String>> filteredReport) {
+        Admin_Report.reloadCallback = reloadCallback;
+        reports = filteredReport;
         
         Content_Panel adminReportPanel = createContentPanel();
 
@@ -45,6 +67,7 @@ public class Admin_Report {
         contentPanel.setLayout(new GridBagLayout());
 
         JLabel titleLabel = createTitleLabel("Laporan Penjualan", new Color(0x00000));
+        JPanel filterPanel = createFilterPanel();
         JButton printBtn = createPrintButton();
         JScrollPane reportTable = createTableReport();
 
@@ -54,6 +77,7 @@ public class Admin_Report {
         gbc.anchor = GridBagConstraints.CENTER;
 
         contentPanel.add(titleLabel, gbc);
+        contentPanel.add(filterPanel, gbc);
         contentPanel.add(printBtn, gbc);
         contentPanel.add(reportTable, gbc);
 
@@ -92,9 +116,7 @@ public class Admin_Report {
     }
 
     private static JScrollPane createTableReport() {
-        String[] columnNames = {"tanggal", "nama_kasir", "jumlah_produk", "total", "jasa", "detail", "cart_id"};
-
-        reports = new ReportController().getReports();
+        String[] columnNames = {"tanggal", "nama_kasir", "jumlah_produk", "total", "jasa", "detail", "cart_id"};        
 
         Object[][] data = {};
         
@@ -195,11 +217,10 @@ public class Admin_Report {
                 if (clicked) {
                     int row = table.getSelectedRow();
                     String cartId = tableModel.getValueAt(row, 6).toString();
+                    String date = tableModel.getValueAt(row, 0).toString();
+                    String username = tableModel.getValueAt(row, 1).toString();
 
-                    ArrayList<HashMap<String, String>> cartProducts = new CartController()
-                            .getCartProducts(Integer.parseInt(cartId));
-
-                    reloadCallback.accept(Admin_Report_Detail.init(cartProducts, reloadCallback));
+                    reloadCallback.accept(Admin_Report_Detail.init(cartId, date, username, reloadCallback));
                 }
                 clicked = false;
                 return label;
@@ -231,6 +252,66 @@ public class Admin_Report {
         scrollPane.getViewport().setBackground(new Color(45, 45, 45)); // latar belakang scrollpane sama
 
         return scrollPane;
+    }
+
+    public static JPanel createFilterPanel() {
+        JPanel filterPanel = new JPanel();
+
+        // ComboBox Timeline
+        String[] time = {"Sebelum", "Saat", "Sesudah"};
+        JComboBox<String> timeline = new JComboBox<>(time);
+        timeline.setBounds(20, 20, 120, 30);
+        filterPanel.add(timeline);
+
+        // Model dan Properti untuk DatePicker
+        UtilDateModel model = new UtilDateModel();
+        model.setSelected(true); // Menandai tanggal saat ini sebagai default
+
+        Properties p = new Properties();
+        p.put("text.today", "Hari Ini");
+        p.put("text.month", "Bulan");
+        p.put("text.year", "Tahun");
+
+        JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
+        JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+        datePicker.setBounds(160, 20, 150, 30);
+        filterPanel.add(datePicker);
+
+        JButton applyFilterBtn = new JButton("Apply Filter");
+        applyFilterBtn.addActionListener((e) -> {
+        	int date = model.getDay();
+//        	because the month is represented from 0 to 11
+        	int month = model.getMonth() + 1;
+        	int year = model.getYear();
+        	int when = timeline.getSelectedIndex();
+        	
+        	ArrayList<HashMap<String, String>> filteredReport = new ReportController().filter(when, date, month, year);
+        	reloadCallback.accept(Admin_Report.init(reloadCallback, filteredReport));
+        });
+        filterPanel.add(applyFilterBtn);
+        
+        return filterPanel;
+    }
+
+    // Formatter untuk DatePicker
+    static class DateLabelFormatter extends JFormattedTextField.AbstractFormatter {
+
+        private final String datePattern = "dd-MM-yyyy";
+        private final SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+
+        @Override
+        public Object stringToValue(String text) throws ParseException {
+            return dateFormatter.parseObject(text);
+        }
+
+        @Override
+        public String valueToString(Object value) {
+            if (value != null) {
+                Calendar cal = (Calendar) value;
+                return dateFormatter.format(cal.getTime());
+            }
+            return "";
+        }
     }
 
 }
