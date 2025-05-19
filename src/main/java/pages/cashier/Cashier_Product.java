@@ -7,6 +7,8 @@ import components.ui.AddButton;
 import controllers.BrandController;
 import controllers.CategoryController;
 import controllers.ProductController;
+import controllers.TransactionController;
+
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -29,9 +31,11 @@ public class Cashier_Product {
     private static ArrayList<HashMap<String, String>> brands = null;
     private static ArrayList<HashMap<String, String>> products = null;
     private static BiConsumer<Content_Panel, Integer> reloadCallback;
+	private static TransactionController transactionSession;
 
-    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback) {
+    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback, TransactionController transactionSession) {
         Cashier_Product.reloadCallback = reloadCallback;
+        Cashier_Product.transactionSession = transactionSession;
         fetchDatabase();
 
         Content_Panel cashierProductPanel = createContentPanel();
@@ -101,7 +105,7 @@ public class Cashier_Product {
         addButton.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadCallback.accept(Cashier_Product_Add.init(reloadCallback), Integer.valueOf(1));
+                reloadCallback.accept(Cashier_Product_Add.init(reloadCallback, transactionSession), Integer.valueOf(1));
             }
         });
         rightPanel.add(addButton);
@@ -131,7 +135,7 @@ public class Cashier_Product {
                 }
             }
             
-            cardPanel.add(new Product_Card(reloadCallback, true, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
+            cardPanel.add(new Product_Card(reloadCallback, true, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory, transactionSession));
         }
 
         cardPanel.updateUI();
@@ -165,7 +169,7 @@ public class Cashier_Product {
                 }
             }
 
-            cardPanel.add(new Product_Card(reloadCallback, true, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
+            cardPanel.add(new Product_Card(reloadCallback, true, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory, transactionSession));
         } else {
             cardPanel.add(new JLabel("Produk tidak ditemukan"));
         }
@@ -194,7 +198,7 @@ public class Cashier_Product {
             }
 
             if (categoryName.equals(productCategory) && brandName.equals(productBrand.get("name"))) {
-                cardPanel.add(new Product_Card(reloadCallback, true, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
+                cardPanel.add(new Product_Card(reloadCallback, true, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory, transactionSession));
             }
         }
 

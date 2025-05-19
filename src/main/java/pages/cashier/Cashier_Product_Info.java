@@ -1,6 +1,8 @@
 package pages.cashier;
 
 import components.Content_Panel;
+import controllers.TransactionController;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -16,7 +18,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -32,13 +33,15 @@ public class Cashier_Product_Info {
     private static String imageUrl;
     private static String categoryName;
     private static BiConsumer<Content_Panel, Integer> reloadCallback;
+	private static TransactionController transactionSession;
 
-    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback, String productName, String productPrice, String imageUrl, String categoryName) {
+    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback, String productName, String productPrice, String imageUrl, String categoryName, TransactionController transactionSession) {
         Cashier_Product_Info.reloadCallback = reloadCallback;
         Cashier_Product_Info.productName = productName;
         Cashier_Product_Info.productPrice = productPrice;
         Cashier_Product_Info.imageUrl = imageUrl;
         Cashier_Product_Info.categoryName = categoryName;
+        Cashier_Product_Info.transactionSession = transactionSession;
 
         Content_Panel cashierProductInfoPanel = createContentPanel();
         return cashierProductInfoPanel;
@@ -136,8 +139,6 @@ public class Cashier_Product_Info {
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         buttonPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
 
-        Cashier_Product cashierProduct = new Cashier_Product();
-
         JButton cancelBtn = new JButton("Batal");
         cancelBtn.setFont(new Font("Arial", Font.PLAIN, 16));
         cancelBtn.setForeground(Color.BLACK);
@@ -145,11 +146,9 @@ public class Cashier_Product_Info {
         cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadCallback.accept(cashierProduct.init(reloadCallback), Integer.valueOf(1));
+                reloadCallback.accept(Cashier_Product.init(reloadCallback, transactionSession), Integer.valueOf(1));
             }
         });
-        
-        Cashier_Product_Edit productEdit = new Cashier_Product_Edit();
 
         JButton editBtn = new JButton("Edit");
         editBtn.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -158,7 +157,7 @@ public class Cashier_Product_Info {
         editBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadCallback.accept(productEdit.init(reloadCallback, productName), Integer.valueOf(1));
+                reloadCallback.accept(Cashier_Product_Edit.init(reloadCallback, productName, transactionSession), Integer.valueOf(1));
             }
         });
 

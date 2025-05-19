@@ -21,106 +21,150 @@ import java.util.function.Consumer;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+
+import controllers.TransactionController;
 import pages.cashier.Cashier_Product_Info;
 
 public class Product_Card extends JPanel {
 
-	private final JLabel productNameLabel;
-	private final JLabel productPriceLabel;
-	private String productName;
-	private String productPrice;
-	private String imageUrl;
-	private String categoryName;
-	private BiConsumer<Content_Panel, Integer> reloadCallback;
-	private boolean isCallerCashier;
+    private final JPanel productNameLabel;
+    private final JLabel productPriceLabel;
+    private String productName;
+    private String productPrice;
+    private String imageUrl;
+    private String categoryName;
+    private BiConsumer<Content_Panel, Integer> reloadCallback;
+    private boolean isCallerCashier;
+	private TransactionController transactionSession;
+	private String productId;
 
-	public Product_Card(BiConsumer<Content_Panel, Integer> reloadCallback, boolean isCallerCashier, String id,
-			String name, int price, String image_url, String categoryName) {
-		this.reloadCallback = reloadCallback;
-		this.isCallerCashier = isCallerCashier;
-		this.productName = name;
-		this.productPrice = Integer.toString(price);
-		this.imageUrl = image_url;
-		this.categoryName = categoryName;
+    public Product_Card(BiConsumer<Content_Panel, Integer> reloadCallback, boolean isCallerCashier, String id, String name,
+            int price, String image_url, String categoryName) {
+        this.reloadCallback = reloadCallback;
+        this.isCallerCashier = isCallerCashier;
+        this.productName = name;
+        this.productPrice = Integer.toString(price);
+        this.imageUrl = image_url;
+        this.categoryName = categoryName;
 
-		setLayout(new BorderLayout());
-		initialCard();
+        setLayout(new BorderLayout());
+        initialCard();
 
-		productNameLabel = createCardName(id, name);
-		productPriceLabel = createCardPrice(price);
-		JLabel productImage = createImage(image_url);
+        productNameLabel = createCardName(id, name);
+        productPriceLabel = createCardPrice(price);
+        JLabel productImage = createImage(image_url);
 
-		add(productNameLabel, BorderLayout.NORTH);
-		add(productImage, BorderLayout.CENTER);
-		add(productPriceLabel, BorderLayout.SOUTH);
-	}
+        add(productNameLabel, BorderLayout.NORTH);
+        add(productImage, BorderLayout.CENTER);
+        add(productPriceLabel, BorderLayout.SOUTH);
+    }
+    
+    public Product_Card(BiConsumer<Content_Panel, Integer> reloadCallback, boolean isCallerCashier, String id, String name,
+            int price, String image_url, String categoryName, TransactionController transactionSession) {
+    	this.productId = id;
+        this.reloadCallback = reloadCallback;
+        this.isCallerCashier = isCallerCashier;
+        this.productName = name;
+        this.productPrice = Integer.toString(price);
+        this.imageUrl = image_url;
+        this.categoryName = categoryName;
+        this.transactionSession = transactionSession;
 
-	private void initialCard() {
-		setPreferredSize(new Dimension(300, 200));
-		setBackground(new Color(0xE0E0E0));
-		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		setToolTipText("Product Information Card");
-	}
+        setLayout(new BorderLayout());
+        initialCard();
 
-	private JLabel createCardName(String id, String name) {
-		JLabel label = new JLabel(id + " " + name, SwingConstants.CENTER);
-		label.setForeground(Color.BLACK);
-		label.setFont(new Font("Arial", Font.BOLD, 24));
-		return label;
-	}
+        productNameLabel = createCardName(id, name);
+        productPriceLabel = createCardPrice(price);
+        JLabel productImage = createImage(image_url);
 
-	private JLabel createImage(String image_url) {
-		File dir = new File("C:/IndiraMotorKasir/assets");
-		if (!dir.exists()) {
-			dir.mkdirs();
-		}
+        add(productNameLabel, BorderLayout.NORTH);
+        add(productImage, BorderLayout.CENTER);
+        add(productPriceLabel, BorderLayout.SOUTH);
+    }
 
-		JLabel logo = null;
-		try {
-			File image = new File("C:/IndiraMotorKasir/assets/" + image_url);
-			InputStream input = new FileInputStream(image);
+    private void initialCard() {
+        setPreferredSize(new Dimension(300, 200));
+        setBackground(new Color(0xE0E0E0));
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        setToolTipText("Product Information Card");
+    }
 
-			BufferedImage originalImage = ImageIO.read(input);
-			logo = new JLabel(new ImageIcon(originalImage));
-		} catch (IOException e) {
-			logo = new JLabel("Image not found");
-		}
-		logo.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+    private JPanel createCardName(String id, String name) {
+        JLabel nameLabel = new JLabel(id + ". " + name);
+        nameLabel.setForeground(Color.BLACK);
+        nameLabel.setFont(new Font("Arial", Font.BOLD, 24));
 
-		logo.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (isCallerCashier) {
-					reloadCallback.accept(Cashier_Product_Info.init(Product_Card.this.reloadCallback,
-							Product_Card.this.productName, Product_Card.this.productPrice, Product_Card.this.imageUrl,
-							Product_Card.this.categoryName), Integer.valueOf(1));
-				} else {
-					JOptionPane.showMessageDialog(null, "Admin's Product Info page is not ready yet :(", "SORRY!",
-							JOptionPane.INFORMATION_MESSAGE);
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setOpaque(false); // Agar background mengikuti card
+        topPanel.add(nameLabel, BorderLayout.CENTER);
+        
+        if (isCallerCashier) {
+        	JButton plusButton = new JButton("+");
+            plusButton.setFocusPainted(false);
+            plusButton.setPreferredSize(new Dimension(45, 30));
+            plusButton.setFont(new Font("Arial", Font.BOLD, 16));
+            plusButton.addActionListener(e -> {
+            	int productId = Integer.parseInt(this.productId);
+                transactionSession.addToCart(productId, 1);
+            	
+                JOptionPane.showMessageDialog(null, "Menambahkan " + name + " ke keranjang. Lihat di tab Transaksi");
+            });
+            
+            topPanel.add(plusButton, BorderLayout.EAST);
+        }
+
+        return topPanel;
+    }
+
+    private JLabel createImage(String image_url) {
+        File dir = new File("C:/IndiraMotorKasir/assets");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        JLabel logo = null;
+        try {
+            File image = new File("C:/IndiraMotorKasir/assets/" + image_url);
+            InputStream input = new FileInputStream(image);
+
+            BufferedImage originalImage = ImageIO.read(input);
+            logo = new JLabel(new ImageIcon(originalImage));
+        } catch (IOException e) {
+            logo = new JLabel("Image not found");
+        }
+        logo.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+
+        logo.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (isCallerCashier) {
+                    reloadCallback.accept(Cashier_Product_Info.init((BiConsumer<Content_Panel, Integer>) Product_Card.this.reloadCallback,
+                            Product_Card.this.productName, Product_Card.this.productPrice, Product_Card.this.imageUrl,
+                            Product_Card.this.categoryName, transactionSession), Integer.valueOf(1));
+                } else {
+                    JOptionPane.showMessageDialog(null, "Admin's Product Info page is not ready yet :(", "SORRY!",
+                            JOptionPane.INFORMATION_MESSAGE);
 //                	TODO : make Admin_Product_Info
-				}
-			}
-		});
+                }
+            }
+        });
 
-		return logo;
-	}
+        return logo;
+    }
 
-	private JLabel createCardPrice(int price) {
-		JLabel label = new JLabel("Rp. " + price, SwingConstants.CENTER);
-		label.setForeground(Color.BLACK);
-		label.setFont(new Font("Arial", Font.PLAIN, 20));
-		return label;
-	}
+    private JLabel createCardPrice(int price) {
+        JLabel label = new JLabel("Rp. " + price, SwingConstants.CENTER);
+        label.setForeground(Color.BLACK);
+        label.setFont(new Font("Arial", Font.PLAIN, 20));
+        return label;
+    }
 
-	public String getProductName() {
-		return productNameLabel.getText();
-	}
-
-	public String getProductPrice() {
-		return productPriceLabel.getText();
-	}
+    public String getProductPrice() {
+        return productPriceLabel.getText();
+    }
 }
