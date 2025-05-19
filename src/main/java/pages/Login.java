@@ -17,6 +17,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -148,15 +149,7 @@ public class Login {
                 HashMap<String, String> response = loginSession.authenticate(form_data);
                 
                 if (response.get("status").equals("error")) {
-                    //displays an error pop up
-                    JFrame errorFrame = new JFrame();
-                    errorFrame.setSize(480, 360);
- 
-                    JLabel message = new JLabel();
-                    message.setText(response.get("message"));
-                    errorFrame.add(message);
-                    
-                    errorFrame.setVisible(true);
+                	JOptionPane.showMessageDialog(null, response.get("message"), "LOGIN FAILED", JOptionPane.ERROR_MESSAGE);
                 }
                 else if (response.get("status").equals("success")) {
                     //redirect to dashboard
