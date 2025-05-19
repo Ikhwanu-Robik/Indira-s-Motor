@@ -29,13 +29,13 @@ public class ReportController {
 				JOIN `carts` ON `orders`.`cart_id` = `carts`.`id`
 				JOIN `cashiers` ON `carts`.`cashier_id` = `cashiers`.id
 				JOIN `cart_product` ON `carts`.`id` = `cart_product`.`cart_id`
-				GROUP BY cart_id""";
+				GROUP BY orders.cart_id""";
 		try {
-			Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+			Statement stmt = db.connect().createStatement(ResultSet.TYPE_FORWARD_ONLY,
 					ResultSet.CONCUR_READ_ONLY);
 			rs = stmt.executeQuery(query);
 		} catch (SQLException er) {
-			System.out.println(er);
+			System.err.println(er);
 		}
 
 		try {
@@ -43,7 +43,7 @@ public class ReportController {
 				return null;
 			}
 
-			rs.first();
+//			rs.first();
 			do {
 				HashMap<String, String> row = new HashMap<>();
 
@@ -60,9 +60,10 @@ public class ReportController {
 
 				result.add(row);
 			} while (rs.next());
-
+			result.removeFirst();
+			
 		} catch (SQLException er) {
-			System.out.println(er);
+			System.err.println(er);
 		}
 
 		try {
@@ -97,14 +98,14 @@ public class ReportController {
 				JOIN `cashiers` ON `carts`.`cashier_id` = `cashiers`.id
 				JOIN `cart_product` ON `carts`.`id` = `cart_product`.`cart_id`
 				"""
-				+ "WHERE date " + operator + " \"" + year + "-" + month + "-" + date + "\" GROUP BY cart_id";
+				+ "WHERE date " + operator + " \"" + year + "-" + month + "-" + date + "\" GROUP BY orders.cart_id";
 
 		try {
-			Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+			Statement stmt = db.connect().createStatement(ResultSet.TYPE_FORWARD_ONLY,
 					ResultSet.CONCUR_READ_ONLY);
 			rs = stmt.executeQuery(query);
 		} catch (SQLException er) {
-			System.out.println(er);
+			System.err.println(er);
 		}
 
 		try {
@@ -112,7 +113,7 @@ public class ReportController {
 				return null;
 			}
 
-			rs.first();
+//			rs.first();
 			do {
 				HashMap<String, String> row = new HashMap<>();
 
@@ -129,9 +130,10 @@ public class ReportController {
 
 				result.add(row);
 			} while (rs.next());
+			result.removeFirst();
 
 		} catch (SQLException er) {
-			System.out.println(er);
+			System.err.println(er);
 		}
 
 		try {

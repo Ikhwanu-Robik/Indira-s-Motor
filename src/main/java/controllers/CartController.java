@@ -44,7 +44,7 @@ public class CartController extends AbstractController {
 		}
 
 		try {
-			Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			Statement stmt = db.connect().createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			rs = stmt.executeQuery("SELECT " + stringColumns + " FROM " + this.table_name);
 
 			if (!rs.isBeforeFirst()) {
@@ -112,7 +112,7 @@ public class CartController extends AbstractController {
 			Database db = new Database();
 			ResultSet rs;
 			ArrayList<HashMap<String, String>> categories = new ArrayList<>();
-			Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+			Statement stmt = db.connect().createStatement(ResultSet.TYPE_FORWARD_ONLY,
 					ResultSet.CONCUR_READ_ONLY);
 			rs = stmt.executeQuery(whereStatement);
 
@@ -122,7 +122,7 @@ public class CartController extends AbstractController {
 			}
 			// I expect the line below will throw an exception if ResultSet is empty a.k.a
 			// no result found for such query
-			rs.first();
+//			rs.first();
 			do {
 				HashMap<String, String> row = new HashMap<>();
 				row.put("id", rs.getString("id"));
@@ -215,7 +215,7 @@ public class CartController extends AbstractController {
 		columns.add("category_name");
 
 		try {
-			Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			Statement stmt = db.connect().createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			rs = stmt.executeQuery(query);
 
 			if (!rs.isBeforeFirst()) {
@@ -223,7 +223,7 @@ public class CartController extends AbstractController {
 				return null;
 			}
 
-			rs.first();
+//			rs.first();
 			do {
 				HashMap<String, String> row = new HashMap<>();
 				for (String column : columns) {
@@ -231,7 +231,8 @@ public class CartController extends AbstractController {
 				}
 				cart_products.add(row);
 			} while (rs.next());
-
+			cart_products.removeFirst();		
+											
 			db.close();
 
 			return cart_products;
@@ -252,14 +253,14 @@ public class CartController extends AbstractController {
 		Statement stmt;
 
 		try {
-			stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			stmt = db.connect().createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			rs = stmt.executeQuery(getCartProductQuery);
 		} catch (SQLException ex) {
 			Logger.getLogger(CartController.class.getName()).log(Level.SEVERE, null, ex);
 		}
 
 		try {
-			rs.first();
+//			rs.first();
 			do {
 				int qty = rs.getInt("qty");
 				int price = Integer.parseInt(
@@ -282,7 +283,7 @@ public class CartController extends AbstractController {
 		Statement stmt;
 
 		try {
-			stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			stmt = db.connect().createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			rs = stmt.executeQuery(sql);
 
 			if (!rs.isBeforeFirst()) {
@@ -290,9 +291,11 @@ public class CartController extends AbstractController {
 				return -1;
 			}
 
-			rs.first();
+//			rs.first();
 
-			return rs.getInt("id");
+			int id = rs.getInt("id");
+			db.close();
+			return id;
 		} catch (SQLException ex) {
 			JOptionPane.showMessageDialog(null, ex, "SQL ERROR - CHECK CART EXISTENCE", JOptionPane.ERROR_MESSAGE);
 		}

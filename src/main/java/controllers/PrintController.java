@@ -72,7 +72,7 @@ public class PrintController {
             query += data.getFirst().get("cart_id");
 
             try {
-                Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                Statement stmt = db.connect().createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
                 rs = stmt.executeQuery(query);
             } catch (SQLException er) {
                 System.out.println(er);
