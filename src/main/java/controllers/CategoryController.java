@@ -40,7 +40,7 @@ public class CategoryController extends AbstractController {
         }
          
         try {
-            Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            Statement stmt = db.connect().createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             rs = stmt.executeQuery("SELECT " + stringColumns + " FROM " + this.table_name);
             
             if(!rs.isBeforeFirst()) {
@@ -48,7 +48,7 @@ public class CategoryController extends AbstractController {
                 return null;
             }
             
-            rs.first();
+//            rs.first();
             do {
                 HashMap<String, String> row = new HashMap<>();
                 for (String column: columns) {
@@ -56,6 +56,7 @@ public class CategoryController extends AbstractController {
                 }
                 categories.add(row);
             }while(rs.next());
+            categories.removeFirst();
             
             db.close();
 
@@ -117,7 +118,7 @@ public class CategoryController extends AbstractController {
             Database db = new Database();
             ResultSet rs;
             ArrayList<HashMap<String, String>> categories = new ArrayList<>();
-            Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            Statement stmt = db.connect().createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             rs = stmt.executeQuery(whereStatement);
             
             if(!rs.isBeforeFirst()) {
@@ -125,7 +126,7 @@ public class CategoryController extends AbstractController {
                 return null;
             }
             //I expect the line below will throw an exception if ResultSet is empty a.k.a no result found for such query
-            rs.first();
+//            rs.first();
             do {
                 HashMap<String, String> row = new HashMap<>();
                 row.put("id", rs.getString("id"));

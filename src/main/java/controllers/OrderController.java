@@ -44,7 +44,7 @@ public class OrderController extends AbstractController {
         }
 
         try {
-            Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            Statement stmt = db.connect().createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             rs = stmt.executeQuery("SELECT " + stringColumns + " FROM " + this.table_name);
 
             if (!rs.isBeforeFirst()) {
@@ -52,7 +52,7 @@ public class OrderController extends AbstractController {
                 return null;
             }
 
-            rs.first();
+//            rs.first();
             do {
                 HashMap<String, String> row = new HashMap<>();
                 for (String column : columns) {
@@ -133,7 +133,7 @@ public class OrderController extends AbstractController {
             Database db = new Database();
             ResultSet rs;
             ArrayList<HashMap<String, String>> orders = new ArrayList<>();
-            Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            Statement stmt = db.connect().createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             rs = stmt.executeQuery(whereStatement);
 
             if (!rs.isBeforeFirst()) {

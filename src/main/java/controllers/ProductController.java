@@ -47,7 +47,7 @@ public class ProductController extends AbstractController {
 		}
 
 		try {
-			Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			Statement stmt = db.connect().createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			rs = stmt.executeQuery("SELECT " + stringColumns + " FROM " + this.table_name);
 
 			if (!rs.isBeforeFirst()) {
@@ -55,7 +55,7 @@ public class ProductController extends AbstractController {
 				return null;
 			}
 
-			rs.first();
+//			rs.first();
 			do {
 				HashMap<String, String> row = new HashMap<>();
 				for (String column : columns) {
@@ -63,6 +63,7 @@ public class ProductController extends AbstractController {
 				}
 				products.add(row);
 			} while (rs.next());
+			products.removeFirst();
 
 			db.close();
 
@@ -138,7 +139,7 @@ public class ProductController extends AbstractController {
 			Database db = new Database();
 			ResultSet rs;
 			ArrayList<HashMap<String, String>> products = new ArrayList<>();
-			Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+			Statement stmt = db.connect().createStatement(ResultSet.TYPE_FORWARD_ONLY,
 					ResultSet.CONCUR_READ_ONLY);
 			rs = stmt.executeQuery(whereStatement);
 
@@ -148,7 +149,7 @@ public class ProductController extends AbstractController {
 			}
 			// I expect the line below will throw an exception if ResultSet is empty a.k.a
 			// no result found for such query
-			rs.first();
+//			rs.first();
 			do {
 				HashMap<String, String> row = new HashMap<>();
 				row.put("id", rs.getString("id"));
@@ -159,6 +160,7 @@ public class ProductController extends AbstractController {
 				row.put("brand_id", rs.getString("brand_id"));
 				products.add(row);
 			} while (rs.next());
+			products.removeFirst();
 
 			db.close();
 
@@ -191,7 +193,7 @@ public class ProductController extends AbstractController {
 		columns.add("category_name");
 
 		try {
-			Statement stmt = db.connect().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			Statement stmt = db.connect().createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			rs = stmt.executeQuery("SELECT products.id, products.name, image_url, price, stock, brands.id AS brand_id, brands.name AS brand_name, categories.name AS category_name FROM " + this.table_name + " JOIN brands ON products.brand_id = brands.id JOIN categories ON brands.category_id = categories.id");
 
 			if (!rs.isBeforeFirst()) {
