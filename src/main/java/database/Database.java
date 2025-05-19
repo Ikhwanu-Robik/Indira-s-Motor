@@ -40,7 +40,7 @@ public class Database {
         				+ ");\r\n"
         				+ "\r\n"
         				+ "INSERT INTO admins (id, username, password) VALUES\r\n"
-        				+ "(1, 'nafisa', -1861353340);\r\n"
+        				+ "(1, 'admin', -1861353340);\r\n"
         				+ "\r\n"
         				+ "CREATE TABLE brands (\r\n"
         				+ "  id INTEGER PRIMARY KEY AUTOINCREMENT,\r\n"
