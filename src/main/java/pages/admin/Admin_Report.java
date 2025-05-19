@@ -9,7 +9,9 @@ import controllers.PrintController;
 import controllers.ReportController;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Insets;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -21,6 +23,7 @@ import java.util.Properties;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import javax.swing.DefaultCellEditor;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -30,6 +33,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
@@ -48,16 +52,16 @@ public class Admin_Report {
     public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback) {
         Admin_Report.reloadCallback = reloadCallback;
         reports = new ReportController().getReports();
-        
+
         Content_Panel adminReportPanel = createContentPanel();
 
         return adminReportPanel;
     }
-    
+
     public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback, ArrayList<HashMap<String, String>> filteredReport) {
         Admin_Report.reloadCallback = reloadCallback;
         reports = filteredReport;
-        
+
         Content_Panel adminReportPanel = createContentPanel();
 
         return adminReportPanel;
@@ -80,6 +84,8 @@ public class Admin_Report {
         contentPanel.add(titleLabel, gbc);
         contentPanel.add(filterPanel, gbc);
         contentPanel.add(printBtn, gbc);
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
         contentPanel.add(reportTable, gbc);
 
         return contentPanel;
@@ -117,17 +123,17 @@ public class Admin_Report {
     }
 
     private static JScrollPane createTableReport() {
-        String[] columnNames = {"tanggal", "nama_kasir", "jumlah_produk", "total", "jasa", "detail", "cart_id"};        
+        String[] columnNames = {"tanggal", "nama_kasir", "jumlah_produk", "total", "jasa", "detail", "cart_id"};
 
         Object[][] data = {};
-        
+
         if (reports != null) {
-        	data = new Object[reports.size()][columnNames.length];
+            data = new Object[reports.size()][columnNames.length];
 
             int i = 0;
             for (HashMap<String, String> report : reports) {
                 data[i] = new Object[]{
-                    report.get("date"), // perbaiki urutan kolom sesuai header
+                    report.get("date"),
                     report.get("username"),
                     report.get("product_types"),
                     report.get("total"),
@@ -153,26 +159,18 @@ public class Admin_Report {
         columnModel.removeColumn(hiddenColumn);
 
         // Styling tabel
-        table.setBackground(new Color(45, 45, 45)); // background gelap
-        table.setForeground(Color.WHITE); // teks putih
-        table.setFont(new Font("SansSerif", Font.PLAIN, 14)); // font lebih besar
-        table.setRowHeight(28); // tinggi baris
-        table.setGridColor(Color.DARK_GRAY); // warna garis pemisah
+        table.setBackground(new Color(45, 45, 45));
+        table.setForeground(Color.WHITE);
+        table.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        table.setRowHeight(28);
+        table.setGridColor(Color.DARK_GRAY);
 
         // Styling header tabel
         JTableHeader header = table.getTableHeader();
         header.setBackground(new Color(30, 30, 30));
         header.setForeground(Color.WHITE);
         header.setFont(new Font("SansSerif", Font.BOLD, 15));
-        header.setReorderingAllowed(false); // mencegah drag kolom
-
-        // Set preferred width kolom
-        table.getColumnModel().getColumn(0).setPreferredWidth(120);
-        table.getColumnModel().getColumn(1).setPreferredWidth(150);
-        table.getColumnModel().getColumn(2).setPreferredWidth(100);
-        table.getColumnModel().getColumn(3).setPreferredWidth(100);
-        table.getColumnModel().getColumn(4).setPreferredWidth(100);
-        table.getColumnModel().getColumn(5).setPreferredWidth(70);
+        header.setReorderingAllowed(false);
 
         class ButtonRenderer extends JButton implements TableCellRenderer {
 
@@ -242,15 +240,25 @@ public class Admin_Report {
         table.getColumn("detail").setCellRenderer(new ButtonRenderer());
         table.getColumn("detail").setCellEditor(new ButtonEditor(new JCheckBox(), table));
 
-        table.getColumnModel().getColumn(0).setPreferredWidth(120); // tangal
-        table.getColumnModel().getColumn(1).setPreferredWidth(150); // nama_kasir
-        table.getColumnModel().getColumn(2).setPreferredWidth(100); // jumlah_produk
-        table.getColumnModel().getColumn(3).setPreferredWidth(100); // total
-        table.getColumnModel().getColumn(4).setPreferredWidth(100); // jasa
-        table.getColumnModel().getColumn(5).setPreferredWidth(150); // detail (boolean)
+        table.getColumnModel().getColumn(0).setPreferredWidth(200);
+        table.getColumnModel().getColumn(1).setPreferredWidth(200);
+        table.getColumnModel().getColumn(2).setPreferredWidth(250);
+        table.getColumnModel().getColumn(3).setPreferredWidth(180);
+        table.getColumnModel().getColumn(4).setPreferredWidth(180);
+        table.getColumnModel().getColumn(5).setPreferredWidth(120);
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+
+        ((DefaultTableCellRenderer) table.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
 
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.getViewport().setBackground(new Color(45, 45, 45)); // latar belakang scrollpane sama
+
+        scrollPane.getViewport().setBackground(new Color(45, 45, 45));
 
         return scrollPane;
     }
@@ -273,24 +281,35 @@ public class Admin_Report {
         p.put("text.month", "Bulan");
         p.put("text.year", "Tahun");
 
+        ImageIcon calendarIcon = new ImageIcon(Admin_Report.class.getResource("assets/calendar_icon.png"));
+
         JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
         JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
         datePicker.setBounds(160, 20, 150, 30);
         filterPanel.add(datePicker);
 
+        for (Component comp : datePicker.getComponents()) {
+            if (comp instanceof JButton) {
+                JButton button = (JButton) comp;
+                button.setIcon(calendarIcon); // Ganti ikon
+                button.setText("");           // Hapus teks jika perlu
+                button.setMargin(new Insets(0, 0, 0, 0)); // Opsional: hilangkan margin
+            }
+        }
+
         JButton applyFilterBtn = new JButton("Apply Filter");
         applyFilterBtn.addActionListener((e) -> {
-        	int date = model.getDay();
+            int date = model.getDay();
 //        	because the month is represented from 0 to 11
-        	int month = model.getMonth() + 1;
-        	int year = model.getYear();
-        	int when = timeline.getSelectedIndex();
-        	
-        	ArrayList<HashMap<String, String>> filteredReport = new ReportController().filter(when, date, month, year);
-        	reloadCallback.accept(Admin_Report.init(reloadCallback, filteredReport), Integer.valueOf(3));
+            int month = model.getMonth() + 1;
+            int year = model.getYear();
+            int when = timeline.getSelectedIndex();
+
+            ArrayList<HashMap<String, String>> filteredReport = new ReportController().filter(when, date, month, year);
+            reloadCallback.accept(Admin_Report.init(reloadCallback, filteredReport), Integer.valueOf(3));
         });
         filterPanel.add(applyFilterBtn);
-        
+
         return filterPanel;
     }
 

@@ -32,15 +32,17 @@ public class Cashier_Product_Info {
     private static String productPrice;
     private static String imageUrl;
     private static String categoryName;
+    private static String productStock;
     private static BiConsumer<Content_Panel, Integer> reloadCallback;
 	private static TransactionController transactionSession;
 
-    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback, String productName, String productPrice, String imageUrl, String categoryName, TransactionController transactionSession) {
+    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback, String productName, String productPrice, String imageUrl, String categoryName, String productStock, TransactionController transactionSession) {
         Cashier_Product_Info.reloadCallback = reloadCallback;
         Cashier_Product_Info.productName = productName;
         Cashier_Product_Info.productPrice = productPrice;
         Cashier_Product_Info.imageUrl = imageUrl;
         Cashier_Product_Info.categoryName = categoryName;
+        Cashier_Product_Info.productStock = productStock;
         Cashier_Product_Info.transactionSession = transactionSession;
 
         Content_Panel cashierProductInfoPanel = createContentPanel();
@@ -125,10 +127,14 @@ public class Cashier_Product_Info {
 
         JLabel productCategory = new JLabel(Cashier_Product_Info.categoryName);
         productCategory.setFont(new Font("Arial", Font.PLAIN, 16));
+        
+        JLabel productStock = new JLabel("Stok:" + Cashier_Product_Info.productStock);
+        productStock.setFont(new Font("Arial", Font.BOLD, 16));
 
         descriptionPanel.add(productName, gbc);
         descriptionPanel.add(productPrice, gbc);
         descriptionPanel.add(productCategory, gbc);
+        descriptionPanel.add(productStock, gbc);
 
         return descriptionPanel;
     }
