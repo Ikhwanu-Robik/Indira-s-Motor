@@ -278,7 +278,7 @@ public class Admin_Report {
         p.put("text.month", "Bulan");
         p.put("text.year", "Tahun");
 
-        ImageIcon calendarIcon = new ImageIcon(Admin_Report.class.getResource("assets/calendar_icon.png"));
+        ImageIcon calendarIcon = new ImageIcon(Admin_Report.class.getClassLoader().getResource("assets/calendar_icon.png"));
 
         JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
         JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
