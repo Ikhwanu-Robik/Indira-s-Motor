@@ -30,148 +30,152 @@ import pages.cashier.Cashier_Product_Info;
 
 public class Admin_Product_Info {
 
-    private static String productName;
-    private static String productPrice;
-    private static String imageUrl;
-    private static String categoryName;
-    private static BiConsumer<Content_Panel, Integer> reloadCallback;
+	private static String productName;
+	private static String productPrice;
+	private static String imageUrl;
+	private static String categoryName;
+	private static BiConsumer<Content_Panel, Integer> reloadCallback;
 	private static String stock;
 
-    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback, String productName, String productPrice, String imageUrl, String categoryName, String stock) {
-        Admin_Product_Info.reloadCallback = reloadCallback;
-        Admin_Product_Info.productName = productName;
-        Admin_Product_Info.productPrice = productPrice;
-        Admin_Product_Info.imageUrl = imageUrl;
-        Admin_Product_Info.categoryName = categoryName;
-        Admin_Product_Info.stock = stock;
+	public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback, String productName,
+			String productPrice, String imageUrl, String categoryName, String stock) {
+		Admin_Product_Info.reloadCallback = reloadCallback;
+		Admin_Product_Info.productName = productName;
+		Admin_Product_Info.productPrice = productPrice;
+		Admin_Product_Info.imageUrl = imageUrl;
+		Admin_Product_Info.categoryName = categoryName;
+		Admin_Product_Info.stock = stock;
 
-        Content_Panel cashierProductInfoPanel = createContentPanel();
-        return cashierProductInfoPanel;
-    }
+		Content_Panel cashierProductInfoPanel = createContentPanel();
+		return cashierProductInfoPanel;
+	}
 
-    private static Content_Panel createContentPanel() {
-        Content_Panel contentPanel = new Content_Panel();
-        contentPanel.setLayout(new GridBagLayout());
+	private static Content_Panel createContentPanel() {
+		Content_Panel contentPanel = new Content_Panel();
+		contentPanel.setLayout(new GridBagLayout());
 
-        JPanel image = createImagePanel(imageUrl);
+		JPanel image = createImagePanel(imageUrl);
 
-        // Add label to content panel
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.CENTER;
+		// Add label to content panel
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.CENTER;
 
-        contentPanel.add(image, gbc);
-        return contentPanel;
-    }
+		contentPanel.add(image, gbc);
+		return contentPanel;
+	}
 
-    private static JPanel createImagePanel(String imagePath) {
-        JPanel imagePanel = new JPanel();
-        imagePanel.setLayout(new BoxLayout(imagePanel, BoxLayout.Y_AXIS));
-        imagePanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
-        imagePanel.setBackground(Color.WHITE);
-        imagePanel.setPreferredSize(new Dimension(850, 700));
+	private static JPanel createImagePanel(String imagePath) {
+		JPanel imagePanel = new JPanel();
+		imagePanel.setLayout(new BoxLayout(imagePanel, BoxLayout.Y_AXIS));
+		imagePanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+		imagePanel.setBackground(Color.WHITE);
+		imagePanel.setPreferredSize(new Dimension(850, 700));
 
-        try {
-        	File dir = new File("C:/IndiraMotorKasir/assets");
-        	if (!dir.exists()) {
-        		dir.mkdirs();
-        	}
-        	
-        	File image = new File("C:/IndiraMotorKasir/assets/" + Admin_Product_Info.imageUrl);
-            InputStream input = new FileInputStream(image);
+		try {
+			File dir = new File("C:/IndiraMotorKasir/assets");
+			if (!dir.exists()) {
+				dir.mkdirs();
+			}
 
-            BufferedImage originalImage = ImageIO.read(input);
-            int width = originalImage.getWidth();
-            int height = originalImage.getHeight();
-            
-            int scaledWidth;
-            int scaledHeight;
-            if (height < 500 && width < 800) {
-            	int multiplier = Math.round(height / 500);
-                scaledWidth = width * multiplier;
-                scaledHeight = height * multiplier;
-            } else if (height > 500 && width > 800) {
-            	scaledWidth = width * 500 / height;
-            	scaledHeight = 500;
-            } else {
-            	scaledWidth = width;
-            	scaledHeight = height;
-            }
-            
-            Image scaledImage = originalImage.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
-            JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
-            imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-            imagePanel.add(imageLabel);
-        } catch (IOException e) {
-            JLabel placeholder = new JLabel("No Image Available");
-            placeholder.setAlignmentX(Component.CENTER_ALIGNMENT);
-            imagePanel.add(placeholder);
-        }
+			File image = new File("C:/IndiraMotorKasir/assets/" + Admin_Product_Info.imageUrl);
+			InputStream input = new FileInputStream(image);
 
-        JPanel productDescription = createDescriptionPanel("Oli Amahay", 20000, "Oli");
-        imagePanel.add(productDescription);
+			BufferedImage originalImage = ImageIO.read(input);
+			int width = originalImage.getWidth();
+			int height = originalImage.getHeight();
 
-        imagePanel.add(Box.createVerticalStrut(20));
+			int scaledWidth;
+			int scaledHeight;
+			if (height < 500 && width < 800) {
+				int multiplier = Math.round(height / 500);
+				scaledWidth = width * multiplier;
+				scaledHeight = height * multiplier;
+			} else if (height > 500 && width > 800) {
+				scaledWidth = width * 500 / height;
+				scaledHeight = 500;
+			} else if (height > 500 && width < 800) {
+				scaledWidth = width * 500 / height;
+				scaledHeight = 500;
+			} else {
+				scaledWidth = width;
+				scaledHeight = height;
+			}
 
-        JPanel buttonContainer = new JPanel();
-        buttonContainer.setLayout(new BorderLayout());
-        buttonContainer.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+			Image scaledImage = originalImage.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
+			JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
+			imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+			imagePanel.add(imageLabel);
+		} catch (IOException e) {
+			JLabel placeholder = new JLabel("No Image Available");
+			placeholder.setAlignmentX(Component.CENTER_ALIGNMENT);
+			imagePanel.add(placeholder);
+		}
 
-        JPanel buttonPanel = createButtonPanel();
-        buttonContainer.add(buttonPanel, BorderLayout.CENTER);
+		JPanel productDescription = createDescriptionPanel("Oli Amahay", 20000, "Oli");
+		imagePanel.add(productDescription);
 
-        imagePanel.add(buttonContainer);
+		imagePanel.add(Box.createVerticalStrut(20));
 
-        return imagePanel;
-    }
+		JPanel buttonContainer = new JPanel();
+		buttonContainer.setLayout(new BorderLayout());
+		buttonContainer.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
 
-    private static JPanel createDescriptionPanel(String name, double price, String category) {
-        JPanel descriptionPanel = new JPanel();
-        descriptionPanel.setLayout(new GridBagLayout());
+		JPanel buttonPanel = createButtonPanel();
+		buttonContainer.add(buttonPanel, BorderLayout.CENTER);
 
-        // Add label to content panel
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.CENTER;
+		imagePanel.add(buttonContainer);
 
-        JLabel productName = new JLabel(Admin_Product_Info.productName);
-        productName.setFont(new Font("Arial", Font.BOLD, 20));
+		return imagePanel;
+	}
 
-        JLabel productPrice = new JLabel("Rp " + Admin_Product_Info.productPrice);
-        productPrice.setFont(new Font("Arial", Font.ITALIC, 18));
+	private static JPanel createDescriptionPanel(String name, double price, String category) {
+		JPanel descriptionPanel = new JPanel();
+		descriptionPanel.setLayout(new GridBagLayout());
 
-        JLabel productCategory = new JLabel(Admin_Product_Info.categoryName);
-        productCategory.setFont(new Font("Arial", Font.PLAIN, 16));
-        
-        JLabel productStock = new JLabel("Stok:" + Admin_Product_Info.stock);
-        productStock.setFont(new Font("Arial", Font.BOLD, 16));
+		// Add label to content panel
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.CENTER;
 
-        descriptionPanel.add(productName, gbc);
-        descriptionPanel.add(productPrice, gbc);
-        descriptionPanel.add(productCategory, gbc);
-        descriptionPanel.add(productStock, gbc);
+		JLabel productName = new JLabel(Admin_Product_Info.productName);
+		productName.setFont(new Font("Arial", Font.BOLD, 20));
 
-        return descriptionPanel;
-    }
+		JLabel productPrice = new JLabel("Rp " + Admin_Product_Info.productPrice);
+		productPrice.setFont(new Font("Arial", Font.ITALIC, 18));
 
-    private static JPanel createButtonPanel() {
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BorderLayout());
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-        buttonPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+		JLabel productCategory = new JLabel(Admin_Product_Info.categoryName);
+		productCategory.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        JButton cancelBtn = new JButton("Batal");
-        cancelBtn.setFont(new Font("Arial", Font.PLAIN, 16));
-        cancelBtn.setForeground(Color.BLACK);
-        cancelBtn.setBackground(new Color(0xE0E0E0));
-        cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadCallback.accept(Admin_Products.init(reloadCallback), Integer.valueOf(2));
-            }
-        });
+		JLabel productStock = new JLabel("Stok:" + Admin_Product_Info.stock);
+		productStock.setFont(new Font("Arial", Font.BOLD, 16));
+
+		descriptionPanel.add(productName, gbc);
+		descriptionPanel.add(productPrice, gbc);
+		descriptionPanel.add(productCategory, gbc);
+		descriptionPanel.add(productStock, gbc);
+
+		return descriptionPanel;
+	}
+
+	private static JPanel createButtonPanel() {
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new BorderLayout());
+		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+		buttonPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+
+		JButton cancelBtn = new JButton("Batal");
+		cancelBtn.setFont(new Font("Arial", Font.PLAIN, 16));
+		cancelBtn.setForeground(Color.BLACK);
+		cancelBtn.setBackground(new Color(0xE0E0E0));
+		cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent evt) {
+				reloadCallback.accept(Admin_Products.init(reloadCallback), Integer.valueOf(2));
+			}
+		});
 
 //        JButton editBtn = new JButton("Edit");
 //        editBtn.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -183,15 +187,15 @@ public class Admin_Product_Info {
 //                reloadCallback.accept(productEdit.init(reloadCallback, productName));
 //            }
 //        });
-        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        leftPanel.add(cancelBtn);
+		JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		leftPanel.add(cancelBtn);
 
 //        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 //        rightPanel.add(editBtn);
-        buttonPanel.add(leftPanel, BorderLayout.WEST);
+		buttonPanel.add(leftPanel, BorderLayout.WEST);
 //        buttonPanel.add(rightPanel, BorderLayout.EAST);
 
-        return buttonPanel;
-    }
+		return buttonPanel;
+	}
 
 }

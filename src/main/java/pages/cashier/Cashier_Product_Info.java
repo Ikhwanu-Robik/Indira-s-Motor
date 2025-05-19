@@ -34,9 +34,11 @@ public class Cashier_Product_Info {
     private static String categoryName;
     private static String productStock;
     private static BiConsumer<Content_Panel, Integer> reloadCallback;
-	private static TransactionController transactionSession;
+    private static TransactionController transactionSession;
 
-    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback, String productName, String productPrice, String imageUrl, String categoryName, String productStock, TransactionController transactionSession) {
+    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback, String productName,
+            String productPrice, String imageUrl, String categoryName, String productStock,
+            TransactionController transactionSession) {
         Cashier_Product_Info.reloadCallback = reloadCallback;
         Cashier_Product_Info.productName = productName;
         Cashier_Product_Info.productPrice = productPrice;
@@ -73,32 +75,35 @@ public class Cashier_Product_Info {
         imagePanel.setPreferredSize(new Dimension(850, 700));
 
         try {
-        	File dir = new File("C:/IndiraMotorKasir/assets");
-        	if (!dir.exists()) {
-        		dir.mkdirs();
-        	}
-        	
-        	File image = new File("C:/IndiraMotorKasir/assets/" + Cashier_Product_Info.imageUrl);
+            File dir = new File("C:/IndiraMotorKasir/assets");
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            File image = new File("C:/IndiraMotorKasir/assets/" + Cashier_Product_Info.imageUrl);
             InputStream input = new FileInputStream(image);
-            
+
             BufferedImage originalImage = ImageIO.read(input);
             int width = originalImage.getWidth();
             int height = originalImage.getHeight();
-            
+
             int scaledWidth;
             int scaledHeight;
             if (height < 500 && width < 800) {
-            	int multiplier = Math.round(height / 500);
+                int multiplier = Math.round(height / 500);
                 scaledWidth = width * multiplier;
                 scaledHeight = height * multiplier;
             } else if (height > 500 && width > 800) {
-            	scaledWidth = width * 500 / height;
-            	scaledHeight = 500;
+                scaledWidth = width * 500 / height;
+                scaledHeight = 500;
+            } else if (height > 500 && width < 800) {
+                scaledWidth = width * 500 / height;
+                scaledHeight = 500;
             } else {
-            	scaledWidth = width;
-            	scaledHeight = height;
+                scaledWidth = width;
+                scaledHeight = height;
             }
-            
+
             Image scaledImage = originalImage.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
             JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
             imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -144,7 +149,7 @@ public class Cashier_Product_Info {
 
         JLabel productCategory = new JLabel(Cashier_Product_Info.categoryName);
         productCategory.setFont(new Font("Arial", Font.PLAIN, 16));
-        
+
         JLabel productStock = new JLabel("Stok:" + Cashier_Product_Info.productStock);
         productStock.setFont(new Font("Arial", Font.BOLD, 16));
 
@@ -180,7 +185,8 @@ public class Cashier_Product_Info {
         editBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadCallback.accept(Cashier_Product_Edit.init(reloadCallback, productName, transactionSession), Integer.valueOf(1));
+                reloadCallback.accept(Cashier_Product_Edit.init(reloadCallback, productName, transactionSession),
+                        Integer.valueOf(1));
             }
         });
 
