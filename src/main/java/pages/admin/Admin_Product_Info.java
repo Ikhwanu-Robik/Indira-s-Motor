@@ -82,7 +82,24 @@ public class Admin_Product_Info {
             InputStream input = new FileInputStream(image);
 
             BufferedImage originalImage = ImageIO.read(input);
-            Image scaledImage = originalImage.getScaledInstance(800, 500, Image.SCALE_SMOOTH);
+            int width = originalImage.getWidth();
+            int height = originalImage.getHeight();
+            
+            int scaledWidth;
+            int scaledHeight;
+            if (height < 500 && width < 800) {
+            	int multiplier = Math.round(height / 500);
+                scaledWidth = width * multiplier;
+                scaledHeight = height * multiplier;
+            } else if (height > 500 && width > 800) {
+            	scaledWidth = width * 500 / height;
+            	scaledHeight = 500;
+            } else {
+            	scaledWidth = width;
+            	scaledHeight = height;
+            }
+            
+            Image scaledImage = originalImage.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
             JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
             imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             imagePanel.add(imageLabel);
