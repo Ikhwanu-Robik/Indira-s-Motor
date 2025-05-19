@@ -2,7 +2,11 @@ package components;
 
 import controllers.BrandController;
 import controllers.CategoryController;
+
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.Box;
@@ -42,6 +46,21 @@ public class Search_Bar extends JPanel {
 
     private JTextField createSearchField() {
         JTextField field = new JTextField(SEARCH_PLACEHOLDER);
+        field.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                if (field.getText().equals(SEARCH_PLACEHOLDER)) {
+                    field.setText("");
+                    field.setForeground(Color.BLACK);
+                }
+            }
+
+            public void focusLost(FocusEvent e) {
+                if (field.getText().isEmpty()) {
+                    field.setForeground(Color.GRAY);
+                    field.setText(SEARCH_PLACEHOLDER);
+                }
+            }
+        });
         field.setMaximumSize(new Dimension(WIDTH, 30));
         return field;
     }
