@@ -23,6 +23,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Insets;
@@ -251,6 +253,12 @@ public class Cashier_Product_Edit {
         addImageBtn.setBackground(new Color(0xE0E0E0));
         addImageBtn.addActionListener((ActionEvent e) -> {
             final JFileChooser fc = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Image Files (*.jpg, *.png)", "jpg", "jpeg",
+					"png");
+			fc.setFileFilter(filter);
+
+			// Optional: disable "All Files" option
+			fc.setAcceptAllFileFilterUsed(false);
             int returnVal = fc.showOpenDialog(fc);
 
             fileChooser = fc;
