@@ -122,7 +122,7 @@ public class CartController extends AbstractController {
 			}
 			// I expect the line below will throw an exception if ResultSet is empty a.k.a
 			// no result found for such query
-			rs.first();
+//			rs.first();
 			do {
 				HashMap<String, String> row = new HashMap<>();
 				row.put("id", rs.getString("id"));
