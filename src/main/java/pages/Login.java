@@ -19,6 +19,10 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+
+
 public class Login {
 
     public static void init() {
@@ -27,6 +31,7 @@ public class Login {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1440, 1024);
         frame.setLayout(new BorderLayout());
+        frame.setResizable(false);
 
         // Initialize the panels you imported
         Login_Panel login_pane = new Login_Panel();
@@ -46,26 +51,66 @@ public class Login {
         login_subtitle.setFont(new Font("Arial", Font.PLAIN, 24));
         login_subtitle.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 
-        // Username field - scaled for larger screen
-        JTextField username = new JTextField("Nama");
+        // Placeholder text
+        String usernamePlaceholder = "Nama";
+        String passwordPlaceholder = "Password";
+
+        // Username field
+        JTextField username = new JTextField(usernamePlaceholder);
         username.setMaximumSize(new Dimension(550, 60));
-        username.setPreferredSize(new Dimension(550, 60));
         username.setFont(new Font("Arial", Font.PLAIN, 18));
+        username.setForeground(Color.GRAY); // Gray for placeholder
         username.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true),
                 BorderFactory.createEmptyBorder(10, 15, 10, 15)));
         username.setAlignmentX(JTextField.CENTER_ALIGNMENT);
 
-        // Password field - scaled for larger screen
-        JPasswordField password = new JPasswordField("Password");
+        // Add placeholder behavior
+        username.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                if (username.getText().equals(usernamePlaceholder)) {
+                    username.setText("");
+                    username.setForeground(Color.BLACK);
+                }
+            }
+
+            public void focusLost(FocusEvent e) {
+                if (username.getText().isEmpty()) {
+                    username.setForeground(Color.GRAY);
+                    username.setText(usernamePlaceholder);
+                }
+            }
+        });
+
+        // Password field
+        JPasswordField password = new JPasswordField(passwordPlaceholder);
         password.setMaximumSize(new Dimension(550, 60));
-        password.setPreferredSize(new Dimension(550, 60));
         password.setFont(new Font("Arial", Font.PLAIN, 18));
+        password.setForeground(Color.GRAY);
+        password.setEchoChar((char) 0); // Disable masking to show placeholder
         password.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true),
                 BorderFactory.createEmptyBorder(10, 15, 10, 15)));
         password.setAlignmentX(JPasswordField.CENTER_ALIGNMENT);
-//        password.setEchoChar((char) 0); // Show password text initially
+
+        // Add placeholder behavior
+        password.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                if (String.valueOf(password.getPassword()).equals(passwordPlaceholder)) {
+                    password.setText("");
+                    password.setForeground(Color.BLACK);
+                    password.setEchoChar('●'); // Restore masking
+                }
+            }
+
+            public void focusLost(FocusEvent e) {
+                if (String.valueOf(password.getPassword()).isEmpty()) {
+                    password.setForeground(Color.GRAY);
+                    password.setText(passwordPlaceholder);
+                    password.setEchoChar((char) 0); // Disable masking
+                }
+            }
+        });
 
         // Login button - scaled for larger screen
         JButton login_btn = new JButton("Masuk");

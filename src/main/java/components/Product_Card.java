@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package components;
 
 import java.awt.BorderLayout;
@@ -28,6 +24,11 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import controllers.TransactionController;
+import java.awt.Image;
+import java.io.FileNotFoundException;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import pages.cashier.Cashier_Product_Info;
 
 public class Product_Card extends JPanel {
@@ -40,8 +41,8 @@ public class Product_Card extends JPanel {
     private String categoryName;
     private BiConsumer<Content_Panel, Integer> reloadCallback;
     private boolean isCallerCashier;
-	private TransactionController transactionSession;
-	private String productId;
+    private TransactionController transactionSession;
+    private String productId;
 
     public Product_Card(BiConsumer<Content_Panel, Integer> reloadCallback, boolean isCallerCashier, String id, String name,
             int price, String image_url, String categoryName) {
@@ -63,10 +64,10 @@ public class Product_Card extends JPanel {
         add(productImage, BorderLayout.CENTER);
         add(productPriceLabel, BorderLayout.SOUTH);
     }
-    
+
     public Product_Card(BiConsumer<Content_Panel, Integer> reloadCallback, boolean isCallerCashier, String id, String name,
             int price, String image_url, String categoryName, TransactionController transactionSession) {
-    	this.productId = id;
+        this.productId = id;
         this.reloadCallback = reloadCallback;
         this.isCallerCashier = isCallerCashier;
         this.productName = name;
@@ -100,21 +101,25 @@ public class Product_Card extends JPanel {
         nameLabel.setFont(new Font("Arial", Font.BOLD, 24));
 
         JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setOpaque(false); // Agar background mengikuti card
+        topPanel.setOpaque(false);
         topPanel.add(nameLabel, BorderLayout.CENTER);
-        
+
+        ImageIcon cartIcon = new ImageIcon(Product_Card.class.getClassLoader().getResource("assets/cart_icon.png"));
+
         if (isCallerCashier) {
-        	JButton plusButton = new JButton("+");
+            File image = null;
+
+            JButton plusButton = new JButton(cartIcon);
             plusButton.setFocusPainted(false);
             plusButton.setPreferredSize(new Dimension(45, 30));
             plusButton.setFont(new Font("Arial", Font.BOLD, 16));
             plusButton.addActionListener(e -> {
-            	int productId = Integer.parseInt(this.productId);
+                int productId = Integer.parseInt(this.productId);
                 transactionSession.addToCart(productId, 1);
-            	
+
                 JOptionPane.showMessageDialog(null, "Menambahkan " + name + " ke keranjang. Lihat di tab Transaksi");
             });
-            
+
             topPanel.add(plusButton, BorderLayout.EAST);
         }
 
