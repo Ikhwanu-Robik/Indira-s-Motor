@@ -36,10 +36,10 @@ public class Product_Card extends JPanel {
     private String productPrice;
     private String imageUrl;
     private String categoryName;
-    private Consumer<Content_Panel> reloadCallback;
+    private BiConsumer<Content_Panel, Integer> reloadCallback;
     private boolean isCallerCashier;
 
-    public Product_Card(Consumer<Content_Panel> reloadCallback, boolean isCallerCashier, String id, String name,
+    public Product_Card(BiConsumer<Content_Panel, Integer> reloadCallback, boolean isCallerCashier, String id, String name,
             int price, String image_url, String categoryName) {
         this.reloadCallback = reloadCallback;
         this.isCallerCashier = isCallerCashier;
@@ -113,7 +113,7 @@ public class Product_Card extends JPanel {
                 if (isCallerCashier) {
                     reloadCallback.accept(Cashier_Product_Info.init((BiConsumer<Content_Panel, Integer>) Product_Card.this.reloadCallback,
                             Product_Card.this.productName, Product_Card.this.productPrice, Product_Card.this.imageUrl,
-                            Product_Card.this.categoryName));
+                            Product_Card.this.categoryName), Integer.valueOf(1));
                 } else {
                     JOptionPane.showMessageDialog(null, "Admin's Product Info page is not ready yet :(", "SORRY!",
                             JOptionPane.INFORMATION_MESSAGE);
