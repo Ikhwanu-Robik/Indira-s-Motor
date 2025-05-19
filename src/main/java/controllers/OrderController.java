@@ -148,6 +148,7 @@ public class OrderController extends AbstractController {
                 row.put("cart_id", rs.getString("cart_id"));
                 row.put("fee", rs.getString("fee"));
                 row.put("date", rs.getString("date"));
+                row.put("total", rs.getString("total"));
                 orders.add(row);
             } while (rs.next());
 
