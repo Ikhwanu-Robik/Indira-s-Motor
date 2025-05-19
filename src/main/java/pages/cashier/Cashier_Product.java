@@ -5,6 +5,7 @@ import components.Product_Card;
 import components.Search_Bar;
 import components.ui.AddButton;
 import controllers.BrandController;
+import controllers.CartController;
 import controllers.CategoryController;
 import controllers.ProductController;
 import controllers.TransactionController;
@@ -32,6 +33,7 @@ public class Cashier_Product {
     private static ArrayList<HashMap<String, String>> products = null;
     private static BiConsumer<Content_Panel, Integer> reloadCallback;
 	private static TransactionController transactionSession;
+	private static ArrayList<HashMap<String, String>> cartProducts;
 
     public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback, TransactionController transactionSession) {
         Cashier_Product.reloadCallback = reloadCallback;
@@ -57,6 +59,8 @@ public class Cashier_Product {
         all_col.clear();
         all_col.add("*");
         Cashier_Product.categories = new CategoryController().read(all_col);
+        
+        Cashier_Product.cartProducts = new CartController().getCartProducts(transactionSession.cart_id);
     }
 
     private static Content_Panel createContentPanel() {
@@ -136,7 +140,15 @@ public class Cashier_Product {
                 }
             }
             
-            cardPanel.add(new Product_Card(reloadCallback, true, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory, transactionSession, product.get("stock")));
+            int qtyInCart = 0;
+            if (cartProducts != null) {
+            	for (HashMap<String, String> cartProduct : cartProducts) {
+                	if (product.get("id").trim().equals(cartProduct.get("product_id").trim())) {
+                		qtyInCart = Integer.parseInt(cartProduct.get("qty"));
+                	}
+                }
+            }
+            cardPanel.add(new Product_Card(reloadCallback, true, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory, transactionSession, product.get("stock"), qtyInCart));
         }
 
         cardPanel.updateUI();
@@ -170,7 +182,15 @@ public class Cashier_Product {
                 }
             }
 
-            cardPanel.add(new Product_Card(reloadCallback, true, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory, transactionSession, product.get("stock")));
+            int qtyInCart = 0;
+            if (cartProducts != null) {
+            	for (HashMap<String, String> cartProduct : cartProducts) {
+                	if (product.get("id").trim().equals(cartProduct.get("product_id").trim())) {
+                		qtyInCart = Integer.parseInt(cartProduct.get("qty"));
+                	}
+                }
+            }
+            cardPanel.add(new Product_Card(reloadCallback, true, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory, transactionSession, product.get("stock"), qtyInCart));
         } else {
             cardPanel.add(new JLabel("Produk tidak ditemukan"));
         }
@@ -198,8 +218,16 @@ public class Cashier_Product {
                 }
             }
 
+            int qtyInCart = 0;
+            if (cartProducts != null) {
+            	for (HashMap<String, String> cartProduct : cartProducts) {
+                	if (product.get("id").trim().equals(cartProduct.get("product_id").trim())) {
+                		qtyInCart = Integer.parseInt(cartProduct.get("qty"));
+                	}
+                }
+            }
             if (categoryName.equals(productCategory) && brandName.equals(productBrand.get("name"))) {
-                cardPanel.add(new Product_Card(reloadCallback, true, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory, transactionSession, product.get("stock")));
+                cardPanel.add(new Product_Card(reloadCallback, true, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory, transactionSession, product.get("stock"), qtyInCart));
             }
         }
 

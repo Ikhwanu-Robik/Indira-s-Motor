@@ -46,6 +46,7 @@ public class Product_Card extends JPanel {
     private TransactionController transactionSession;
     private String productId;
 	protected String stock;
+	private int qtyInCart;
 
     public Product_Card(BiConsumer<Content_Panel, Integer> reloadCallback, boolean isCallerCashier, String id, String name,
             int price, String image_url, String categoryName, String stock) {
@@ -70,7 +71,7 @@ public class Product_Card extends JPanel {
     }
 
     public Product_Card(BiConsumer<Content_Panel, Integer> reloadCallback, boolean isCallerCashier, String id, String name,
-            int price, String image_url, String categoryName, TransactionController transactionSession, String stock) {
+            int price, String image_url, String categoryName, TransactionController transactionSession, String stock, int  qtyInCart) {
         this.productId = id;
         this.reloadCallback = reloadCallback;
         this.isCallerCashier = isCallerCashier;
@@ -80,6 +81,7 @@ public class Product_Card extends JPanel {
         this.categoryName = categoryName;
         this.transactionSession = transactionSession;
         this.stock = stock;
+        this.qtyInCart = qtyInCart;
 
         setLayout(new BorderLayout());
         initialCard();
@@ -91,6 +93,13 @@ public class Product_Card extends JPanel {
         add(productNameLabel, BorderLayout.NORTH);
         add(productImage, BorderLayout.CENTER);
         add(productPriceLabel, BorderLayout.SOUTH);
+    }
+    
+    private boolean checkIsStockAvailable() {
+    	if (qtyInCart + 1 > Integer.parseInt(stock)) {
+    		return false;
+    	}
+    	return true;
     }
 
     private void initialCard() {
@@ -120,9 +129,16 @@ public class Product_Card extends JPanel {
             plusButton.setFont(new Font("Arial", Font.BOLD, 16));
             plusButton.addActionListener(e -> {
                 int productId = Integer.parseInt(this.productId);
-                transactionSession.addToCart(productId, 1);
+                
+                boolean isStockAvailable = checkIsStockAvailable();
+                
+                if (isStockAvailable) {
+                	transactionSession.addToCart(productId, 1);
 
-                JOptionPane.showMessageDialog(null, "Menambahkan " + name + " ke keranjang. Lihat di tab Transaksi");
+                    JOptionPane.showMessageDialog(null, "Menambahkan " + name + " ke keranjang. Lihat di tab Transaksi");
+                } else {
+                	JOptionPane.showMessageDialog(null, "Stok produk tidak tersedia untuk dimasukkan ke keranjang", "STOCK NOT ENOUGH", JOptionPane.ERROR_MESSAGE);
+                }
             });
 
             topPanel.add(plusButton, BorderLayout.EAST);
