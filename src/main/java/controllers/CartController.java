@@ -261,13 +261,13 @@ public class CartController extends AbstractController {
 
 		try {
 //			rs.first();
-			do {
+			 while (rs.next()) {
 				int qty = rs.getInt("qty");
 				int price = Integer.parseInt(
 						new ProductController().findWhere("id", rs.getString("product_id")).getFirst().get("price"));
 
 				total += (qty * price);
-			} while (rs.next());
+			};
 		} catch (SQLException ex) {
 			Logger.getLogger(CartController.class.getName()).log(Level.SEVERE, null, ex);
 		}

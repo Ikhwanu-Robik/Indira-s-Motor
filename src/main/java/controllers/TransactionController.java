@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author MyBook Hype AMD
@@ -40,7 +42,7 @@ public class TransactionController {
         new CartController().addProduct(product_id, qty, this.cart_id);
     }
 
-    public void makeOrder(int cart_id, int fee) {
+    public void makeOrder(int cart_id, int fee) throws Exception {
         //reduce the stock
         ArrayList<HashMap<String, String>> cartProducts = new CartController().getCartProducts(cart_id);
         for (HashMap<String, String> product: cartProducts) {            
@@ -62,7 +64,8 @@ public class TransactionController {
             
             if (qtyBought > oldStock) {
             	System.err.println("kamu belinya kebanyakan kami gak stoknya kurang");
-            	return;
+            	JOptionPane.showMessageDialog(null, "kamu belinya kebanyakan kami stoknya kurang", "ERROR", JOptionPane.ERROR_MESSAGE);
+            	throw new Exception("Stok tidak cukup");
             }
             
             int newStock = oldStock - qtyBought;
