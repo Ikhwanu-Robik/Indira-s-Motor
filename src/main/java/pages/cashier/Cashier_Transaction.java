@@ -262,29 +262,33 @@ public class Cashier_Transaction {
         		JOptionPane.showMessageDialog(null, "Belum ada produknya UwU");
         	}
         	else {
-        		transactionSession.makeOrder(transactionSession.cart_id, Integer.parseInt(serviceField.getText()));
-            	
-        		int response = JOptionPane.showConfirmDialog(null, "Transaksi berhasil!, Apakah notanya mau dicetak?", "BERHASIL!", JOptionPane.YES_NO_OPTION);
-            	if (response == 0) {
-            		ArrayList<HashMap<String, String>> data = new ArrayList<>();
-                    HashMap<String, String> type = new HashMap<>();
-                    type.put("type", "receipt");
-                    data.add(type);
-                    //get data / latest order
-                    ArrayList<String> columns = new ArrayList<>();
-                    columns.add("*");
-                    HashMap<String, String> order = new OrderController().read(columns).getLast();
-                    data.add(order);
-                    
-                    try {
-                        new PrintController().print(data);
-                    } catch (IOException er) {
-                        JOptionPane.showMessageDialog(null, e, "ERROR", JOptionPane.ERROR_MESSAGE);
-                    }
-            	};
-            	
-            	transactionSession.createCartIfMissing();
-            	reloadCallback.accept(Cashier_Transaction.init(reloadCallback, loginSession, transactionSession), Integer.valueOf(4));
+        		try {
+        			transactionSession.makeOrder(transactionSession.cart_id, Integer.parseInt(serviceField.getText()));
+        			
+        			int response = JOptionPane.showConfirmDialog(null, "Transaksi berhasil!, Apakah notanya mau dicetak?", "BERHASIL!", JOptionPane.YES_NO_OPTION);
+                	if (response == 0) {
+                		ArrayList<HashMap<String, String>> data = new ArrayList<>();
+                        HashMap<String, String> type = new HashMap<>();
+                        type.put("type", "receipt");
+                        data.add(type);
+                        //get data / latest order
+                        ArrayList<String> columns = new ArrayList<>();
+                        columns.add("*");
+                        HashMap<String, String> order = new OrderController().read(columns).getLast();
+                        data.add(order);
+                        
+                        try {
+                           new PrintController().print(data);
+                        } catch (IOException er) {
+                            JOptionPane.showMessageDialog(null, e, "ERROR", JOptionPane.ERROR_MESSAGE);
+                        }
+                	};
+                	
+                	transactionSession.createCartIfMissing();
+                	reloadCallback.accept(Cashier_Transaction.init(reloadCallback, loginSession, transactionSession), Integer.valueOf(4));
+        		} catch (Exception e1) {
+        			System.err.println(e1);
+        		}
         	}
         });
 
