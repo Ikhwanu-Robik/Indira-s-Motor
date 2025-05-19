@@ -1,6 +1,7 @@
 package pages.cashier;
 
 import components.Content_Panel;
+import controllers.BrandController;
 import controllers.CategoryController;
 
 import java.awt.BorderLayout;
@@ -143,16 +144,31 @@ public class Cashier_Category {
         cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                int response = JOptionPane.showConfirmDialog(null, "Semua Produk dari Merek ini akan ikut terhapus", "PERINGATAN!", JOptionPane.WARNING_MESSAGE);
+                int response = JOptionPane.showConfirmDialog(null, "Yakin ingin menghapus Kategori ini?", "PERINGATAN!", JOptionPane.WARNING_MESSAGE);
                 
                 if (response == JOptionPane.YES_OPTION) {
                     int row = categoryTable.getSelectedRow();
                     int brandId = Integer.parseInt(categoryTable.getValueAt(row, 0).toString());
                     
-                    new CategoryController().delete(brandId);
-                   
-                    JOptionPane.showMessageDialog(null, "Merek dan semua produknya dihapus.");
-                    reloadCallback.accept(Cashier_Category.init(reloadCallback), Integer.valueOf(3));
+                    boolean isCategoryHasBrand = false;
+                    
+                    ArrayList<String> columns = new ArrayList<>();
+                    columns.add("category_id");
+                    ArrayList<HashMap<String, String>> brands = new BrandController().read(columns);
+                    for (HashMap<String, String> brand : brands) {
+                    	if (brandId == Integer.parseInt(brand.get("category_id"))) {
+                    		isCategoryHasBrand = true;
+                    	}
+                    }
+                    
+                    if (isCategoryHasBrand) {
+                    	JOptionPane.showMessageDialog(null, "Tidak bisa menghapus Kategori karena terikat Merek");
+                    } else {
+                    	new CategoryController().delete(brandId);
+                        
+                        JOptionPane.showMessageDialog(null, "Kategori dihapus");
+                        reloadCallback.accept(Cashier_Category.init(reloadCallback), Integer.valueOf(3));
+                    }
                 }
             }
         });

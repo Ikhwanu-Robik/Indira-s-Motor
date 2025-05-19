@@ -3,6 +3,8 @@ package pages.cashier;
 import components.Content_Panel;
 import controllers.BrandController;
 import controllers.CategoryController;
+import controllers.ProductController;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -152,16 +154,31 @@ public class Cashier_Brand {
         deleteBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                int response = JOptionPane.showConfirmDialog(null, "Semua Produk dari Merek ini akan ikut terhapus", "PERINGATAN!", JOptionPane.WARNING_MESSAGE);
+                int response = JOptionPane.showConfirmDialog(null, "Yakin ingin menghapus Kategori ini?", "PERINGATAN!", JOptionPane.WARNING_MESSAGE);
                 
                 if (response == JOptionPane.YES_OPTION) {
                     int row = brandTable.getSelectedRow();
                     int brandId = Integer.parseInt(brandTable.getValueAt(row, 0).toString());
-                    
-                    new BrandController().delete(brandId);
                    
-                    JOptionPane.showMessageDialog(null, "Merek dan semua produknya dihapus.");
-                    reloadCallback.accept(Cashier_Brand.init(reloadCallback), Integer.valueOf(2));
+					boolean isBrandHasProduct = false;
+                    
+                    ArrayList<String> columns = new ArrayList<>();
+                    columns.add("brand_id");
+                    ArrayList<HashMap<String, String>> products = new ProductController().read(columns);
+                    for (HashMap<String, String> product : products) {
+                    	if (brandId == Integer.parseInt(product.get("brand_id"))) {
+                    		isBrandHasProduct = true;
+                    	}
+                    }
+                    
+                    if (isBrandHasProduct) {
+                    	JOptionPane.showMessageDialog(null, "Tidak bisa menghapus Merek karena terikat Produk");
+                    } else {
+                    	 new BrandController().delete(brandId);
+                         
+                         JOptionPane.showMessageDialog(null, "Merek dihapus.");
+                         reloadCallback.accept(Cashier_Brand.init(reloadCallback), Integer.valueOf(2));
+                    }
                 }
             }
         });
