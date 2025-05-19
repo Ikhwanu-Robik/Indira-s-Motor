@@ -2,6 +2,7 @@ package pages;
 
 import components.Login_Panel;
 import components.Side_Panel;
+import controllers.AdminController;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -161,7 +162,20 @@ public class Login {
                     else if (loginSession.role.equals("admin")) {
                         //display admin dashboard
                         frame.dispose();
-                        AdminLayout.init(loginSession);
+                        if (passwordValue.trim().equals("12345678")) {
+                        	String newPassword = JOptionPane.showInputDialog(null, "Passwordmu lemah, buat yang baru", "INFO", JOptionPane.INFORMATION_MESSAGE);
+                        	
+                        	if (newPassword != null) {
+                        		HashMap<String, String> admin = new AdminController().findWhere("id", Integer.toString(loginSession.authenticated_user_id)).getFirst();
+                            	admin.put("password", newPassword);
+                            	new AdminController().update(loginSession.authenticated_user_id, admin);
+                            	AdminLayout.init(loginSession);
+                        	} else {
+                        		JOptionPane.showMessageDialog(null, "Silahkan login lagi dan ganti password", "DITOLAK", JOptionPane.INFORMATION_MESSAGE);
+                        	}
+                        } else {
+                        	AdminLayout.init(loginSession);
+                        }
                     }
                 }
             }

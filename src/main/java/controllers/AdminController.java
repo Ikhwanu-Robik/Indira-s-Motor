@@ -74,7 +74,18 @@ public class AdminController extends AbstractController {
 
     @Override
     public void update(int id, HashMap<String, String> values) {
-        //admin cannot be edited
+    	values.put("password", Integer.toString(values.get("password").hashCode()));
+
+        String updateStatement = "UPDATE " + this.table_name + " SET username = \"" + values.get("username") + "\", password = " + values.get("password") + " WHERE id = " + id;
+        try {
+            Database db = new Database();
+            Statement stmt = db.connect().createStatement();
+            stmt.execute(updateStatement);
+
+            db.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
