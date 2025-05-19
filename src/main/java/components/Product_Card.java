@@ -26,6 +26,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+
+import controllers.TransactionController;
 import pages.cashier.Cashier_Product_Info;
 
 public class Product_Card extends JPanel {
@@ -38,6 +40,8 @@ public class Product_Card extends JPanel {
     private String categoryName;
     private BiConsumer<Content_Panel, Integer> reloadCallback;
     private boolean isCallerCashier;
+	private TransactionController transactionSession;
+	private String productId;
 
     public Product_Card(BiConsumer<Content_Panel, Integer> reloadCallback, boolean isCallerCashier, String id, String name,
             int price, String image_url, String categoryName) {
@@ -47,6 +51,29 @@ public class Product_Card extends JPanel {
         this.productPrice = Integer.toString(price);
         this.imageUrl = image_url;
         this.categoryName = categoryName;
+
+        setLayout(new BorderLayout());
+        initialCard();
+
+        productNameLabel = createCardName(id, name);
+        productPriceLabel = createCardPrice(price);
+        JLabel productImage = createImage(image_url);
+
+        add(productNameLabel, BorderLayout.NORTH);
+        add(productImage, BorderLayout.CENTER);
+        add(productPriceLabel, BorderLayout.SOUTH);
+    }
+    
+    public Product_Card(BiConsumer<Content_Panel, Integer> reloadCallback, boolean isCallerCashier, String id, String name,
+            int price, String image_url, String categoryName, TransactionController transactionSession) {
+    	this.productId = id;
+        this.reloadCallback = reloadCallback;
+        this.isCallerCashier = isCallerCashier;
+        this.productName = name;
+        this.productPrice = Integer.toString(price);
+        this.imageUrl = image_url;
+        this.categoryName = categoryName;
+        this.transactionSession = transactionSession;
 
         setLayout(new BorderLayout());
         initialCard();
@@ -72,19 +99,24 @@ public class Product_Card extends JPanel {
         nameLabel.setForeground(Color.BLACK);
         nameLabel.setFont(new Font("Arial", Font.BOLD, 24));
 
-        JButton plusButton = new JButton("+");
-        plusButton.setFocusPainted(false);
-        plusButton.setPreferredSize(new Dimension(45, 30));
-        plusButton.setFont(new Font("Arial", Font.BOLD, 16));
-        plusButton.addActionListener(e -> {
-            // Tambahkan aksi jika tombol + ditekan
-            JOptionPane.showMessageDialog(null, "Menambahkan " + name);
-        });
-
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setOpaque(false); // Agar background mengikuti card
         topPanel.add(nameLabel, BorderLayout.CENTER);
-        topPanel.add(plusButton, BorderLayout.EAST);
+        
+        if (isCallerCashier) {
+        	JButton plusButton = new JButton("+");
+            plusButton.setFocusPainted(false);
+            plusButton.setPreferredSize(new Dimension(45, 30));
+            plusButton.setFont(new Font("Arial", Font.BOLD, 16));
+            plusButton.addActionListener(e -> {
+            	int productId = Integer.parseInt(this.productId);
+                transactionSession.addToCart(productId, 1);
+            	
+                JOptionPane.showMessageDialog(null, "Menambahkan " + name + " ke keranjang. Lihat di tab Transaksi");
+            });
+            
+            topPanel.add(plusButton, BorderLayout.EAST);
+        }
 
         return topPanel;
     }
@@ -113,7 +145,7 @@ public class Product_Card extends JPanel {
                 if (isCallerCashier) {
                     reloadCallback.accept(Cashier_Product_Info.init((BiConsumer<Content_Panel, Integer>) Product_Card.this.reloadCallback,
                             Product_Card.this.productName, Product_Card.this.productPrice, Product_Card.this.imageUrl,
-                            Product_Card.this.categoryName), Integer.valueOf(1));
+                            Product_Card.this.categoryName, transactionSession), Integer.valueOf(1));
                 } else {
                     JOptionPane.showMessageDialog(null, "Admin's Product Info page is not ready yet :(", "SORRY!",
                             JOptionPane.INFORMATION_MESSAGE);

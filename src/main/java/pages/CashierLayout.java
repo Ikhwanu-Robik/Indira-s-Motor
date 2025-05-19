@@ -136,7 +136,7 @@ public class CashierLayout {
         navProduct.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadContent(Cashier_Product.init(CashierLayout::reloadContent), Integer.valueOf(1));
+                reloadContent(Cashier_Product.init(CashierLayout::reloadContent, transactionSession), Integer.valueOf(1));
             }
         });
          navBrand.addMouseListener(new java.awt.event.MouseAdapter() {

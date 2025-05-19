@@ -5,6 +5,7 @@ import components.Content_Panel;
 import controllers.BrandController;
 import controllers.CategoryController;
 import controllers.ProductController;
+import controllers.TransactionController;
 import indira_s_motor.Indira_s_motor;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -62,10 +63,12 @@ public class Cashier_Product_Edit {
     private static HashMap<String, JTextField> inputFields = new HashMap<>();
     private static JComboBox<String> categoryComboBox;
     private static String productId;
+	private static TransactionController transactionSession;
 
-    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback, String productName) {
+    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback, String productName, TransactionController transactionSession) {
         Cashier_Product_Edit.reloadCallback = reloadCallback;
         Cashier_Product_Edit.productName = productName;
+        Cashier_Product_Edit.transactionSession = transactionSession;
         fetchDatabase();
 
         Content_Panel cashierProductEditPanel = createContentPanel();
@@ -235,7 +238,7 @@ public class Cashier_Product_Edit {
         cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadCallback.accept(Cashier_Product.init(reloadCallback), Integer.valueOf(1));
+                reloadCallback.accept(Cashier_Product.init(reloadCallback, transactionSession), Integer.valueOf(1));
             }
         });
 

@@ -5,6 +5,7 @@ import components.Content_Panel;
 import controllers.BrandController;
 import controllers.CategoryController;
 import controllers.ProductController;
+import controllers.TransactionController;
 import indira_s_motor.Indira_s_motor;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -45,9 +46,11 @@ public class Cashier_Product_Add {
     private static JFileChooser fileChooser = null;
     private static int fileChooserReturnValue = 0;
     private static BiConsumer<Content_Panel, Integer> reloadCallback;
+	private static TransactionController transactionSession;
 
-    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback) {
+    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback, TransactionController transactionSession) {
         Cashier_Product_Add.reloadCallback = reloadCallback;
+        Cashier_Product_Add.transactionSession = transactionSession;
         
         ArrayList<String> all_col = new ArrayList<>();
         all_col.add("*");
@@ -195,7 +198,7 @@ public class Cashier_Product_Add {
         cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadCallback.accept(Cashier_Product.init(reloadCallback), Integer.valueOf(1));
+                reloadCallback.accept(Cashier_Product.init(reloadCallback, transactionSession), Integer.valueOf(1));
             }
         });
 
