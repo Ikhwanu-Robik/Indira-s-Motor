@@ -45,6 +45,7 @@ public class Admin_Products {
         columns.add("price");
         columns.add("brand_id");
         columns.add("image_url");
+        columns.add("stock");
         Admin_Products.products = new ProductController().read(columns);
         ArrayList<String> all_col = new ArrayList<>();
         all_col.add("*");
@@ -119,7 +120,7 @@ public class Admin_Products {
                 }
             }
 
-            cardPanel.add(new Product_Card(reloadCallback, false, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
+            cardPanel.add(new Product_Card(reloadCallback, false, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory, product.get("stock")));
         }
     }
 
@@ -151,7 +152,7 @@ public class Admin_Products {
                 }
             }
 
-            cardPanel.add(new Product_Card(reloadCallback, false, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
+            cardPanel.add(new Product_Card(reloadCallback, false, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory, product.get("stock")));
         } else {
             cardPanel.add(new JLabel("Produk tidak ditemukan"));
         }
@@ -180,7 +181,7 @@ public class Admin_Products {
             }
 
             if (categoryName.equals(productCategory) && brandName.equals(productBrand.get("name"))) {
-                cardPanel.add(new Product_Card(reloadCallback, false, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory));
+                cardPanel.add(new Product_Card(reloadCallback, false, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory, product.get("stock")));
             }
         }
 

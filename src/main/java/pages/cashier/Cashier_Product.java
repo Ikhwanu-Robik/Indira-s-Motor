@@ -49,6 +49,7 @@ public class Cashier_Product {
         columns.add("price");
         columns.add("brand_id");
         columns.add("image_url");
+        columns.add("stock");
         Cashier_Product.products = new ProductController().read(columns);
         ArrayList<String> all_col = new ArrayList<>();
         all_col.add("*");
@@ -135,7 +136,7 @@ public class Cashier_Product {
                 }
             }
             
-            cardPanel.add(new Product_Card(reloadCallback, true, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory, transactionSession));
+            cardPanel.add(new Product_Card(reloadCallback, true, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory, transactionSession, product.get("stock")));
         }
 
         cardPanel.updateUI();
@@ -169,7 +170,7 @@ public class Cashier_Product {
                 }
             }
 
-            cardPanel.add(new Product_Card(reloadCallback, true, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory, transactionSession));
+            cardPanel.add(new Product_Card(reloadCallback, true, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory, transactionSession, product.get("stock")));
         } else {
             cardPanel.add(new JLabel("Produk tidak ditemukan"));
         }
@@ -198,7 +199,7 @@ public class Cashier_Product {
             }
 
             if (categoryName.equals(productCategory) && brandName.equals(productBrand.get("name"))) {
-                cardPanel.add(new Product_Card(reloadCallback, true, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory, transactionSession));
+                cardPanel.add(new Product_Card(reloadCallback, true, product.get("id"), product.get("name"), Integer.parseInt(product.get("price")), product.get("image_url"), productCategory, transactionSession, product.get("stock")));
             }
         }
 

@@ -29,6 +29,8 @@ import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import pages.admin.Admin_Product_Info;
 import pages.cashier.Cashier_Product_Info;
 
 public class Product_Card extends JPanel {
@@ -43,15 +45,17 @@ public class Product_Card extends JPanel {
     private boolean isCallerCashier;
     private TransactionController transactionSession;
     private String productId;
+	protected String stock;
 
     public Product_Card(BiConsumer<Content_Panel, Integer> reloadCallback, boolean isCallerCashier, String id, String name,
-            int price, String image_url, String categoryName) {
+            int price, String image_url, String categoryName, String stock) {
         this.reloadCallback = reloadCallback;
         this.isCallerCashier = isCallerCashier;
         this.productName = name;
         this.productPrice = Integer.toString(price);
         this.imageUrl = image_url;
         this.categoryName = categoryName;
+        this.stock = stock;
 
         setLayout(new BorderLayout());
         initialCard();
@@ -66,7 +70,7 @@ public class Product_Card extends JPanel {
     }
 
     public Product_Card(BiConsumer<Content_Panel, Integer> reloadCallback, boolean isCallerCashier, String id, String name,
-            int price, String image_url, String categoryName, TransactionController transactionSession) {
+            int price, String image_url, String categoryName, TransactionController transactionSession, String stock) {
         this.productId = id;
         this.reloadCallback = reloadCallback;
         this.isCallerCashier = isCallerCashier;
@@ -75,6 +79,7 @@ public class Product_Card extends JPanel {
         this.imageUrl = image_url;
         this.categoryName = categoryName;
         this.transactionSession = transactionSession;
+        this.stock = stock;
 
         setLayout(new BorderLayout());
         initialCard();
@@ -150,11 +155,9 @@ public class Product_Card extends JPanel {
                 if (isCallerCashier) {
                     reloadCallback.accept(Cashier_Product_Info.init((BiConsumer<Content_Panel, Integer>) Product_Card.this.reloadCallback,
                             Product_Card.this.productName, Product_Card.this.productPrice, Product_Card.this.imageUrl,
-                            Product_Card.this.categoryName, transactionSession), Integer.valueOf(1));
+                            Product_Card.this.categoryName, Product_Card.this.stock, transactionSession), Integer.valueOf(1));
                 } else {
-                    JOptionPane.showMessageDialog(null, "Admin's Product Info page is not ready yet :(", "SORRY!",
-                            JOptionPane.INFORMATION_MESSAGE);
-//                	TODO : make Admin_Product_Info
+                    reloadCallback.accept(Admin_Product_Info.init(reloadCallback, Product_Card.this.productName, Product_Card.this.productPrice, Product_Card.this.imageUrl, Product_Card.this.categoryName, Product_Card.this.stock), Integer.valueOf(2));
                 }
             }
         });

@@ -11,6 +11,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.function.BiConsumer;
@@ -24,6 +26,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import pages.admin.Admin_Products;
+import pages.cashier.Cashier_Product_Info;
 
 public class Admin_Product_Info {
 
@@ -32,13 +35,15 @@ public class Admin_Product_Info {
     private static String imageUrl;
     private static String categoryName;
     private static BiConsumer<Content_Panel, Integer> reloadCallback;
+	private static String stock;
 
-    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback, String productName, String productPrice, String imageUrl, String categoryName) {
+    public static Content_Panel init(BiConsumer<Content_Panel, Integer> reloadCallback, String productName, String productPrice, String imageUrl, String categoryName, String stock) {
         Admin_Product_Info.reloadCallback = reloadCallback;
         Admin_Product_Info.productName = productName;
         Admin_Product_Info.productPrice = productPrice;
         Admin_Product_Info.imageUrl = imageUrl;
         Admin_Product_Info.categoryName = categoryName;
+        Admin_Product_Info.stock = stock;
 
         Content_Panel cashierProductInfoPanel = createContentPanel();
         return cashierProductInfoPanel;
@@ -48,7 +53,7 @@ public class Admin_Product_Info {
         Content_Panel contentPanel = new Content_Panel();
         contentPanel.setLayout(new GridBagLayout());
 
-        JPanel image = createImagePanel("C:\\Users\\Arthur\\Downloads\\10854966.jpg");
+        JPanel image = createImagePanel(imageUrl);
 
         // Add label to content panel
         GridBagConstraints gbc = new GridBagConstraints();
@@ -68,7 +73,13 @@ public class Admin_Product_Info {
         imagePanel.setPreferredSize(new Dimension(850, 700));
 
         try {
-            InputStream input = Admin_Product_Info.class.getResourceAsStream("/assets/" + Admin_Product_Info.imageUrl);
+        	File dir = new File("C:/IndiraMotorKasir/assets");
+        	if (!dir.exists()) {
+        		dir.mkdirs();
+        	}
+        	
+        	File image = new File("C:/IndiraMotorKasir/assets/" + Admin_Product_Info.imageUrl);
+            InputStream input = new FileInputStream(image);
 
             BufferedImage originalImage = ImageIO.read(input);
             Image scaledImage = originalImage.getScaledInstance(800, 500, Image.SCALE_SMOOTH);
@@ -116,10 +127,14 @@ public class Admin_Product_Info {
 
         JLabel productCategory = new JLabel(Admin_Product_Info.categoryName);
         productCategory.setFont(new Font("Arial", Font.PLAIN, 16));
+        
+        JLabel productStock = new JLabel("Stok:" + Admin_Product_Info.stock);
+        productStock.setFont(new Font("Arial", Font.BOLD, 16));
 
         descriptionPanel.add(productName, gbc);
         descriptionPanel.add(productPrice, gbc);
         descriptionPanel.add(productCategory, gbc);
+        descriptionPanel.add(productStock, gbc);
 
         return descriptionPanel;
     }
