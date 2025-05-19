@@ -88,7 +88,7 @@ public class Product_Card extends JPanel {
     }
     
     private boolean checkIsStockAvailable() {
-    	if (qtyInCart + 1 > Integer.parseInt(stock)) {
+    	if (++qtyInCart > Integer.parseInt(stock)) {
     		return false;
     	}
     	return true;
