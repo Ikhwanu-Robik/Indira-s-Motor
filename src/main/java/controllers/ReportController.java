@@ -91,6 +91,12 @@ public class ReportController {
 			operator = ">";
 			break;
 		}
+		String monthString = "";
+		if (month < 10) {
+			monthString = "0" + Integer.toString(month);
+		} else {
+			monthString = Integer.toString(month);
+		}
 
 		String query = """
 				SELECT `orders`.`id`, `orders`.`cart_id`, `orders`.`fee`, `orders`.`total`, `orders`.`date`, `cashiers`.`username`, COUNT(`cart_product`.`id`) AS product_types FROM `orders`
@@ -98,8 +104,10 @@ public class ReportController {
 				JOIN `cashiers` ON `carts`.`cashier_id` = `cashiers`.id
 				JOIN `cart_product` ON `carts`.`id` = `cart_product`.`cart_id`
 				"""
-				+ "WHERE date " + operator + " \"" + year + "-" + month + "-" + date + "\" GROUP BY orders.cart_id";
+				+ "WHERE date " + operator + " \"" + year + "-" + monthString + "-" + date + "\" GROUP BY orders.cart_id";
 
+		System.out.println(query);
+		
 		try {
 			Statement stmt = db.connect().createStatement(ResultSet.TYPE_FORWARD_ONLY,
 					ResultSet.CONCUR_READ_ONLY);
