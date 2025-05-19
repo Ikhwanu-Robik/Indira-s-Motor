@@ -79,7 +79,7 @@ public class PrintController {
             }
 
             try {
-                rs.first();
+//                rs.first();
                 body += "<tr><td style=\"text-align: left;\">Banyak Produk : </td><td>" + rs.getInt("product_types") + "</td></tr>";
 
                 db.close();
@@ -96,8 +96,8 @@ public class PrintController {
             }
 
             body += "</table>";
-            body += "<table style=\"margin-top: 20px\"><tr><td style=\"text-align: right;\">Total : </td><td>" + data.getFirst().get("total") + "</td></tr>";
-            body += "<tr><td style=\"text-align: right;\">Jasa : </td><td>" + data.getFirst().get("fee") + "</td></tr></table>";
+            body += "<table style=\\\"margin-top: 20px\\\"><tr><td style=\"text-align: right;\">Jasa : </td><td>" + data.getFirst().get("fee") + "</td></tr>";
+            body += "<tr><td style=\"text-align: right;\">Total : </td><td>" + data.getFirst().get("total") + "</td></tr></table>";
 
             String footer = "</body></html>";
 
