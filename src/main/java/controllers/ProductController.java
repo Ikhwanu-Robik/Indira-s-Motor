@@ -180,7 +180,6 @@ public class ProductController extends AbstractController {
 	public ArrayList<HashMap<String, String>> getDetailedProducts() {
 		Database db = new Database();
 		ResultSet rs;
-		String stringColumns = "";
 		ArrayList<HashMap<String, String>> products = new ArrayList<>();
 		ArrayList<String> columns = new ArrayList<>();
 		columns.add("id");

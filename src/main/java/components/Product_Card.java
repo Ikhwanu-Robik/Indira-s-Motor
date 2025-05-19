@@ -6,15 +6,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -25,10 +19,8 @@ import javax.swing.SwingConstants;
 
 import controllers.TransactionController;
 import java.awt.Image;
-import java.io.FileNotFoundException;
-import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.awt.MediaTracker;
+import java.awt.Toolkit;
 
 import pages.admin.Admin_Product_Info;
 import pages.cashier.Cashier_Product_Info;
@@ -121,8 +113,6 @@ public class Product_Card extends JPanel {
         ImageIcon cartIcon = new ImageIcon(Product_Card.class.getClassLoader().getResource("assets/cart_icon.png"));
 
         if (isCallerCashier) {
-            File image = null;
-
             JButton plusButton = new JButton(cartIcon);
             plusButton.setFocusPainted(false);
             plusButton.setPreferredSize(new Dimension(45, 30));
@@ -153,16 +143,16 @@ public class Product_Card extends JPanel {
             dir.mkdirs();
         }
 
-        JLabel logo = null;
-        try {
-            File image = new File("C:/IndiraMotorKasir/assets/" + image_url);
-            InputStream input = new FileInputStream(image);
-
-            BufferedImage originalImage = ImageIO.read(input);
-            logo = new JLabel(new ImageIcon(originalImage));
-        } catch (IOException e) {
-            logo = new JLabel("Image not found");
+        JLabel logo = new JLabel();
+        Image image = Toolkit.getDefaultToolkit().getImage("C:/IndiraMotorKasir/assets/" + image_url);
+        ImageIcon icon = new ImageIcon(image);
+        if (icon.getImageLoadStatus() == MediaTracker.COMPLETE) {
+        	logo.setIcon(icon);
+        } else {
+        	logo.setText("Image not found");
         }
+        logo.setHorizontalAlignment(SwingConstants.CENTER);
+        logo.setVerticalAlignment(SwingConstants.CENTER);
         logo.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 
         logo.addMouseListener(new MouseAdapter() {

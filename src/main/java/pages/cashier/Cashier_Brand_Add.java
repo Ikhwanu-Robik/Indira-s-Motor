@@ -14,7 +14,6 @@ import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;

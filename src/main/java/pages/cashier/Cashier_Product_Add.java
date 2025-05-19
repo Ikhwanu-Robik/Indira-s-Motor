@@ -22,7 +22,6 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
@@ -42,8 +41,8 @@ public class Cashier_Product_Add {
 	private static ArrayList<HashMap<String, String>> brands = null;
 	private static ArrayList<HashMap<String, String>> categories = null;
 	private static HashMap<String, JTextField> inputFields = new HashMap<>();
-	private static JComboBox brandComboBox = null;
-	private static JComboBox categoryComboBox = null;
+	private static JComboBox<String> brandComboBox = null;
+	private static JComboBox<String> categoryComboBox = null;
 	private static JFileChooser fileChooser = null;
 	private static int fileChooserReturnValue = 0;
 	private static BiConsumer<Content_Panel, Integer> reloadCallback;

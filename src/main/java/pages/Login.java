@@ -2,8 +2,6 @@ package pages;
 
 import components.Login_Panel;
 import components.Side_Panel;
-import controllers.AdminController;
-import database.Database;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -11,11 +9,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;

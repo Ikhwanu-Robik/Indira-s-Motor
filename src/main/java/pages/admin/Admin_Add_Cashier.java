@@ -19,7 +19,6 @@ import components.Content_Panel;
 import controllers.CashierController;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class Admin_Add_Cashier {
 

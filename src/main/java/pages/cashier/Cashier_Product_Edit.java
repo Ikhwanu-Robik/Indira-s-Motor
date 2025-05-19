@@ -12,13 +12,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -29,23 +26,17 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class Cashier_Product_Edit {
@@ -61,7 +52,7 @@ public class Cashier_Product_Edit {
     private static JFileChooser fileChooser;
     private static int fileChooserReturnValue = -1;
     private static String imageUrl;
-    private static JComboBox brandComboBox;
+    private static JComboBox<String> brandComboBox;
     private static HashMap<String, JTextField> inputFields = new HashMap<>();
     private static JComboBox<String> categoryComboBox;
     private static String productId;
@@ -291,7 +282,6 @@ public class Cashier_Product_Edit {
                     category_id = category.get("id");
                 }
             }
-            String image_url = Cashier_Product_Edit.imageUrl;
 
             boolean isBrandMatchCategory = brand_category_id.trim().equals(category_id.trim());
             if (!isBrandMatchCategory) {

@@ -2,16 +2,10 @@ package pages.cashier;
 
 import components.AddInput;
 import components.Content_Panel;
-import components.Nav_Panel;
-import components.ui.LogoutButton;
-import components.ui.MainFrame;
-import components.ui.NavLabel;
-import controllers.BrandController;
 import controllers.CategoryController;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -19,8 +13,6 @@ import java.awt.GridBagLayout;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -32,7 +24,6 @@ import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import javax.swing.JButton;
 

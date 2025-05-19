@@ -1,30 +1,17 @@
 package indira_s_motor;
 
-import controllers.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
-
-//imports for uploading file
-import javax.swing.JFileChooser;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 public class API_Documentation {
 
-    public static void listProducts() {
-        ArrayList<String> columns = new ArrayList<>();
-        columns.add("*");
-        ArrayList<HashMap<String, String>> products = new ProductController().read(columns);
-
-        System.out.println("LIST OF PRODUCTS");
-        for (HashMap<String, String> product : products) {
-            System.out.println(product.get("id") + " " + product.get("name") + " " + product.get("price") + " " + product.get("stock"));
-        }
-    }
+//    public static void listProducts() {
+//        ArrayList<String> columns = new ArrayList<>();
+//        columns.add("*");
+//        ArrayList<HashMap<String, String>> products = new ProductController().read(columns);
+//
+//        System.out.println("LIST OF PRODUCTS");
+//        for (HashMap<String, String> product : products) {
+//            System.out.println(product.get("id") + " " + product.get("name") + " " + product.get("price") + " " + product.get("stock"));
+//        }
+//    }
 
     /**
      * @param args the command line arguments

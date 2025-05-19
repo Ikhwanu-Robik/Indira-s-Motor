@@ -1,7 +1,6 @@
 package pages.cashier;
 
 import components.Content_Panel;
-import controllers.BrandController;
 import controllers.CategoryController;
 
 import java.awt.BorderLayout;
@@ -14,7 +13,6 @@ import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -93,8 +91,6 @@ public class Cashier_Category {
             int i = 0;
             data = new Object[brandsCount][3];
             for (HashMap<String, String> category : categories) {
-                String brandCategory = "??";
-                
                 data[i][0] = category.get("id");
                 data[i][1] = category.get("name");
                 
@@ -161,7 +157,6 @@ public class Cashier_Category {
             }
         });
 
-        Cashier_Category_Add categoryAddPage = new Cashier_Category_Add();
         JButton editBtn = new JButton("Tambah Kategori+");
         editBtn.setFont(new Font("Arial", Font.PLAIN, 16));
         editBtn.setForeground(Color.WHITE);
