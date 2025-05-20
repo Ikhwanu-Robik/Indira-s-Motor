@@ -31,155 +31,156 @@ import javax.swing.table.JTableHeader;
 
 public class Admin_Report_Detail {
 	private static String cartId;
-    private static ArrayList<HashMap<String, String>> products = null;
-    private static BiConsumer<Content_Panel, Integer> reloadCallback;
+	private static ArrayList<HashMap<String, String>> products = null;
+	private static BiConsumer<Content_Panel, Integer> reloadCallback;
 	private static String date;
 	private static String cashierName;
 	private static HashMap<String, String> order;
 
-    public static Content_Panel init(String cartId, String date, String cashierName, BiConsumer<Content_Panel, Integer> reloadCallback) {
-    	Admin_Report_Detail.cartId = cartId;
-    	Admin_Report_Detail.date = date;
-    	Admin_Report_Detail.cashierName = cashierName;
-    	Admin_Report_Detail.order = new OrderController().findWhere("cart_id", cartId).getLast();
-        products = new CartController()
-                .getCartProducts(Integer.parseInt(cartId));
-    	
-        Admin_Report_Detail.reloadCallback = reloadCallback;
+	public static Content_Panel init(String cartId, String date, String cashierName,
+			BiConsumer<Content_Panel, Integer> reloadCallback) {
+		Admin_Report_Detail.cartId = cartId;
+		Admin_Report_Detail.date = date;
+		Admin_Report_Detail.cashierName = cashierName;
+		Admin_Report_Detail.order = new OrderController().findWhere("cart_id", cartId).getLast();
+		products = new CartController().getCartProducts(Integer.parseInt(cartId));
 
-        Content_Panel contentPanel = createContentPanel();
+		Admin_Report_Detail.reloadCallback = reloadCallback;
 
-        return contentPanel;
-    }
+		Content_Panel contentPanel = createContentPanel();
 
-    private static Content_Panel createContentPanel() {
-        Content_Panel contentPanel = new Content_Panel();
-        contentPanel.setLayout(new GridBagLayout());
+		return contentPanel;
+	}
 
-        JLabel titleLabel = createTitleLabel("Laporan Penjualan", new Color(0x00000));
-        JLabel reportCashier = createTitleLabel("Kasir : " + cashierName, new Color(0x00000));
-        JLabel reportDate = createTitleLabel("Tanggal : " + date, new Color(0x00000));
-        JScrollPane tableDetails = createTableDetails();
-        JLabel totalLabel = createTitleLabel("Total : " + new CartController().getTotal(Integer.parseInt(cartId)), new Color(0x00000));
-        JLabel feeLabel = createTitleLabel("Jasa : " + order.get("fee"), new Color(0x00000));
-        JPanel btnPanel = createButtonPanel();
+	private static Content_Panel createContentPanel() {
+		Content_Panel contentPanel = new Content_Panel();
+		contentPanel.setLayout(new GridBagLayout());
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.CENTER;
+		JLabel titleLabel = createTitleLabel("Laporan Penjualan", new Color(0x00000));
+		JLabel reportCashier = createTitleLabel("Kasir : " + cashierName, new Color(0x00000));
+		JLabel reportDate = createTitleLabel("Tanggal : " + date, new Color(0x00000));
+		JScrollPane tableDetails = createTableDetails();
+		JLabel totalLabel = createTitleLabel("Total : " + new CartController().getTotal(Integer.parseInt(cartId)),
+				new Color(0x00000));
+		JLabel feeLabel = createTitleLabel("Jasa : " + order.get("fee"), new Color(0x00000));
+		JPanel btnPanel = createButtonPanel();
 
-        contentPanel.add(titleLabel, gbc);
-        contentPanel.add(reportCashier, gbc);
-        contentPanel.add(reportDate, gbc);
-        contentPanel.add(tableDetails, gbc);
-        contentPanel.add(totalLabel, gbc);
-        contentPanel.add(feeLabel, gbc);
-        contentPanel.add(btnPanel, gbc);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.CENTER;
 
-        return contentPanel;
-    }
+		contentPanel.add(titleLabel, gbc);
+		contentPanel.add(reportCashier, gbc);
+		contentPanel.add(reportDate, gbc);
+		contentPanel.add(tableDetails, gbc);
+		contentPanel.add(totalLabel, gbc);
+		contentPanel.add(feeLabel, gbc);
+		contentPanel.add(btnPanel, gbc);
 
-    private static JLabel createTitleLabel(String text, Color color) {
-        JLabel label = new JLabel(text);
-        label.setForeground(color);
-        label.setFont(new Font("Arial", Font.BOLD, 30));
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-        return label;
-    }
+		return contentPanel;
+	}
 
-    private static JScrollPane createTableDetails() {
-        // Nama kolom
-        String[] columnNames = {"Produk", "Jumlah", "Harga", "Total"};
+	private static JLabel createTitleLabel(String text, Color color) {
+		JLabel label = new JLabel(text);
+		label.setForeground(color);
+		label.setFont(new Font("Arial", Font.BOLD, 30));
+		label.setHorizontalAlignment(SwingConstants.CENTER);
+		return label;
+	}
 
-        // Data kosong untuk inisialisasi awal
-        Object[][] data = {};
-        if (products != null) {
-        	data = new Object[products.size()][4];
-        	int i = 0;
-            for (HashMap<String, String> product : products) {
-            	data[i][0] = product.get("name");
-            	data[i][1] = product.get("qty");
-            	data[i][2] = product.get("price");
-            	data[i][3] = Integer.parseInt(product.get("qty")) * Integer.parseInt(product.get("price"));
-            }
-        }
-         
-        // Buat model tabel
-        DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
+	private static JScrollPane createTableDetails() {
+		// Nama kolom
+		String[] columnNames = { "Produk", "Jumlah", "Harga", "Total" };
 
-        // Buat tabel
-        JTable table = new JTable(tableModel);
+		// Data kosong untuk inisialisasi awal
+		Object[][] data = {};
+		if (products != null) {
+			data = new Object[products.size()][4];
+			int i = 0;
+			for (HashMap<String, String> product : products) {
+				data[i][0] = product.get("name");
+				data[i][1] = product.get("qty");
+				data[i][2] = product.get("price");
+				data[i][3] = Integer.parseInt(product.get("qty")) * Integer.parseInt(product.get("price"));
+				i++;
+			}
+		}
 
-        // Styling tabel
-        table.setBackground(new Color(45, 45, 45));
-        table.setForeground(Color.WHITE);
-        table.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        table.setRowHeight(28);
-        table.setGridColor(Color.DARK_GRAY);
+		// Buat model tabel
+		DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
 
-        // Styling header tabel
-        JTableHeader header = table.getTableHeader();
-        header.setBackground(new Color(30, 30, 30));
-        header.setForeground(Color.WHITE);
-        header.setFont(new Font("SansSerif", Font.BOLD, 15));
-        header.setReorderingAllowed(false);
+		// Buat tabel
+		JTable table = new JTable(tableModel);
 
-        // Set preferred width kolom
-        table.getColumnModel().getColumn(0).setPreferredWidth(120);
-        table.getColumnModel().getColumn(1).setPreferredWidth(150);
-        table.getColumnModel().getColumn(2).setPreferredWidth(150);
-        table.getColumnModel().getColumn(3).setPreferredWidth(150);
+		// Styling tabel
+		table.setBackground(new Color(45, 45, 45));
+		table.setForeground(Color.WHITE);
+		table.setFont(new Font("SansSerif", Font.PLAIN, 14));
+		table.setRowHeight(28);
+		table.setGridColor(Color.DARK_GRAY);
 
-        // ScrollPane untuk tabel
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.getViewport().setBackground(new Color(45, 45, 45));
+		// Styling header tabel
+		JTableHeader header = table.getTableHeader();
+		header.setBackground(new Color(30, 30, 30));
+		header.setForeground(Color.WHITE);
+		header.setFont(new Font("SansSerif", Font.BOLD, 15));
+		header.setReorderingAllowed(false);
 
-        return scrollPane;
-    }
+		// Set preferred width kolom
+		table.getColumnModel().getColumn(0).setPreferredWidth(120);
+		table.getColumnModel().getColumn(1).setPreferredWidth(150);
+		table.getColumnModel().getColumn(2).setPreferredWidth(150);
+		table.getColumnModel().getColumn(3).setPreferredWidth(150);
 
-    public static JPanel createButtonPanel() {
-        JPanel btnPanel = new JPanel();
-        btnPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+		// ScrollPane untuk tabel
+		JScrollPane scrollPane = new JScrollPane(table);
+		scrollPane.getViewport().setBackground(new Color(45, 45, 45));
 
-        JButton backBtn = new JButton("Kembali");
-        backBtn.setFont(new Font("Arial", Font.PLAIN, 16));
-        backBtn.setForeground(Color.BLACK);
-        backBtn.setBackground(new Color(0xE0E0E0));
+		return scrollPane;
+	}
 
-        backBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                reloadCallback.accept(Admin_Report.init(reloadCallback), Integer.valueOf(3));
-            }
-        });
-        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        leftPanel.setOpaque(false);
-        leftPanel.add(backBtn);
+	public static JPanel createButtonPanel() {
+		JPanel btnPanel = new JPanel();
+		btnPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
-        JButton printBtn = new Button_Brown("Cetak Struk");
-        printBtn.addActionListener((e) -> {
-        	ArrayList<HashMap<String, String>> data = new ArrayList<>();
-        	HashMap<String, String> type = new HashMap<>();
-        	type.put("type", "receipt");
-        	data.add(type);
-        	data.add(order);
-        	
-        	try {
+		JButton backBtn = new JButton("Kembali");
+		backBtn.setFont(new Font("Arial", Font.PLAIN, 16));
+		backBtn.setForeground(Color.BLACK);
+		backBtn.setBackground(new Color(0xE0E0E0));
+
+		backBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent evt) {
+				reloadCallback.accept(Admin_Report.init(reloadCallback), Integer.valueOf(3));
+			}
+		});
+		JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+		leftPanel.setOpaque(false);
+		leftPanel.add(backBtn);
+
+		JButton printBtn = new Button_Brown("Cetak Struk");
+		printBtn.addActionListener((e) -> {
+			ArrayList<HashMap<String, String>> data = new ArrayList<>();
+			HashMap<String, String> type = new HashMap<>();
+			type.put("type", "receipt");
+			data.add(type);
+			data.add(order);
+
+			try {
 				new PrintController().print(data);
 			} catch (IOException e1) {
 				JOptionPane.showMessageDialog(null, "Something is wrong " + e1, "ERROR", JOptionPane.ERROR_MESSAGE);
 			}
-        });
+		});
 
-        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-        rightPanel.setOpaque(false);
-        rightPanel.add(printBtn);
+		JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+		rightPanel.setOpaque(false);
+		rightPanel.add(printBtn);
 
-        btnPanel.add(leftPanel, BorderLayout.WEST);
-        btnPanel.add(rightPanel, BorderLayout.EAST);
+		btnPanel.add(leftPanel, BorderLayout.WEST);
+		btnPanel.add(rightPanel, BorderLayout.EAST);
 
-        return btnPanel;
-    }
+		return btnPanel;
+	}
 }
-    
