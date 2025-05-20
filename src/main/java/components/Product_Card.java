@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.function.BiConsumer;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -21,6 +22,8 @@ import controllers.TransactionController;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 import pages.admin.Admin_Product_Info;
 import pages.cashier.Cashier_Product_Info;
@@ -37,8 +40,8 @@ public class Product_Card extends JPanel {
     private boolean isCallerCashier;
     private TransactionController transactionSession;
     private String productId;
-	protected String stock;
-	private int qtyInCart;
+    protected String stock;
+    private int qtyInCart;
 
     public Product_Card(BiConsumer<Content_Panel, Integer> reloadCallback, boolean isCallerCashier, String id, String name,
             int price, String image_url, String categoryName, String stock) {
@@ -55,7 +58,7 @@ public class Product_Card extends JPanel {
 
         productNameLabel = createCardName(id, name);
         productPriceLabel = createCardPrice(price);
-        JLabel productImage = createImage(image_url);
+        JButton productImage = createImage(image_url);
 
         add(productNameLabel, BorderLayout.NORTH);
         add(productImage, BorderLayout.CENTER);
@@ -63,7 +66,7 @@ public class Product_Card extends JPanel {
     }
 
     public Product_Card(BiConsumer<Content_Panel, Integer> reloadCallback, boolean isCallerCashier, String id, String name,
-            int price, String image_url, String categoryName, TransactionController transactionSession, String stock, int  qtyInCart) {
+            int price, String image_url, String categoryName, TransactionController transactionSession, String stock, int qtyInCart) {
         this.productId = id;
         this.reloadCallback = reloadCallback;
         this.isCallerCashier = isCallerCashier;
@@ -80,18 +83,18 @@ public class Product_Card extends JPanel {
 
         productNameLabel = createCardName(id, name);
         productPriceLabel = createCardPrice(price);
-        JLabel productImage = createImage(image_url);
+        JButton productImage = createImage(image_url);
 
         add(productNameLabel, BorderLayout.NORTH);
         add(productImage, BorderLayout.CENTER);
         add(productPriceLabel, BorderLayout.SOUTH);
     }
-    
+
     private boolean checkIsStockAvailable() {
-    	if (++qtyInCart > Integer.parseInt(stock)) {
-    		return false;
-    	}
-    	return true;
+        if (++qtyInCart > Integer.parseInt(stock)) {
+            return false;
+        }
+        return true;
     }
 
     private void initialCard() {
@@ -119,15 +122,15 @@ public class Product_Card extends JPanel {
             plusButton.setFont(new Font("Arial", Font.BOLD, 16));
             plusButton.addActionListener(e -> {
                 int productId = Integer.parseInt(this.productId);
-                
+
                 boolean isStockAvailable = checkIsStockAvailable();
-                
+
                 if (isStockAvailable) {
-                	transactionSession.addToCart(productId, 1);
+                    transactionSession.addToCart(productId, 1);
 
                     JOptionPane.showMessageDialog(null, "Menambahkan " + name + " ke keranjang. Lihat di tab Transaksi");
                 } else {
-                	JOptionPane.showMessageDialog(null, "Stok produk tidak tersedia untuk dimasukkan ke keranjang", "STOCK NOT ENOUGH", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Stok produk tidak tersedia untuk dimasukkan ke keranjang", "STOCK NOT ENOUGH", JOptionPane.ERROR_MESSAGE);
                 }
             });
 
@@ -137,38 +140,78 @@ public class Product_Card extends JPanel {
         return topPanel;
     }
 
-    private JLabel createImage(String image_url) {
+    private JButton createImage(String image_url) {
         File dir = new File("C:/IndiraMotorKasir/assets");
         if (!dir.exists()) {
             dir.mkdirs();
         }
 
-        JLabel logo = new JLabel();
-        Image image = Toolkit.getDefaultToolkit().getImage("C:/IndiraMotorKasir/assets/" + image_url);
-        ImageIcon icon = new ImageIcon(image);
-        if (icon.getImageLoadStatus() == MediaTracker.COMPLETE) {
-        	logo.setIcon(icon);
-        } else {
-        	logo.setText("Image not found");
-        }
-        logo.setHorizontalAlignment(SwingConstants.CENTER);
-        logo.setVerticalAlignment(SwingConstants.CENTER);
-        logo.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+        JButton imageButton = new JButton();
+        imageButton.setContentAreaFilled(false);
+        imageButton.setBorderPainted(false);
+        imageButton.setFocusPainted(false);
 
-        logo.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (isCallerCashier) {
-                    reloadCallback.accept(Cashier_Product_Info.init((BiConsumer<Content_Panel, Integer>) Product_Card.this.reloadCallback,
-                            Product_Card.this.productName, Product_Card.this.productPrice, Product_Card.this.imageUrl,
-                            Product_Card.this.categoryName, Product_Card.this.stock, transactionSession), Integer.valueOf(1));
-                } else {
-                    reloadCallback.accept(Admin_Product_Info.init(reloadCallback, Product_Card.this.productName, Product_Card.this.productPrice, Product_Card.this.imageUrl, Product_Card.this.categoryName, Product_Card.this.stock), Integer.valueOf(2));
-                }
+        try {
+            File imageFile = new File(dir, image_url);
+            BufferedImage originalImage = ImageIO.read(imageFile);
+
+            if (originalImage != null) {
+                int originalWidth = originalImage.getWidth();
+                int originalHeight = originalImage.getHeight();
+
+                int maxWidth = 180;
+                int maxHeight = 180;
+
+                double widthRatio = (double) maxWidth / originalWidth;
+                double heightRatio = (double) maxHeight / originalHeight;
+                double scaleFactor = Math.min(widthRatio, heightRatio);
+
+                int scaledWidth = (int) (originalWidth * scaleFactor);
+                int scaledHeight = (int) (originalHeight * scaleFactor);
+
+                Image scaledImage = originalImage.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
+                imageButton.setIcon(new ImageIcon(scaledImage));
+            } else {
+                imageButton.setText("Image not found");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            imageButton.setText("Error loading image");
+        }
+
+        imageButton.setHorizontalAlignment(SwingConstants.CENTER);
+        imageButton.setVerticalAlignment(SwingConstants.CENTER);
+        imageButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
+        imageButton.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+        imageButton.addActionListener(e -> {
+            if (isCallerCashier) {
+                reloadCallback.accept(
+                        Cashier_Product_Info.init(
+                                (BiConsumer<Content_Panel, Integer>) Product_Card.this.reloadCallback,
+                                Product_Card.this.productName,
+                                Product_Card.this.productPrice,
+                                Product_Card.this.imageUrl,
+                                Product_Card.this.categoryName,
+                                Product_Card.this.stock,
+                                transactionSession
+                        ), 1
+                );
+            } else {
+                reloadCallback.accept(
+                        Admin_Product_Info.init(
+                                reloadCallback,
+                                Product_Card.this.productName,
+                                Product_Card.this.productPrice,
+                                Product_Card.this.imageUrl,
+                                Product_Card.this.categoryName,
+                                Product_Card.this.stock
+                        ), 2
+                );
             }
         });
 
-        return logo;
+        return imageButton;
     }
 
     private JLabel createCardPrice(int price) {
