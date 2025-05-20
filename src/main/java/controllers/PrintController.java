@@ -22,7 +22,9 @@ import com.itextpdf.html2pdf.HtmlConverter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  *
@@ -39,9 +41,19 @@ public class PrintController {
             data.remove(0);
 
             //create HTML
-            File htmlDir = new File(".", "html_templates");
-            File html = new File(htmlDir, "receipt.html");
-            html.delete();
+            File dir = new File("C:/IndiraMotorKasir/html_templates");
+            if (!dir.exists()) {
+            	dir.mkdirs();
+            }
+            File[] files = dir.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        file.delete(); // delete file
+                    }
+                }
+            }
+            File html = new File("C:/IndiraMotorKasir/html_templates/receipt.html");
             html.createNewFile();
 
             //erasing leftover data from HTML, idk I cannot recreate the problem
@@ -122,7 +134,11 @@ public class PrintController {
             }
 
             //write the pdf
-            String datetime = LocalDateTime.now().toString();
+            String date = LocalDate.now().toString();
+            String time = LocalTime.now().toString();
+            time = time.replaceAll(":", "-");
+            System.out.println(time);
+            String datetime = date + time;
             File pdf = new File(saveDir, "receipt" + datetime + ".pdf");
             //itextpdf require slf4j
             HtmlConverter.convertToPdf(html, pdf);
@@ -131,9 +147,11 @@ public class PrintController {
             data.remove(0);
             
             //create HTML
-            File htmlDir = new File(".", "html_templates");
-            
-            File html = new File(htmlDir, "report.html");
+            File dir = new File("C:/IndiraMotorKasir/html_templates");
+            if (!dir.exists()) {
+            	dir.mkdirs();
+            }
+            File html = new File("C:/IndiraMotorKasir/html_templates/report.html");
             html.delete();
             html.createNewFile();
 
@@ -200,7 +218,11 @@ public class PrintController {
             }
 
             //write the pdf
-            String datetime = LocalDateTime.now().toString();
+            String date = LocalDate.now().toString();
+            String time = LocalTime.now().toString();
+            time = time.replaceAll(":", "-");
+            System.out.println(time);
+            String datetime = date + time;
             File pdf = new File(saveDir, "report" + datetime + ".pdf");
             //itextpdf require slf4j
             HtmlConverter.convertToPdf(html, pdf);
