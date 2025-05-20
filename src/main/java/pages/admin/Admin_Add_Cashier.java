@@ -10,6 +10,7 @@ import java.awt.Insets;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
@@ -141,16 +142,20 @@ public class Admin_Add_Cashier {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 HashMap<String, String> cashier_data = new HashMap<>();
 
-                String password = "";
-                for (char letter: passwordInput.getPassword()) {
-                    password += letter;
+                if (passwordInput.getPassword().length == 0 || usernameInput.getText().equals("") || usernameInput.getText() == null) {
+                	JOptionPane.showMessageDialog(null, "Input harus diisi!");
+                } else {
+                	String password = "";
+                    for (char letter: passwordInput.getPassword()) {
+                        password += letter;
+                    }
+                    
+                    cashier_data.put("username", usernameInput.getText());
+                    cashier_data.put("password", password);
+                    
+                    new CashierController().create(cashier_data);
+                    reloadCallback.accept(Admin_Cashier.init(reloadCallback), Integer.valueOf(1));
                 }
-                
-                cashier_data.put("username", usernameInput.getText());
-                cashier_data.put("password", password);
-                
-                new CashierController().create(cashier_data);
-                reloadCallback.accept(Admin_Cashier.init(reloadCallback), Integer.valueOf(1));
             }
         });
         cancelButton.addMouseListener(new java.awt.event.MouseAdapter() {

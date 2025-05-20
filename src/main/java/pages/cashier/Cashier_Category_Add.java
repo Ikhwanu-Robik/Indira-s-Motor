@@ -126,13 +126,17 @@ public class Cashier_Category_Add {
         addBtn.addActionListener((e) -> {
         	String name = Cashier_Category_Add.categoryNameField.getText();
             
-            HashMap<String, String> values = new HashMap<>();
-            values.put("name", name);
-            
-            new CategoryController().create(values);
-            
-            JOptionPane.showMessageDialog(null, "Berhasil menambahkan Kategori");
-            categoryNameField.setText("");
+        	if (name.equals("") || name == null) {
+        		JOptionPane.showMessageDialog(null, "Namanya kosong");
+        	} else {
+        		HashMap<String, String> values = new HashMap<>();
+                values.put("name", name);
+                
+                new CategoryController().create(values);
+                
+                JOptionPane.showMessageDialog(null, "Berhasil menambahkan Kategori");
+                categoryNameField.setText("");
+        	}
         });
 
         // Panel kanan untuk tombol "Tambahkan"
