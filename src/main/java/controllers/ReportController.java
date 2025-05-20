@@ -106,10 +106,9 @@ public class ReportController {
 				JOIN `carts` ON `orders`.`cart_id` = `carts`.`id`
 				JOIN `cashiers` ON `carts`.`cashier_id` = `cashiers`.id
 				JOIN `cart_product` ON `carts`.`id` = `cart_product`.`cart_id`
+				JOIN products ON cart_product.product_id = products.id
 				"""
 				+ "WHERE date " + operator + " \"" + year + "-" + monthString + "-" + date + "\" GROUP BY orders.cart_id";
-
-		System.out.println(query);
 		
 		try {
 			Statement stmt = db.connect().createStatement(ResultSet.TYPE_FORWARD_ONLY,
