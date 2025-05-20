@@ -22,6 +22,7 @@ import com.itextpdf.html2pdf.HtmlConverter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -121,7 +122,8 @@ public class PrintController {
             }
 
             //write the pdf
-            File pdf = new File(saveDir, "receipt.pdf");
+            String datetime = LocalDateTime.now().toString();
+            File pdf = new File(saveDir, "receipt" + datetime + ".pdf");
             //itextpdf require slf4j
             HtmlConverter.convertToPdf(html, pdf);
         } else if (data.get(0).get("type").equals("report")) {
@@ -198,7 +200,8 @@ public class PrintController {
             }
 
             //write the pdf
-            File pdf = new File(saveDir, "report.pdf");
+            String datetime = LocalDateTime.now().toString();
+            File pdf = new File(saveDir, "report" + datetime + ".pdf");
             //itextpdf require slf4j
             HtmlConverter.convertToPdf(html, pdf);
         }
