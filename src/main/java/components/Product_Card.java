@@ -159,8 +159,8 @@ public class Product_Card extends JPanel {
                 int originalWidth = originalImage.getWidth();
                 int originalHeight = originalImage.getHeight();
 
-                int maxWidth = 180;
-                int maxHeight = 180;
+                int maxWidth = 220;
+                int maxHeight = 220;
 
                 double widthRatio = (double) maxWidth / originalWidth;
                 double heightRatio = (double) maxHeight / originalHeight;
