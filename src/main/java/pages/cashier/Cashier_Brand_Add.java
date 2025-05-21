@@ -184,14 +184,18 @@ public class Cashier_Brand_Add {
                 String name = Cashier_Brand_Add.brandNameField.getText();
                 String categoryId = getCategoryId(Cashier_Brand_Add.categoryCombo.getSelectedItem().toString());
                 
-                HashMap<String, String> values = new HashMap<>();
-                values.put("name", name);
-                values.put("category_id", categoryId);
-                
-                new BrandController().create(values);
-                
-                JOptionPane.showMessageDialog(null, "Berhasil menambahkan Merek");
-                brandNameField.setText("");
+                if (name.equals("") || name == null) {
+                	JOptionPane.showMessageDialog(null, "Namanya kosong");
+                } else {
+                	HashMap<String, String> values = new HashMap<>();
+                    values.put("name", name);
+                    values.put("category_id", categoryId);
+                    
+                    new BrandController().create(values);
+                    
+                    JOptionPane.showMessageDialog(null, "Berhasil menambahkan Merek");
+                    brandNameField.setText("");
+                }
             }
         });
 

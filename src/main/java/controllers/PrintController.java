@@ -22,6 +22,9 @@ import com.itextpdf.html2pdf.HtmlConverter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  *
@@ -38,8 +41,11 @@ public class PrintController {
             data.remove(0);
 
             //create HTML
-            File htmlDir = new File(".", "html_templates");
-            File html = new File(htmlDir, "receipt.html");
+            File dir = new File("C:/IndiraMotorKasir/html_templates");
+            if (!dir.exists()) {
+            	dir.mkdirs();
+            }
+            File html = new File("C:/IndiraMotorKasir/html_templates/receipt.html");
             html.delete();
             html.createNewFile();
 
@@ -121,7 +127,12 @@ public class PrintController {
             }
 
             //write the pdf
-            File pdf = new File(saveDir, "receipt.pdf");
+            String date = LocalDate.now().toString();
+            String time = LocalTime.now().toString();
+            time = time.replaceAll(":", "-");
+            System.out.println(time);
+            String datetime = date + time;
+            File pdf = new File(saveDir, "receipt" + datetime + ".pdf");
             //itextpdf require slf4j
             HtmlConverter.convertToPdf(html, pdf);
         } else if (data.get(0).get("type").equals("report")) {
@@ -129,9 +140,11 @@ public class PrintController {
             data.remove(0);
             
             //create HTML
-            File htmlDir = new File(".", "html_templates");
-            
-            File html = new File(htmlDir, "report.html");
+            File dir = new File("C:/IndiraMotorKasir/html_templates");
+            if (!dir.exists()) {
+            	dir.mkdirs();
+            }
+            File html = new File("C:/IndiraMotorKasir/html_templates/report.html");
             html.delete();
             html.createNewFile();
 
@@ -147,22 +160,22 @@ public class PrintController {
             BufferedWriter htmlBufferedWriter = Files.newBufferedWriter(html.toPath(), StandardOpenOption.WRITE);
             String header = "<!DOCTYPE html><html lang=\"en\"><head><title>Laporan Transaksi Indira Motor</title><style>table, tr, td, th {border: 1px solid;border-collapse: collapse;padding: 0.2em;}</style></head><body>";
 
-            String body = "<h1>Laporan Transaksi Indira Motor</h1><table><tr><th>No</th><th>Kasir</th><th>Tgl</th><th>Jml Jenis produk</th><th>Total</th><th>Jasa</th><th>Produk</th><th>Jumlah</th></tr>";
+            String body = "<h1>Laporan Transaksi Indira Motor</h1><table><tr><th>No</th><th>Kasir</th><th>Tgl</th><th>Produk</th><th>Harga</th><th>Jumlah</th><th>Biaya Jasa</th><th>Total</th></tr>";
             for (HashMap<String, String> row : data) {
                 body += "    <tr>\n";
                 body += "      <td rowspan=\"" + row.get("product_types") + "\">" + row.get("id") + "</td>\n";
                 body += "      <td rowspan=\"" + row.get("product_types") + "\">" + row.get("username") + "</td>\n";
                 body += "      <td rowspan=\"" + row.get("product_types") + "\">" + row.get("date") + "</td>\n";
-                body += "      <td rowspan=\"" + row.get("product_types") + "\">" + row.get("product_types") + "</td>\n";
-                body += "      <td rowspan=\"" + row.get("product_types") + "\">" + row.get("total") + "</td>\n";
-                body += "      <td rowspan=\"" + row.get("product_types") + "\">" + row.get("fee") + "</td>\n";
 
                 ArrayList<HashMap<String, String>> cart_products = new CartController().getCartProducts(Integer.parseInt(row.get("cart_id")));
                 int product_counter = 1;
                 for (HashMap<String, String> cart_product : cart_products) {
                     if (product_counter == 1) {
                         body += "      <td>" + cart_product.get("name") + "</td>\n";
+                        body += "      <td>" + cart_product.get("price") + "</td>\n";
                         body += "      <td>" + cart_product.get("qty") + "</td>\n";
+                        body += "      <td rowspan=\"" + row.get("product_types") + "\">" + row.get("fee") + "</td>\n";
+                        body += "      <td rowspan=\"" + row.get("product_types") + "\">" + row.get("total") + "</td>\n";
                         body += "    </tr>\n";
 
                         product_counter++;
@@ -171,6 +184,7 @@ public class PrintController {
 
                     body += "    <tr>\n";
                     body += "      <td>" + cart_product.get("name") + "</td>\n";
+                    body += "      <td>" + cart_product.get("price") + "</td>\n";
                     body += "      <td>" + cart_product.get("qty") + "</td>\n";
                     body += "    </tr>";
                 }
@@ -198,7 +212,11 @@ public class PrintController {
             }
 
             //write the pdf
-            File pdf = new File(saveDir, "report.pdf");
+            String date = LocalDate.now().toString();
+            String time = LocalTime.now().toString();
+            time = time.replaceAll(":", "-");
+            String datetime = date + time;
+            File pdf = new File(saveDir, "report" + datetime + ".pdf");
             //itextpdf require slf4j
             HtmlConverter.convertToPdf(html, pdf);
         }
