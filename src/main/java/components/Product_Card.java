@@ -163,7 +163,7 @@ public class Product_Card extends JPanel {
                 int maxHeight = 220;
 
                 double widthRatio = (double) maxWidth / originalWidth;
-                double heightRatio = (double) maxHeight / originalHeight;
+                double heightRatio = (double) maxHeight / originalHeight; 
                 double scaleFactor = Math.min(widthRatio, heightRatio);
 
                 int scaledWidth = (int) (originalWidth * scaleFactor);

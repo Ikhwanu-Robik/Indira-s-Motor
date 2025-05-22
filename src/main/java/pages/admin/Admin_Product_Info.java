@@ -80,25 +80,18 @@ public class Admin_Product_Info {
 			InputStream input = new FileInputStream(image);
 
 			BufferedImage originalImage = ImageIO.read(input);
-			int width = originalImage.getWidth();
-			int height = originalImage.getHeight();
+			int originalWidth = originalImage.getWidth();
+            int originalHeight = originalImage.getHeight();
 
-			int scaledWidth;
-			int scaledHeight;
-			if (height < 500 && width < 800) {
-				int multiplier = Math.round(height / 500);
-				scaledWidth = width * multiplier;
-				scaledHeight = height * multiplier;
-			} else if (height > 500 && width > 800) {
-				scaledWidth = width * 500 / height;
-				scaledHeight = 500;
-			} else if (height > 500 && width < 800) {
-				scaledWidth = width * 500 / height;
-				scaledHeight = 500;
-			} else {
-				scaledWidth = width;
-				scaledHeight = height;
-			}
+            int maxWidth = 500;
+            int maxHeight = 800;
+
+            double widthRatio = (double) maxWidth / originalWidth;
+            double heightRatio = (double) maxHeight / originalHeight;
+            double scaleFactor = Math.min(widthRatio, heightRatio);
+
+            int scaledWidth = (int) (originalWidth * scaleFactor);
+            int scaledHeight = (int) (originalHeight * scaleFactor);
 
 			Image scaledImage = originalImage.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
 			JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
