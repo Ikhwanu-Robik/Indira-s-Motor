@@ -151,33 +151,35 @@ public class Product_Card extends JPanel {
         imageButton.setBorderPainted(false);
         imageButton.setFocusPainted(false);
 
-        try {
-            File imageFile = new File(dir, image_url);
-            BufferedImage originalImage = ImageIO.read(imageFile);
+        new Thread(() -> {
+        	try {
+                File imageFile = new File(dir, image_url);
+                BufferedImage originalImage = ImageIO.read(imageFile);
 
-            if (originalImage != null) {
-                int originalWidth = originalImage.getWidth();
-                int originalHeight = originalImage.getHeight();
+                if (originalImage != null) {
+                    int originalWidth = originalImage.getWidth();
+                    int originalHeight = originalImage.getHeight();
 
-                int maxWidth = 220;
-                int maxHeight = 220;
+                    int maxWidth = 220;
+                    int maxHeight = 220;
 
-                double widthRatio = (double) maxWidth / originalWidth;
-                double heightRatio = (double) maxHeight / originalHeight; 
-                double scaleFactor = Math.min(widthRatio, heightRatio);
+                    double widthRatio = (double) maxWidth / originalWidth;
+                    double heightRatio = (double) maxHeight / originalHeight; 
+                    double scaleFactor = Math.min(widthRatio, heightRatio);
 
-                int scaledWidth = (int) (originalWidth * scaleFactor);
-                int scaledHeight = (int) (originalHeight * scaleFactor);
+                    int scaledWidth = (int) (originalWidth * scaleFactor);
+                    int scaledHeight = (int) (originalHeight * scaleFactor);
 
-                Image scaledImage = originalImage.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
-                imageButton.setIcon(new ImageIcon(scaledImage));
-            } else {
-                imageButton.setText("Image not found");
+                    Image scaledImage = originalImage.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
+                    imageButton.setIcon(new ImageIcon(scaledImage));
+                } else {
+                    imageButton.setText("Image not found");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                imageButton.setText("Error loading image");
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            imageButton.setText("Error loading image");
-        }
+        }).start();
 
         imageButton.setHorizontalAlignment(SwingConstants.CENTER);
         imageButton.setVerticalAlignment(SwingConstants.CENTER);

@@ -87,15 +87,29 @@ public class Cashier_Product_Info {
             int originalWidth = originalImage.getWidth();
             int originalHeight = originalImage.getHeight();
 
-            int maxWidth = 500;
-            int maxHeight = 800;
+            int maxWidth = 800;
+            int maxHeight = 500;
 
-            double widthRatio = (double) maxWidth / originalWidth;
-            double heightRatio = (double) maxHeight / originalHeight;
-            double scaleFactor = Math.min(widthRatio, heightRatio);
-
-            int scaledWidth = (int) (originalWidth * scaleFactor);
-            int scaledHeight = (int) (originalHeight * scaleFactor);
+            int scaledWidth = maxWidth;
+            int scaledHeight = maxHeight;
+            
+            if (originalWidth == originalHeight) {
+            	scaledWidth = maxHeight;
+            	scaledHeight = maxHeight;
+            } else if (originalHeight > originalWidth) {
+            	scaledHeight = maxHeight;
+            	scaledWidth = originalWidth * maxHeight / originalHeight;
+            } else if (originalHeight < originalWidth) {
+            	scaledHeight = originalHeight * maxWidth / originalWidth  ;
+            	scaledWidth = maxWidth;
+            }
+            
+            if (scaledWidth > maxWidth) {
+            	scaledWidth = maxWidth;
+            }
+            if (scaledHeight > maxHeight) {
+            	scaledHeight = maxHeight;
+            }
 
             Image scaledImage = originalImage.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
             JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
