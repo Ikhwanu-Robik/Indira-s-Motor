@@ -268,7 +268,8 @@ public class Cashier_Product_Edit {
             String brandName = Cashier_Product_Edit.brandComboBox.getSelectedItem().toString();
             String brand_id = null;
             String brand_category_id = null;
-            String newImageName = null;
+            String oldImageUrl = new ProductController().findWhere("id", productId).getFirst().get("image_url");
+            String newImageName = oldImageUrl;
             for (HashMap<String, String> brand : brands) {
                 if (brand.get("name").trim().equals(brandName.trim())) {
                     brand_id = brand.get("id");
@@ -317,9 +318,9 @@ public class Cashier_Product_Edit {
             
 //           delete the old image
 //           TODO : the image cannot be deleted because it is being opened by this program
-            String oldImageUrl = new ProductController().findWhere("id", productId).getFirst().get("image_url");
-            File oldImage = new File("C:/IndiraMotorKasir/assets/" + oldImageUrl);
-            oldImage.delete();
+//            String oldImageUrl = new ProductController().findWhere("id", productId).getFirst().get("image_url");
+//            File oldImage = new File("C:/IndiraMotorKasir/assets/" + oldImageUrl);
+//            oldImage.delete();
 
             HashMap<String, String> product_data = new HashMap<>();
             product_data.put("name", name);
