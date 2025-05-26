@@ -28,7 +28,7 @@ public class LoginController {
         if (validate(form_data)) {
             isAdmin = null != new AdminController().findWhere("username", form_data.get("username"));
         } else {
-            return FormatResponse.success("error", "Invalid input. That username does not exist");
+            return FormatResponse.error("error", "Invalid input. That username does not exist");
         }
 
         if (!isAdmin) {

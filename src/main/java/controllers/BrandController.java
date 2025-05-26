@@ -146,8 +146,8 @@ public class BrandController extends AbstractController {
         return null;
     }
     
-    public ArrayList<HashMap<String, String>> getCategory(int category_id) {
-        String id = this.findWhere("id", Integer.toString(category_id)).getFirst().get("brand_id");
+    public ArrayList<HashMap<String, String>> getCategory(int brand_id) {
+        String id = this.findWhere("id", Integer.toString(brand_id)).getFirst().get("category_id");
         return new CategoryController().findWhere("id", id);
     }
 }
