@@ -278,7 +278,7 @@ public class Cashier_Transaction {
                         try {
                            new PrintController().print(data);
                         } catch (IOException er) {
-                            JOptionPane.showMessageDialog(null, e, "ERROR", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(null, er, "ERROR", JOptionPane.ERROR_MESSAGE);
                         }
                 	};
                 	
